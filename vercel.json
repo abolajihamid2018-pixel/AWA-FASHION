@@ -2,11 +2,19 @@
   "version": 2,
   "builds": [
     {
-      "src": "index.html",
+      "src": "*.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/accounting",
+      "dest": "/accounting.html"
+    },
+    {
+      "src": "/accounting.html",
+      "dest": "/accounting.html"
+    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
