@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWA Fashion — Accounting</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #0d2240; --navy-mid: #1a3a6b; --navy-light: #2a5298;
+    --sky: #b8d4f0; --white: #f8f9fc; --gold: #c9a84c;
+    --green: #25D366; --red: #c0392b; --text: #0d2240; --muted: #6b7a99;
+    --border: rgba(13,34,64,0.12); --card: #ffffff;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--text); min-height: 100vh; }
+  h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; font-weight: 400; color: var(--navy); }
+  a { color: inherit; }
+  button, select, input { font-family: 'DM Sans', sans-serif; }
+  .app-header { background: var(--navy); color: white; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; position: sticky; top: 0; z-index: 50; }
+  .app-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 2px; }
+  .app-logo span { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-top: -3px; }
+  nav.tabs { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+  nav.tabs button { background: transparent; border: none; color: rgba(255,255,255,0.65); padding: 0.6rem 0.9rem; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s; }
+  nav.tabs button:hover { color: white; background: rgba(255,255,255,0.08); }
+  nav.tabs button.active { color: var(--navy); background: var(--gold); }
+  main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from{opacity:0; transform: translateY(6px);} to{opacity:1; transform:none;} }
+  .view-title { font-size: 2rem; margin-bottom: 0.3rem; }
+  .view-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 1.6rem; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; }
+  .grid { display: grid; gap: 1rem; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 900px) { .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+  .stat-card { background: var(--navy); color: white; border-radius: 10px; padding: 1.3rem 1.4rem; position: relative; overflow: hidden; }
+  .stat-card .label { font-size: 0.68rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--sky); opacity: 0.85; }
+  .stat-card .value { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; margin-top: 0.4rem; letter-spacing: 1px; }
+  .stat-card.gold { background: linear-gradient(135deg, var(--gold), #a9863a); }
+  .stat-card.neg .value { color: #ffb4a8; }
+  .section-gap { margin-top: 2rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  th, td { text-align: left; padding: 0.65rem 0.7rem; border-bottom: 1px solid var(--border); }
+  th { font-size: 0.66rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  tr:hover td { background: rgba(13,34,64,0.02); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .neg { color: var(--red); }
+  .total-row td { font-weight: 700; border-top: 2px solid var(--navy); border-bottom: none; }
+  .btn { border: none; cursor: pointer; padding: 0.7rem 1.3rem; font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; border-radius: 6px; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .btn-primary { background: var(--navy); color: white; }
+  .btn-primary:hover { background: var(--navy-mid); }
+  .btn-gold { background: var(--gold); color: var(--navy); }
+  .btn-gold:hover { opacity: 0.88; }
+  .btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--navy); }
+  .btn-danger { background: transparent; color: var(--red); border: 1.5px solid rgba(192,57,43,0.35); }
+  .btn-danger:hover { background: rgba(192,57,43,0.08); }
+  .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.62rem; }
+  .btn-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1rem; }
+  .wizard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.6rem; }
+  @media (max-width: 800px) { .wizard-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 550px) { .wizard-grid { grid-template-columns: 1fr; } }
+  .wizard-btn { text-align: left; background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 1.1rem 1.2rem; cursor: pointer; transition: all 0.2s; }
+  .wizard-btn:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,34,64,0.08); }
+  .wizard-btn .ic { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--gold); }
+  .wizard-btn .t { font-weight: 500; font-size: 0.9rem; margin-top: 0.3rem; color: var(--navy); }
+  .wizard-btn .d { font-size: 0.74rem; color: var(--muted); margin-top: 0.2rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+  .field label { display: block; font-size: 0.68rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+  .field input, .field select, .field textarea { width: 100%; border: 1.5px solid var(--border); background: white; padding: 0.7rem 0.85rem; font-size: 0.88rem; border-radius: 6px; outline: none; color: var(--navy); }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+  .field.full { grid-column: 1 / -1; }
+  .hint { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(13,34,64,0.55); display: none; align-items: center; justify-content: center; z-index: 200; padding: 1.5rem; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: white; border-radius: 12px; padding: 1.8rem; width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto; }
+  .modal.wide { max-width: 780px; }
+  .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+  .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); line-height: 1; }
+  .je-lines { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 0.6rem; }
+  .je-line { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0.5rem; padding: 0.5rem; border-bottom: 1px solid var(--border); align-items: center; }
+  .je-line:last-child { border-bottom: none; }
+  .je-line input, .je-line select { padding: 0.5rem; font-size: 0.82rem; border: 1px solid var(--border); border-radius: 5px; }
+  .je-remove { background: none; border: none; color: var(--red); cursor: pointer; font-size: 1.1rem; }
+  .balance-check { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 0.6rem 0.2rem; }
+  .balance-check.ok { color: var(--green); font-weight: 600; }
+  .balance-check.bad { color: var(--red); font-weight: 600; }
+  .tab-sub { display: flex; gap: 0.4rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
+  .tab-sub button { background: white; border: 1.5px solid var(--border); padding: 0.55rem 1rem; font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 20px; color: var(--navy); }
+  .tab-sub button.active { background: var(--navy); color: white; border-color: var(--navy); }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .toolbar .dates { display: flex; gap: 0.6rem; align-items: end; flex-wrap: wrap; }
+  .toolbar .dates .field { min-width: 150px; }
+  .pill { display: inline-block; font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 10px; background: rgba(13,34,64,0.08); color: var(--navy); }
+  .pill.archived { background: rgba(192,57,43,0.1); color: var(--red); }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+  .empty .big { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--navy); color: white; padding: 0.9rem 1.3rem; border-radius: 8px; font-size: 0.82rem; z-index: 300; opacity: 0; transform: translateY(10px); transition: all 0.25s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: none; }
+  .toast.err { background: var(--red); }
+  .statement-head { text-align: center; margin-bottom: 1.6rem; }
+  .statement-head h2 { font-size: 1.6rem; }
+  .statement-head .biz { font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; color: var(--navy); font-family: 'DM Sans', sans-serif; }
+  .statement-head .period { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+  .section-label td { background: rgba(13,34,64,0.04); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; color: var(--navy); }
+  .indent { padding-left: 1.6rem !important; }
+  .balanced-flag { font-size: 0.72rem; margin-top: 0.8rem; text-align: right; }
+  .balanced-flag.ok { color: var(--green); } .balanced-flag.bad { color: var(--red); }
+  footer.app-footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.72rem; }
+  @media print {
+    .app-header, nav.tabs, .btn-row, .toolbar .btn, .no-print { display: none !important; }
+    body { background: white; }
+    main { padding: 0; max-width: 100%; }
+    .view { display: none !important; }
+    .view.printing { display: block !important; }
+    .card { border: none; padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header no-print">
+  <div class="app-logo">AWA Fashion<span>Accounting</span></div>
+  <nav class="tabs" id="mainTabs">
+    <button data-view="dashboard" class="active">Dashboard</button>
+    <button data-view="record">Record Transaction</button>
+    <button data-view="journal">Journal</button>
+    <button data-view="accounts">Chart of Accounts</button>
+    <button data-view="reports">Reports</button>
+    <button data-view="settings">Settings</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <section class="view active" id="view-dashboard">
+    <h1 class="view-title">Overview</h1>
+    <p class="view-sub" id="dashSub">Snapshot of your business finances.</p>
+    <div class="grid grid-4" id="dashStats"></div>
+
+    <div class="section-gap wizard-grid" style="grid-template-columns: repeat(4,1fr); margin-bottom:0.5rem;">
+      <button class="wizard-btn" data-quick="income"><div class="ic">₦+</div><div class="t">Record Income</div><div class="d">Log a sale or payment received</div></button>
+      <button class="wizard-btn" data-quick="expense"><div class="ic">₦−</div><div class="t">Record Expense</div><div class="d">Log a business expense</div></button>
+      <button class="wizard-btn" data-view-jump="reports"><div class="ic">▤</div><div class="t">View Reports</div><div class="d">Income statement, balance sheet & more</div></button>
+      <button class="wizard-btn" data-view-jump="journal"><div class="ic">≡</div><div class="t">Full Journal</div><div class="d">See every transaction recorded</div></button>
+    </div>
+
+    <div class="section-gap">
+      <h3 style="margin-bottom:0.8rem; font-size:1.2rem;">Recent Transactions</h3>
+      <div class="card" style="padding:0;">
+        <table id="dashRecent"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECORD TRANSACTION -->
+  <section class="view" id="view-record">
+    <h1 class="view-title">Record a Transaction</h1>
+    <p class="view-sub">Pick the kind of transaction — every entry keeps your books balanced automatically (double-entry).</p>
+    <div class="wizard-grid">
+      <button class="wizard-btn" data-quick="income"><div class="ic">₦+</div><div class="t">Income</div><div class="d">Sale, service revenue, or other income received</div></button>
+      <button class="wizard-btn" data-quick="expense"><div class="ic">₦−</div><div class="t">Expense</div><div class="d">Rent, salaries, supplies, and other costs</div></button>
+      <button class="wizard-btn" data-quick="asset"><div class="ic">▣</div><div class="t">Asset</div><div class="d">Purchase equipment, inventory, or add an asset</div></button>
+      <button class="wizard-btn" data-quick="liability"><div class="ic">§</div><div class="t">Liability</div><div class="d">Take a loan, incur a bill, or pay one down</div></button>
+      <button class="wizard-btn" data-quick="equity"><div class="ic">◆</div><div class="t">Owner's Equity</div><div class="d">Owner contribution into or drawing out of the business</div></button>
+      <button class="wizard-btn" data-quick="transfer"><div class="ic">⇄</div><div class="t">Transfer</div><div class="d">Move money between cash / bank accounts</div></button>
+    </div>
+    <button class="btn btn-ghost" id="openManualJE">+ Advanced: Manual Journal Entry</button>
+  </section>
+
+  <!-- JOURNAL -->
+  <section class="view" id="view-journal">
+    <h1 class="view-title">Journal</h1>
+    <p class="view-sub">Every transaction ever recorded, most recent first.</p>
+    <div class="toolbar">
+      <div class="dates">
+        <div class="field"><label>From</label><input type="date" id="journalFrom"></div>
+        <div class="field"><label>To</label><input type="date" id="journalTo"></div>
+        <button class="btn btn-ghost btn-sm" id="journalClearFilter" style="align-self:end;">Clear</button>
+      </div>
+      <button class="btn btn-ghost" id="exportJournalCsv">Export CSV</button>
+    </div>
+    <div class="card" style="padding:0;">
+      <table id="journalTable"></table>
+    </div>
+  </section>
+
+  <!-- CHART OF ACCOUNTS -->
+  <section class="view" id="view-accounts">
+    <h1 class="view-title">Chart of Accounts</h1>
+    <p class="view-sub">The accounts that make up your books, grouped by type.</p>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn btn-primary" id="addAccountBtn">+ Add Account</button>
+      <button class="btn btn-ghost" id="openingBalancesBtn">Set Opening Balances</button>
+    </div>
+    <div class="section-gap" id="accountsList"></div>
+  </section>
+
+  <!-- REPORTS -->
+  <section class="view" id="view-reports">
+    <h1 class="view-title">Financial Statements</h1>
+    <div class="tab-sub" id="reportTabs">
+      <button data-report="income" class="active">Income Statement</button>
+      <button data-report="balance">Balance Sheet</button>
+      <button data-report="cashflow">Cash Flow Statement</button>
+      <button data-report="equity">Statement of Changes in Equity</button>
+    </div>
+
+    <div class="toolbar no-print">
+      <div class="dates" id="reportDateControls"></div>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-ghost" id="exportReportCsv">Export CSV</button>
+        <button class="btn btn-gold" id="printReport">Print / Save PDF</button>
+      </div>
+    </div>
+
+    <div class="card" id="reportOutput"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="view-settings">
+    <h1 class="view-title">Settings</h1>
+    <div class="card">
+      <h3 style="margin-bottom:1rem;">Business Details</h3>
+      <div class="form-row">
+        <div class="field"><label>Business Name</label><input id="settingBizName" type="text"></div>
+        <div class="field"><label>Currency Symbol</label><input id="settingCurrency" type="text" maxlength="4"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="saveSettingsBtn">Save</button>
+    </div>
+
+    <div class="card section-gap">
+      <h3 style="margin-bottom:0.6rem;">Backup &amp; Restore</h3>
+      <p class="hint" style="margin-bottom:1rem;">Your data lives only in this browser. Export a backup regularly, or before switching devices.</p>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-ghost" id="exportBackupBtn">Export Backup (JSON)</button>
+        <label class="btn btn-ghost" style="cursor:pointer;">Import Backup<input type="file" id="importBackupInput" accept="application/json" style="display:none;"></label>
+      </div>
+    </div>
+
+    <div class="card section-gap" style="border-color: rgba(192,57,43,0.3);">
+      <h3 style="margin-bottom:0.6rem; color: var(--red);">Danger Zone</h3>
+      <p class="hint" style="margin-bottom:1rem;">Permanently erase all transactions and reset the chart of accounts to defaults.</p>
+      <button class="btn btn-danger" id="resetAllBtn">Erase All Data</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="app-footer no-print">© <span id="yearNow"></span> AWA Fashion — Internal Accounting Tool. Data is stored locally in your browser.</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- STATE ---------- */
+const STORAGE_KEY = 'awa_accounting_v1';
+
+function seedAccounts(){
+  return [
+    { id:'cash', name:'Cash on Hand', type:'asset', isCash:true, cashFlowCategory:null, equityRole:null, archived:false },
+    { id:'bank', name:'Bank Account', type:'asset', isCash:true, cashFlowCategory:null, equityRole:null, archived:false },
+    { id:'ar', name:'Accounts Receivable', type:'asset', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'inventory', name:'Inventory', type:'asset', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'prepaid', name:'Prepaid Expenses', type:'asset', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'equipment', name:'Equipment', type:'asset', isCash:false, cashFlowCategory:'investing', equityRole:null, archived:false },
+    { id:'ffe', name:'Furniture & Fixtures', type:'asset', isCash:false, cashFlowCategory:'investing', equityRole:null, archived:false },
+
+    { id:'ap', name:'Accounts Payable', type:'liability', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'tax_payable', name:'Taxes Payable', type:'liability', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'accrued', name:'Accrued Expenses', type:'liability', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'loan', name:'Loans Payable', type:'liability', isCash:false, cashFlowCategory:'financing', equityRole:null, archived:false },
+
+    { id:'opening_equity', name:'Opening Balance Equity', type:'equity', isCash:false, cashFlowCategory:'financing', equityRole:'capital', archived:false },
+    { id:'capital', name:"Owner's Capital", type:'equity', isCash:false, cashFlowCategory:'financing', equityRole:'capital', archived:false },
+    { id:'drawings', name:"Owner's Drawings", type:'equity', isCash:false, cashFlowCategory:'financing', equityRole:'drawings', archived:false },
+    { id:'retained', name:'Retained Earnings', type:'equity', isCash:false, cashFlowCategory:null, equityRole:'retained', archived:false },
+
+    { id:'sales', name:'Sales Revenue', type:'income', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'service_income', name:'Service Revenue', type:'income', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'other_income', name:'Other Income', type:'income', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+
+    { id:'cogs', name:'Cost of Goods Sold', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'rent', name:'Rent Expense', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'salaries', name:'Salaries & Wages', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'utilities', name:'Utilities', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'marketing', name:'Marketing & Advertising', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'transport', name:'Transport & Logistics', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'bank_charges', name:'Bank Charges', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'supplies', name:'Supplies', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false },
+    { id:'other_expense', name:'Other Expense', type:'expense', isCash:false, cashFlowCategory:'operating', equityRole:null, archived:false }
+  ];
+}
+
+function defaultState(){
+  return {
+    settings: { businessName: 'AWA Fashion', symbol: '₦' },
+    accounts: seedAccounts(),
+    entries: []
+  };
+}
+
+let state;
+function loadState(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) { const parsed = JSON.parse(raw); if (parsed && parsed.accounts && parsed.entries) return parsed; }
+  } catch(e) {}
+  const s = defaultState();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+  return s;
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+state = loadState();
+
+/* ---------- HELPERS ---------- */
+const TYPE_NORMAL = { asset:'debit', liability:'credit', equity:'credit', income:'credit', expense:'debit' };
+const TYPE_LABEL = { asset:'Assets', liability:'Liabilities', equity:'Equity', income:'Income', expense:'Expenses' };
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function dayBefore(dateStr){ const d = new Date(dateStr+'T00:00:00'); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); }
+function monthStart(){ const d = new Date(); return d.toISOString().slice(0,8)+'01'; }
+function yearStart(){ const d = new Date(); return d.getFullYear()+'-01-01'; }
+
+function fmt(n){
+  const sym = state.settings.symbol || '₦';
+  const neg = n < -0.004;
+  const abs = Math.abs(n || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  return neg ? `(${sym}${abs})` : `${sym}${abs}`;
+}
+function fmtPlain(n){ return (n||0).toFixed(2); }
+
+function getAccount(id){ return state.accounts.find(a => a.id === id); }
+function accountsByType(type, includeArchived){
+  return state.accounts.filter(a => a.type === type && (includeArchived || !a.archived));
+}
+function allActiveAccounts(){ return state.accounts.filter(a => !a.archived); }
+
+function periodSums(accountId, from, to){
+  let debit = 0, credit = 0;
+  for (const e of state.entries){
+    if (from && e.date < from) continue;
+    if (to && e.date > to) continue;
+    for (const l of e.lines){
+      if (l.accountId === accountId){ debit += (+l.debit||0); credit += (+l.credit||0); }
+    }
+  }
+  return { debit, credit };
+}
+function balanceOf(accountId, from, to){
+  const a = getAccount(accountId);
+  if (!a) return 0;
+  const { debit, credit } = periodSums(accountId, from, to);
+  return TYPE_NORMAL[a.type] === 'debit' ? (debit - credit) : (credit - debit);
+}
+function cumulativeBalance(accountId, asOf){ return balanceOf(accountId, null, asOf); }
+
+function cashAccounts(){ return state.accounts.filter(a => a.isCash); }
+function totalCashBalance(asOf){ return cashAccounts().reduce((s,a) => s + cumulativeBalance(a.id, asOf), 0); }
+
+function genId(prefix){ return prefix + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function addEntry(entry){
+  const totalDebit = entry.lines.reduce((s,l) => s + (+l.debit||0), 0);
+  const totalCredit = entry.lines.reduce((s,l) => s + (+l.credit||0), 0);
+  if (Math.abs(totalDebit - totalCredit) > 0.005) throw new Error('Entry is not balanced: debits must equal credits.');
+  if (totalDebit <= 0) throw new Error('Entry amount must be greater than zero.');
+  entry.id = genId('je');
+  entry.createdAt = new Date().toISOString();
+  entry.lines = entry.lines.filter(l => (+l.debit||0) > 0 || (+l.credit||0) > 0);
+  state.entries.push(entry);
+  state.entries.sort((a,b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt));
+  saveState();
+}
+function deleteEntry(id){ state.entries = state.entries.filter(e => e.id !== id); saveState(); }
+
+/* ---------- TOAST ---------- */
+let toastTimer;
+function toast(msg, isErr){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+/* ---------- NAVIGATION ---------- */
+const views = ['dashboard','record','journal','accounts','reports','settings'];
+function showView(name){
+  views.forEach(v => document.getElementById('view-'+v).classList.toggle('active', v===name));
+  document.querySelectorAll('#mainTabs button').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'journal') renderJournal();
+  if (name === 'accounts') renderAccounts();
+  if (name === 'reports') renderReport();
+}
+document.getElementById('mainTabs').addEventListener('click', e => {
+  const btn = e.target.closest('button[data-view]');
+  if (btn) showView(btn.dataset.view);
+});
+document.querySelectorAll('[data-view-jump]').forEach(b => b.addEventListener('click', () => showView(b.dataset.viewJump)));
+
+/* ---------- MODAL ---------- */
+const overlay = document.getElementById('modalOverlay');
+const modalBody = document.getElementById('modalBody');
+function openModal(html, wide){
+  modalBody.innerHTML = html;
+  modalBody.className = 'modal' + (wide ? ' wide' : '');
+  overlay.classList.add('active');
+}
+function closeModal(){ overlay.classList.remove('active'); modalBody.innerHTML = ''; }
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+
+/* ---------- ACCOUNT OPTIONS HTML ---------- */
+function accountOptions(filterFn, selected){
+  return allActiveAccounts().filter(filterFn || (()=>true))
+    .map(a => `<option value="${a.id}" ${a.id===selected?'selected':''}>${a.name}</option>`).join('');
+}
+
+/* ---------- QUICK ENTRY WIZARDS ---------- */
+function wizardShell(title, bodyHtml, submitLabel){
+  return `
+    <div class="modal-head"><h3>${title}</h3><button class="modal-close" id="mClose">&times;</button></div>
+    <form id="wizardForm">
+      ${bodyHtml}
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">${submitLabel||'Save Transaction'}</button>
+        <button type="button" class="btn btn-ghost" id="mCancel">Cancel</button>
+      </div>
+    </form>`;
+}
+function bindModalClose(){
+  document.getElementById('mClose').onclick = closeModal;
+  const c = document.getElementById('mCancel'); if (c) c.onclick = closeModal;
+}
+
+function openQuickEntry(kind){
+  if (kind === 'income') return openIncomeWizard();
+  if (kind === 'expense') return openExpenseWizard();
+  if (kind === 'asset') return openAssetWizard();
+  if (kind === 'liability') return openLiabilityWizard();
+  if (kind === 'equity') return openEquityWizard();
+  if (kind === 'transfer') return openTransferWizard();
+}
+
+function openIncomeWizard(){
+  const cashOpts = accountOptions(a => a.isCash || a.id==='ar');
+  const incomeOpts = accountOptions(a => a.type==='income');
+  openModal(wizardShell('Record Income', `
+    <div class="form-row">
+      <div class="field"><label>Date</label><input type="date" name="date" value="${todayStr()}" required></div>
+      <div class="field"><label>Amount</label><input type="number" step="0.01" min="0.01" name="amount" required placeholder="0.00"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Received Into</label><select name="into">${cashOpts}</select></div>
+      <div class="field"><label>Income Account</label><select name="incomeAcct">${incomeOpts}</select></div>
+    </div>
+    <div class="field full" style="margin-bottom:1rem;"><label>Description</label><input type="text" name="memo" placeholder="e.g. Sale of 3 dresses to walk-in customer"></div>
+  `));
+  bindModalClose();
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    try {
+      addEntry({ date: f.get('date'), memo: f.get('memo') || 'Income received', lines: [
+        { accountId: f.get('into'), debit: +f.get('amount'), credit: 0 },
+        { accountId: f.get('incomeAcct'), debit: 0, credit: +f.get('amount') }
+      ]});
+      closeModal(); toast('Income recorded.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+}
+
+function openExpenseWizard(){
+  const sourceOpts = accountOptions(a => a.isCash || a.id==='ap');
+  const expenseOpts = accountOptions(a => a.type==='expense');
+  openModal(wizardShell('Record Expense', `
+    <div class="form-row">
+      <div class="field"><label>Date</label><input type="date" name="date" value="${todayStr()}" required></div>
+      <div class="field"><label>Amount</label><input type="number" step="0.01" min="0.01" name="amount" required placeholder="0.00"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Expense Account</label><select name="expenseAcct">${expenseOpts}</select></div>
+      <div class="field"><label>Paid From</label><select name="from">${sourceOpts}</select></div>
+    </div>
+    <div class="field full" style="margin-bottom:1rem;"><label>Description</label><input type="text" name="memo" placeholder="e.g. Monthly shop rent"></div>
+  `));
+  bindModalClose();
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    try {
+      addEntry({ date: f.get('date'), memo: f.get('memo') || 'Expense paid', lines: [
+        { accountId: f.get('expenseAcct'), debit: +f.get('amount'), credit: 0 },
+        { accountId: f.get('from'), debit: 0, credit: +f.get('amount') }
+      ]});
+      closeModal(); toast('Expense recorded.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+}
+
+function openAssetWizard(){
+  const assetOpts = accountOptions(a => a.type==='asset' && !a.isCash);
+  const sourceOpts = accountOptions(a => a.isCash || a.id==='ap' || a.id==='loan');
+  openModal(wizardShell('Record Asset', `
+    <div class="form-row">
+      <div class="field"><label>Date</label><input type="date" name="date" value="${todayStr()}" required></div>
+      <div class="field"><label>Amount</label><input type="number" step="0.01" min="0.01" name="amount" required placeholder="0.00"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Asset Account</label><select name="assetAcct">${assetOpts}</select></div>
+      <div class="field"><label>Paid Via</label><select name="via">${sourceOpts}</select></div>
+    </div>
+    <div class="field full" style="margin-bottom:1rem;"><label>Description</label><input type="text" name="memo" placeholder="e.g. Purchased sewing machine"></div>
+  `));
+  bindModalClose();
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    try {
+      addEntry({ date: f.get('date'), memo: f.get('memo') || 'Asset acquired', lines: [
+        { accountId: f.get('assetAcct'), debit: +f.get('amount'), credit: 0 },
+        { accountId: f.get('via'), debit: 0, credit: +f.get('amount') }
+      ]});
+      closeModal(); toast('Asset recorded.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+}
+
+function openLiabilityWizard(){
+  const liabOpts = accountOptions(a => a.type==='liability');
+  const otherOpts = accountOptions(a => a.isCash || a.type==='expense' || a.type==='asset');
+  openModal(wizardShell('Record Liability', `
+    <div class="form-row">
+      <div class="field"><label>Direction</label>
+        <select name="direction">
+          <option value="incur">Incur / Receive (e.g. take a loan, get a bill)</option>
+          <option value="pay">Pay Down a Liability</option>
+        </select>
+      </div>
+      <div class="field"><label>Liability Account</label><select name="liabAcct">${liabOpts}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Date</label><input type="date" name="date" value="${todayStr()}" required></div>
+      <div class="field"><label>Amount</label><input type="number" step="0.01" min="0.01" name="amount" required placeholder="0.00"></div>
+    </div>
+    <div class="form-row">
+      <div class="field full"><label id="otherLabel">Other Side (what it affects)</label><select name="otherAcct">${otherOpts}</select></div>
+    </div>
+    <div class="field full" style="margin-bottom:1rem;"><label>Description</label><input type="text" name="memo" placeholder="e.g. Bank loan disbursed / Loan repayment"></div>
+  `));
+  bindModalClose();
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const dir = f.get('direction');
+    const amt = +f.get('amount');
+    const liab = f.get('liabAcct'), other = f.get('otherAcct');
+    try {
+      const lines = dir === 'incur'
+        ? [{ accountId: other, debit: amt, credit: 0 }, { accountId: liab, debit: 0, credit: amt }]
+        : [{ accountId: liab, debit: amt, credit: 0 }, { accountId: other, debit: 0, credit: amt }];
+      addEntry({ date: f.get('date'), memo: f.get('memo') || (dir==='incur' ? 'Liability incurred' : 'Liability paid down'), lines });
+      closeModal(); toast('Liability transaction recorded.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+}
+
+function openEquityWizard(){
+  const cashOpts = accountOptions(a => a.isCash);
+  const equityOpts = accountOptions(a => a.type==='equity' && a.equityRole !== 'retained');
+  openModal(wizardShell("Owner's Equity", `
+    <div class="form-row">
+      <div class="field"><label>Type</label>
+        <select name="direction">
+          <option value="contribution">Owner Contribution (money into the business)</option>
+          <option value="drawing">Owner Drawing (money taken out)</option>
+        </select>
+      </div>
+      <div class="field"><label>Equity Account</label><select name="equityAcct">${equityOpts}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Date</label><input type="date" name="date" value="${todayStr()}" required></div>
+      <div class="field"><label>Amount</label><input type="number" step="0.01" min="0.01" name="amount" required placeholder="0.00"></div>
+    </div>
+    <div class="field full"><label>Cash / Bank Account</label><select name="cashAcct">${cashOpts}</select></div>
+    <div class="field full" style="margin-bottom:1rem; margin-top:1rem;"><label>Description</label><input type="text" name="memo" placeholder="e.g. Owner capital injection"></div>
+  `));
+  bindModalClose();
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const dir = f.get('direction'), amt = +f.get('amount');
+    try {
+      const lines = dir === 'contribution'
+        ? [{ accountId: f.get('cashAcct'), debit: amt, credit: 0 }, { accountId: f.get('equityAcct'), debit: 0, credit: amt }]
+        : [{ accountId: f.get('equityAcct'), debit: amt, credit: 0 }, { accountId: f.get('cashAcct'), debit: 0, credit: amt }];
+      addEntry({ date: f.get('date'), memo: f.get('memo') || (dir==='contribution' ? 'Owner contribution' : 'Owner drawing'), lines });
+      closeModal(); toast('Equity transaction recorded.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+}
+
+function openTransferWizard(){
+  const opts = accountOptions(a => a.type==='asset');
+  openModal(wizardShell('Transfer Between Accounts', `
+    <div class="form-row">
+      <div class="field"><label>Date</label><input type="date" name="date" value="${todayStr()}" required></div>
+      <div class="field"><label>Amount</label><input type="number" step="0.01" min="0.01" name="amount" required placeholder="0.00"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>From</label><select name="from">${opts}</select></div>
+      <div class="field"><label>To</label><select name="to">${opts}</select></div>
+    </div>
+    <div class="field full" style="margin-bottom:1rem;"><label>Description</label><input type="text" name="memo" placeholder="e.g. Deposited cash into bank"></div>
+  `));
+  bindModalClose();
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    if (f.get('from') === f.get('to')) return toast('Choose two different accounts.', true);
+    try {
+      addEntry({ date: f.get('date'), memo: f.get('memo') || 'Transfer', lines: [
+        { accountId: f.get('to'), debit: +f.get('amount'), credit: 0 },
+        { accountId: f.get('from'), debit: 0, credit: +f.get('amount') }
+      ]});
+      closeModal(); toast('Transfer recorded.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+}
+
+/* ---------- MANUAL JOURNAL ENTRY ---------- */
+function lineRowHtml(line){
+  line = line || { accountId:'', debit:'', credit:'' };
+  return `<div class="je-line">
+    <select class="je-acct">${accountOptions(null, line.accountId)}</select>
+    <input type="number" step="0.01" min="0" class="je-debit" placeholder="Debit" value="${line.debit||''}">
+    <input type="number" step="0.01" min="0" class="je-credit" placeholder="Credit" value="${line.credit||''}">
+    <button type="button" class="je-remove" title="Remove line">&times;</button>
+  </div>`;
+}
+function openManualJE(existingEntry){
+  const isEdit = !!existingEntry;
+  const lines = isEdit ? existingEntry.lines : [{},{}];
+  openModal(`
+    <div class="modal-head"><h3>${isEdit ? 'Edit' : 'New'} Manual Journal Entry</h3><button class="modal-close" id="mClose">&times;</button></div>
+    <form id="jeForm">
+      <div class="form-row">
+        <div class="field"><label>Date</label><input type="date" name="date" value="${isEdit ? existingEntry.date : todayStr()}" required></div>
+        <div class="field"><label>Reference (optional)</label><input type="text" name="ref" value="${isEdit && existingEntry.ref ? existingEntry.ref : ''}"></div>
+      </div>
+      <div class="field full" style="margin-bottom:1rem;"><label>Description</label><input type="text" name="memo" value="${isEdit ? existingEntry.memo : ''}" placeholder="What is this entry for?"></div>
+      <div class="je-lines" id="jeLines">${lines.map(lineRowHtml).join('')}</div>
+      <button type="button" class="btn btn-ghost btn-sm" id="addJeLine">+ Add Line</button>
+      <div class="balance-check" id="jeBalanceCheck"></div>
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">${isEdit ? 'Save Changes' : 'Save Entry'}</button>
+        ${isEdit ? '<button type="button" class="btn btn-danger" id="jeDelete">Delete</button>' : ''}
+        <button type="button" class="btn btn-ghost" id="mCancel">Cancel</button>
+      </div>
+    </form>
+  `, true);
+  bindModalClose();
+
+  const jeLines = document.getElementById('jeLines');
+  function updateBalanceCheck(){
+    let d=0,c=0;
+    jeLines.querySelectorAll('.je-line').forEach(r => {
+      d += +r.querySelector('.je-debit').value || 0;
+      c += +r.querySelector('.je-credit').value || 0;
+    });
+    const el = document.getElementById('jeBalanceCheck');
+    const diff = Math.round((d-c)*100)/100;
+    if (Math.abs(diff) < 0.005 && d > 0){
+      el.className = 'balance-check ok'; el.innerHTML = `Debits ${fmt(d)} = Credits ${fmt(c)} ✓ Balanced`;
+    } else {
+      el.className = 'balance-check bad'; el.innerHTML = `Debits ${fmt(d)} vs Credits ${fmt(c)} — Out of balance by ${fmt(Math.abs(diff))}`;
+    }
+  }
+  jeLines.addEventListener('input', updateBalanceCheck);
+  jeLines.addEventListener('click', e => {
+    if (e.target.classList.contains('je-remove')){
+      if (jeLines.querySelectorAll('.je-line').length > 2) e.target.closest('.je-line').remove();
+      else toast('An entry needs at least two lines.', true);
+      updateBalanceCheck();
+    }
+  });
+  document.getElementById('addJeLine').onclick = () => { jeLines.insertAdjacentHTML('beforeend', lineRowHtml()); updateBalanceCheck(); };
+  updateBalanceCheck();
+
+  if (isEdit){
+    document.getElementById('jeDelete').onclick = () => {
+      if (confirm('Delete this journal entry? This cannot be undone.')){
+        deleteEntry(existingEntry.id); closeModal(); toast('Entry deleted.'); refreshCurrentView();
+      }
+    };
+  }
+
+  document.getElementById('jeForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const rows = [...jeLines.querySelectorAll('.je-line')].map(r => ({
+      accountId: r.querySelector('.je-acct').value,
+      debit: +r.querySelector('.je-debit').value || 0,
+      credit: +r.querySelector('.je-credit').value || 0
+    })).filter(l => l.debit > 0 || l.credit > 0);
+    try {
+      if (isEdit){
+        deleteEntry(existingEntry.id);
+        addEntry({ date: f.get('date'), memo: f.get('memo') || 'Journal entry', ref: f.get('ref'), lines: rows });
+      } else {
+        addEntry({ date: f.get('date'), memo: f.get('memo') || 'Journal entry', ref: f.get('ref'), lines: rows });
+      }
+      closeModal(); toast('Journal entry saved.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+}
+document.getElementById('openManualJE').addEventListener('click', () => openManualJE());
+
+document.querySelectorAll('[data-quick]').forEach(b => b.addEventListener('click', () => openQuickEntry(b.dataset.quick)));
+
+/* ---------- DASHBOARD ---------- */
+function renderDashboard(){
+  const today = todayStr();
+  const mStart = monthStart();
+  const cash = totalCashBalance(today);
+  const assets = accountsByType('asset').reduce((s,a) => s + cumulativeBalance(a.id, today), 0);
+  const liabilities = accountsByType('liability').reduce((s,a) => s + cumulativeBalance(a.id, today), 0);
+  const incomeM = accountsByType('income').reduce((s,a) => s + balanceOf(a.id, mStart, today), 0);
+  const expenseM = accountsByType('expense').reduce((s,a) => s + balanceOf(a.id, mStart, today), 0);
+  const netIncomeM = incomeM - expenseM;
+
+  document.getElementById('dashSub').textContent = `As of ${new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})}`;
+  document.getElementById('dashStats').innerHTML = `
+    <div class="stat-card"><div class="label">Cash & Bank Balance</div><div class="value">${fmt(cash)}</div></div>
+    <div class="stat-card"><div class="label">Total Assets</div><div class="value">${fmt(assets)}</div></div>
+    <div class="stat-card"><div class="label">Total Liabilities</div><div class="value">${fmt(liabilities)}</div></div>
+    <div class="stat-card gold ${netIncomeM<0?'neg':''}"><div class="label">Net Income (This Month)</div><div class="value">${fmt(netIncomeM)}</div></div>
+  `;
+
+  const recent = [...state.entries].sort((a,b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)).slice(0,8);
+  const tbl = document.getElementById('dashRecent');
+  if (!recent.length){
+    tbl.innerHTML = `<tr><td class="empty"><div class="big">🧾</div>No transactions yet. Start by recording your first income or expense.</td></tr>`;
+    return;
+  }
+  tbl.innerHTML = `<thead><tr><th>Date</th><th>Description</th><th>Accounts</th><th class="num">Amount</th></tr></thead><tbody>` +
+    recent.map(e => {
+      const amt = e.lines.reduce((s,l) => s + (+l.debit||0), 0);
+      const acctNames = e.lines.map(l => getAccount(l.accountId)?.name).filter(Boolean).join(' / ');
+      return `<tr><td>${e.date}</td><td>${escapeHtml(e.memo||'')}</td><td>${acctNames}</td><td class="num">${fmt(amt)}</td></tr>`;
+    }).join('') + `</tbody>`;
+}
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- JOURNAL VIEW ---------- */
+function renderJournal(){
+  const from = document.getElementById('journalFrom').value;
+  const to = document.getElementById('journalTo').value;
+  const list = [...state.entries].filter(e => (!from || e.date>=from) && (!to || e.date<=to))
+    .sort((a,b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
+  const tbl = document.getElementById('journalTable');
+  if (!list.length){
+    tbl.innerHTML = `<tr><td class="empty"><div class="big">📒</div>No transactions found for this range.</td></tr>`;
+    return;
+  }
+  tbl.innerHTML = `<thead><tr><th>Date</th><th>Description</th><th>Debit</th><th>Credit</th><th class="num">Amount</th><th></th></tr></thead><tbody>` +
+    list.map(e => {
+      const amt = e.lines.reduce((s,l) => s + (+l.debit||0), 0);
+      const debitAccts = e.lines.filter(l => l.debit>0).map(l => getAccount(l.accountId)?.name).join(', ');
+      const creditAccts = e.lines.filter(l => l.credit>0).map(l => getAccount(l.accountId)?.name).join(', ');
+      return `<tr class="je-row" data-id="${e.id}" style="cursor:pointer;">
+        <td>${e.date}</td><td>${escapeHtml(e.memo||'')}</td>
+        <td>${debitAccts}</td><td>${creditAccts}</td>
+        <td class="num">${fmt(amt)}</td>
+        <td><button class="btn btn-ghost btn-sm je-edit-btn" data-id="${e.id}">Edit</button></td>
+      </tr>`;
+    }).join('') + `</tbody>`;
+  tbl.querySelectorAll('.je-edit-btn').forEach(b => b.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    const entry = state.entries.find(x => x.id === b.dataset.id);
+    if (entry) openManualJE(entry);
+  }));
+}
+document.getElementById('journalFrom').addEventListener('change', renderJournal);
+document.getElementById('journalTo').addEventListener('change', renderJournal);
+document.getElementById('journalClearFilter').addEventListener('click', () => {
+  document.getElementById('journalFrom').value = ''; document.getElementById('journalTo').value = ''; renderJournal();
+});
+document.getElementById('exportJournalCsv').addEventListener('click', () => {
+  const from = document.getElementById('journalFrom').value;
+  const to = document.getElementById('journalTo').value;
+  const list = state.entries.filter(e => (!from || e.date>=from) && (!to || e.date<=to));
+  const rows = [['Date','Description','Account','Debit','Credit']];
+  list.forEach(e => e.lines.forEach(l => rows.push([e.date, e.memo||'', getAccount(l.accountId)?.name||'', fmtPlain(l.debit||0), fmtPlain(l.credit||0)])));
+  downloadCsv('journal.csv', rows);
+});
+
+/* ---------- CHART OF ACCOUNTS ---------- */
+function renderAccounts(){
+  const today = todayStr();
+  const types = ['asset','liability','equity','income','expense'];
+  document.getElementById('accountsList').innerHTML = types.map(t => {
+    const list = state.accounts.filter(a => a.type === t);
+    return `<div class="card section-gap">
+      <h3 style="margin-bottom:0.8rem;">${TYPE_LABEL[t]}</h3>
+      <table>
+        <thead><tr><th>Account</th><th>Cash Flow</th><th class="num">Balance</th><th></th></tr></thead>
+        <tbody>
+        ${list.map(a => `<tr>
+          <td>${escapeHtml(a.name)} ${a.isCash?'<span class="pill">Cash</span>':''} ${a.archived?'<span class="pill archived">Archived</span>':''}</td>
+          <td>${a.cashFlowCategory ? a.cashFlowCategory[0].toUpperCase()+a.cashFlowCategory.slice(1) : '—'}</td>
+          <td class="num">${fmt(cumulativeBalance(a.id, today))}</td>
+          <td><button class="btn btn-ghost btn-sm acct-toggle" data-id="${a.id}">${a.archived?'Unarchive':'Archive'}</button></td>
+        </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.acct-toggle').forEach(b => b.addEventListener('click', () => {
+    const a = getAccount(b.dataset.id); a.archived = !a.archived; saveState(); renderAccounts(); toast(a.archived ? 'Account archived.' : 'Account restored.');
+  }));
+}
+document.getElementById('addAccountBtn').addEventListener('click', () => {
+  openModal(wizardShell('Add Account', `
+    <div class="form-row">
+      <div class="field"><label>Account Name</label><input type="text" name="name" required></div>
+      <div class="field"><label>Type</label>
+        <select name="type" id="newAcctType">
+          <option value="asset">Asset</option><option value="liability">Liability</option>
+          <option value="equity">Equity</option><option value="income">Income</option><option value="expense">Expense</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Cash Flow Category</label>
+        <select name="cf"><option value="operating">Operating</option><option value="investing">Investing</option><option value="financing">Financing</option></select>
+      </div>
+      <div class="field"><label>Is this a Cash/Bank account?</label>
+        <select name="isCash"><option value="no">No</option><option value="yes">Yes</option></select>
+      </div>
+    </div>
+  `, 'Add Account'));
+  bindModalClose();
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const id = genId('acct');
+    state.accounts.push({
+      id, name: f.get('name'), type: f.get('type'),
+      isCash: f.get('isCash') === 'yes',
+      cashFlowCategory: f.get('isCash') === 'yes' ? null : f.get('cf'),
+      equityRole: f.get('type') === 'equity' ? 'capital' : null,
+      archived: false
+    });
+    saveState(); closeModal(); toast('Account added.'); renderAccounts();
+  };
+});
+document.getElementById('openingBalancesBtn').addEventListener('click', () => {
+  const opts = accountOptions(a => a.id !== 'opening_equity');
+  openModal(wizardShell('Set Opening Balances', `
+    <p class="hint" style="margin-bottom:1rem;">Enter what each account holds as of your books' start date. The difference is automatically balanced against <strong>Opening Balance Equity</strong> — reclassify it to Owner's Capital or Retained Earnings later if needed.</p>
+    <div class="field"><label>As of Date</label><input type="date" name="date" value="${todayStr()}" required style="margin-bottom:1rem;"></div>
+    <div class="je-lines" id="jeLines">
+      ${lineRowHtml()}${lineRowHtml()}
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" id="addJeLine">+ Add Line</button>
+    <div class="balance-check" id="jeBalanceCheck"></div>
+  `, 'Save Opening Balances'));
+  bindModalClose();
+  const jeLines = document.getElementById('jeLines');
+  document.getElementById('addJeLine').onclick = () => jeLines.insertAdjacentHTML('beforeend', lineRowHtml());
+  jeLines.addEventListener('click', e => { if (e.target.classList.contains('je-remove') && jeLines.children.length>2) e.target.closest('.je-line').remove(); });
+  document.getElementById('wizardForm').onsubmit = (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const rows = [...jeLines.querySelectorAll('.je-line')].map(r => ({
+      accountId: r.querySelector('.je-acct').value, debit: +r.querySelector('.je-debit').value || 0, credit: +r.querySelector('.je-credit').value || 0
+    })).filter(l => l.debit>0 || l.credit>0);
+    const totalDebit = rows.reduce((s,l)=>s+l.debit,0), totalCredit = rows.reduce((s,l)=>s+l.credit,0);
+    const diff = Math.round((totalDebit-totalCredit)*100)/100;
+    if (diff !== 0) rows.push({ accountId:'opening_equity', debit: diff<0?Math.abs(diff):0, credit: diff>0?diff:0 });
+    try {
+      addEntry({ date: f.get('date'), memo: 'Opening balances', lines: rows });
+      closeModal(); toast('Opening balances set.'); refreshCurrentView();
+    } catch(err){ toast(err.message, true); }
+  };
+});
+
+/* ---------- REPORTS ---------- */
+let currentReport = 'income';
+let reportRange = { from: monthStart(), to: todayStr(), asOf: todayStr() };
+
+document.getElementById('reportTabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-report]'); if (!b) return;
+  currentReport = b.dataset.report;
+  document.querySelectorAll('#reportTabs button').forEach(x => x.classList.toggle('active', x===b));
+  renderReport();
+});
+
+function renderReportControls(){
+  const c = document.getElementById('reportDateControls');
+  if (currentReport === 'balance'){
+    c.innerHTML = `<div class="field"><label>As Of</label><input type="date" id="rAsOf" value="${reportRange.asOf}"></div>`;
+    document.getElementById('rAsOf').onchange = e => { reportRange.asOf = e.target.value; renderReport(); };
+  } else {
+    c.innerHTML = `
+      <div class="field"><label>From</label><input type="date" id="rFrom" value="${reportRange.from}"></div>
+      <div class="field"><label>To</label><input type="date" id="rTo" value="${reportRange.to}"></div>
+      <button class="btn btn-ghost btn-sm" id="rThisMonth" style="align-self:end;">This Month</button>
+      <button class="btn btn-ghost btn-sm" id="rThisYear" style="align-self:end;">This Year</button>
+    `;
+    document.getElementById('rFrom').onchange = e => { reportRange.from = e.target.value; renderReport(); };
+    document.getElementById('rTo').onchange = e => { reportRange.to = e.target.value; renderReport(); };
+    document.getElementById('rThisMonth').onclick = () => { reportRange.from = monthStart(); reportRange.to = todayStr(); renderReport(); };
+    document.getElementById('rThisYear').onclick = () => { reportRange.from = yearStart(); reportRange.to = todayStr(); renderReport(); };
+  }
+}
+
+function buildIncomeStatement(from, to){
+  const income = accountsByType('income').map(a => ({ name: a.name, amount: balanceOf(a.id, from, to) }));
+  const expense = accountsByType('expense').map(a => ({ name: a.name, amount: balanceOf(a.id, from, to) }));
+  const totalIncome = income.reduce((s,r)=>s+r.amount,0);
+  const totalExpense = expense.reduce((s,r)=>s+r.amount,0);
+  return { income, expense, totalIncome, totalExpense, netIncome: totalIncome - totalExpense };
+}
+function buildBalanceSheet(asOf){
+  const assets = accountsByType('asset').map(a => ({ name: a.name, amount: cumulativeBalance(a.id, asOf) }));
+  const liabilities = accountsByType('liability').map(a => ({ name: a.name, amount: cumulativeBalance(a.id, asOf) }));
+  const equityAccts = accountsByType('equity').map(a => ({ name: a.name, amount: cumulativeBalance(a.id, asOf) }));
+  const is = buildIncomeStatement(null, asOf);
+  const totalAssets = assets.reduce((s,r)=>s+r.amount,0);
+  const totalLiabilities = liabilities.reduce((s,r)=>s+r.amount,0);
+  const equityFromAccounts = equityAccts.reduce((s,r)=>s+r.amount,0);
+  const totalEquity = equityFromAccounts + is.netIncome;
+  return { assets, liabilities, equityAccts, netIncomeToDate: is.netIncome, totalAssets, totalLiabilities, totalEquity };
+}
+function buildEquityStatement(from, to){
+  const capitalAccts = accountsByType('equity').filter(a => a.equityRole !== 'drawings');
+  const drawingsAccts = accountsByType('equity').filter(a => a.equityRole === 'drawings');
+  const beginDate = dayBefore(from);
+  const beginCapital = capitalAccts.reduce((s,a)=>s+cumulativeBalance(a.id, beginDate),0);
+  const beginNetIncome = buildIncomeStatement(null, beginDate).netIncome;
+  const beginningEquity = beginCapital + beginNetIncome;
+  const contributions = capitalAccts.reduce((s,a) => { const {debit,credit} = periodSums(a.id, from, to); return s + (credit-debit); }, 0);
+  const drawings = drawingsAccts.reduce((s,a) => { const {debit,credit} = periodSums(a.id, from, to); return s + (debit-credit); }, 0);
+  const netIncomePeriod = buildIncomeStatement(from, to).netIncome;
+  const endingEquity = beginningEquity + contributions - drawings + netIncomePeriod;
+  return { beginningEquity, contributions, drawings, netIncomePeriod, endingEquity };
+}
+function buildCashFlow(from, to){
+  const beginCash = totalCashBalance(dayBefore(from));
+  const endCash = totalCashBalance(to);
+  const cats = { operating: {}, investing: {}, financing: {} };
+  const isCashId = id => !!getAccount(id)?.isCash;
+
+  state.entries.filter(e => e.date>=from && e.date<=to).forEach(entry => {
+    const cashLines = entry.lines.filter(l => isCashId(l.accountId));
+    const nonCashLines = entry.lines.filter(l => !isCashId(l.accountId));
+    if (!cashLines.length || !nonCashLines.length) return;
+    const cashNet = cashLines.reduce((s,l) => s + (l.debit - l.credit), 0);
+    if (Math.abs(cashNet) < 0.005) return;
+    const totalNonCash = nonCashLines.reduce((s,l) => s + Math.abs(l.debit - l.credit), 0) || 1;
+    nonCashLines.forEach(l => {
+      const portion = Math.abs(l.debit - l.credit) / totalNonCash;
+      const amt = cashNet * portion;
+      const acct = getAccount(l.accountId);
+      const cat = acct.cashFlowCategory || 'operating';
+      cats[cat][acct.name] = (cats[cat][acct.name] || 0) + amt;
+    });
+  });
+
+  function totalOf(cat){ return Object.values(cats[cat]).reduce((s,v)=>s+v,0); }
+  const netOperating = totalOf('operating'), netInvesting = totalOf('investing'), netFinancing = totalOf('financing');
+  return { cats, netOperating, netInvesting, netFinancing, netChange: netOperating+netInvesting+netFinancing, beginCash, endCash };
+}
+
+function periodLabel(){ return `For the period ${reportRange.from} to ${reportRange.to}`; }
+
+function renderReport(){
+  renderReportControls();
+  const out = document.getElementById('reportOutput');
+  const biz = escapeHtml(state.settings.businessName || 'My Business');
+  if (currentReport === 'income'){
+    const r = buildIncomeStatement(reportRange.from, reportRange.to);
+    out.innerHTML = `<div class="statement-head"><div class="biz">${biz}</div><h2>Income Statement</h2><div class="period">${periodLabel()}</div></div>
+    <table>
+      <tr class="section-label"><td colspan="2">Income</td></tr>
+      ${r.income.map(x => `<tr><td class="indent">${x.name}</td><td class="num">${fmt(x.amount)}</td></tr>`).join('')}
+      <tr class="total-row"><td>Total Income</td><td class="num">${fmt(r.totalIncome)}</td></tr>
+      <tr class="section-label"><td colspan="2">Expenses</td></tr>
+      ${r.expense.map(x => `<tr><td class="indent">${x.name}</td><td class="num">${fmt(x.amount)}</td></tr>`).join('')}
+      <tr class="total-row"><td>Total Expenses</td><td class="num">${fmt(r.totalExpense)}</td></tr>
+      <tr class="total-row"><td>Net Income</td><td class="num ${r.netIncome<0?'neg':''}">${fmt(r.netIncome)}</td></tr>
+    </table>`;
+  } else if (currentReport === 'balance'){
+    const r = buildBalanceSheet(reportRange.asOf);
+    out.innerHTML = `<div class="statement-head"><div class="biz">${biz}</div><h2>Balance Sheet</h2><div class="period">As of ${reportRange.asOf}</div></div>
+    <table>
+      <tr class="section-label"><td colspan="2">Assets</td></tr>
+      ${r.assets.map(x => `<tr><td class="indent">${x.name}</td><td class="num">${fmt(x.amount)}</td></tr>`).join('')}
+      <tr class="total-row"><td>Total Assets</td><td class="num">${fmt(r.totalAssets)}</td></tr>
+      <tr class="section-label"><td colspan="2">Liabilities</td></tr>
+      ${r.liabilities.map(x => `<tr><td class="indent">${x.name}</td><td class="num">${fmt(x.amount)}</td></tr>`).join('')}
+      <tr class="total-row"><td>Total Liabilities</td><td class="num">${fmt(r.totalLiabilities)}</td></tr>
+      <tr class="section-label"><td colspan="2">Equity</td></tr>
+      ${r.equityAccts.map(x => `<tr><td class="indent">${x.name}</td><td class="num">${fmt(x.amount)}</td></tr>`).join('')}
+      <tr><td class="indent">Net Income to Date</td><td class="num ${r.netIncomeToDate<0?'neg':''}">${fmt(r.netIncomeToDate)}</td></tr>
+      <tr class="total-row"><td>Total Equity</td><td class="num">${fmt(r.totalEquity)}</td></tr>
+      <tr class="total-row"><td>Total Liabilities + Equity</td><td class="num">${fmt(r.totalLiabilities + r.totalEquity)}</td></tr>
+    </table>
+    <div class="balanced-flag ${Math.abs(r.totalAssets-(r.totalLiabilities+r.totalEquity))<0.01?'ok':'bad'}">
+      ${Math.abs(r.totalAssets-(r.totalLiabilities+r.totalEquity))<0.01 ? '✓ Balanced — Assets = Liabilities + Equity' : '⚠ Out of balance — check your entries'}
+    </div>`;
+  } else if (currentReport === 'cashflow'){
+    const r = buildCashFlow(reportRange.from, reportRange.to);
+    const catBlock = (key, title) => {
+      const entries = Object.entries(r.cats[key]);
+      const total = entries.reduce((s,[,v])=>s+v,0);
+      return `<tr class="section-label"><td colspan="2">${title}</td></tr>
+        ${entries.length ? entries.map(([name,amt]) => `<tr><td class="indent">${amt>=0?'Cash received':'Cash paid'} — ${name}</td><td class="num ${amt<0?'neg':''}">${fmt(amt)}</td></tr>`).join('') : `<tr><td class="indent" style="color:var(--muted);">No activity</td><td></td></tr>`}
+        <tr class="total-row"><td>Net Cash from ${title}</td><td class="num ${total<0?'neg':''}">${fmt(total)}</td></tr>`;
+    };
+    out.innerHTML = `<div class="statement-head"><div class="biz">${biz}</div><h2>Cash Flow Statement</h2><div class="period">${periodLabel()}</div></div>
+    <table>
+      ${catBlock('operating','Operating Activities')}
+      ${catBlock('investing','Investing Activities')}
+      ${catBlock('financing','Financing Activities')}
+      <tr class="total-row"><td>Net Increase / (Decrease) in Cash</td><td class="num ${r.netChange<0?'neg':''}">${fmt(r.netChange)}</td></tr>
+      <tr><td class="indent">Cash at Beginning of Period</td><td class="num">${fmt(r.beginCash)}</td></tr>
+      <tr class="total-row"><td>Cash at End of Period</td><td class="num">${fmt(r.endCash)}</td></tr>
+    </table>
+    <div class="balanced-flag ${Math.abs(r.endCash-(r.beginCash+r.netChange))<0.01?'ok':'bad'}">
+      ${Math.abs(r.endCash-(r.beginCash+r.netChange))<0.01 ? '✓ Reconciled with actual cash balance' : '⚠ Reconciliation mismatch — check your entries'}
+    </div>`;
+  } else if (currentReport === 'equity'){
+    const r = buildEquityStatement(reportRange.from, reportRange.to);
+    out.innerHTML = `<div class="statement-head"><div class="biz">${biz}</div><h2>Statement of Changes in Equity</h2><div class="period">${periodLabel()}</div></div>
+    <table>
+      <tr><td>Beginning Equity</td><td class="num">${fmt(r.beginningEquity)}</td></tr>
+      <tr><td class="indent">Add: Owner Contributions</td><td class="num">${fmt(r.contributions)}</td></tr>
+      <tr><td class="indent">Less: Owner Drawings</td><td class="num neg">(${fmt(r.drawings).replace(/[()]/g,'')})</td></tr>
+      <tr><td class="indent">Add: Net Income for the Period</td><td class="num ${r.netIncomePeriod<0?'neg':''}">${fmt(r.netIncomePeriod)}</td></tr>
+      <tr class="total-row"><td>Ending Equity</td><td class="num">${fmt(r.endingEquity)}</td></tr>
+    </table>`;
+  }
+}
+
+document.getElementById('printReport').addEventListener('click', () => {
+  document.getElementById('view-reports').classList.add('printing');
+  window.print();
+  setTimeout(() => document.getElementById('view-reports').classList.remove('printing'), 500);
+});
+document.getElementById('exportReportCsv').addEventListener('click', () => {
+  let rows = [];
+  if (currentReport === 'income'){
+    const r = buildIncomeStatement(reportRange.from, reportRange.to);
+    rows = [['Income Statement'],[periodLabel()],[],['Income'],...r.income.map(x=>[x.name,fmtPlain(x.amount)]),['Total Income',fmtPlain(r.totalIncome)],[],
+      ['Expenses'],...r.expense.map(x=>[x.name,fmtPlain(x.amount)]),['Total Expenses',fmtPlain(r.totalExpense)],[],['Net Income',fmtPlain(r.netIncome)]];
+  } else if (currentReport === 'balance'){
+    const r = buildBalanceSheet(reportRange.asOf);
+    rows = [['Balance Sheet'],['As of '+reportRange.asOf],[],['Assets'],...r.assets.map(x=>[x.name,fmtPlain(x.amount)]),['Total Assets',fmtPlain(r.totalAssets)],[],
+      ['Liabilities'],...r.liabilities.map(x=>[x.name,fmtPlain(x.amount)]),['Total Liabilities',fmtPlain(r.totalLiabilities)],[],
+      ['Equity'],...r.equityAccts.map(x=>[x.name,fmtPlain(x.amount)]),['Net Income to Date',fmtPlain(r.netIncomeToDate)],['Total Equity',fmtPlain(r.totalEquity)]];
+  } else if (currentReport === 'cashflow'){
+    const r = buildCashFlow(reportRange.from, reportRange.to);
+    rows = [['Cash Flow Statement'],[periodLabel()],[]];
+    ['operating','investing','financing'].forEach(cat => {
+      rows.push([cat[0].toUpperCase()+cat.slice(1)+' Activities']);
+      Object.entries(r.cats[cat]).forEach(([n,v]) => rows.push([n, fmtPlain(v)]));
+      rows.push([]);
+    });
+    rows.push(['Net Change in Cash', fmtPlain(r.netChange)]);
+    rows.push(['Beginning Cash', fmtPlain(r.beginCash)]);
+    rows.push(['Ending Cash', fmtPlain(r.endCash)]);
+  } else {
+    const r = buildEquityStatement(reportRange.from, reportRange.to);
+    rows = [['Statement of Changes in Equity'],[periodLabel()],[],
+      ['Beginning Equity', fmtPlain(r.beginningEquity)],['Owner Contributions', fmtPlain(r.contributions)],
+      ['Owner Drawings', fmtPlain(-r.drawings)],['Net Income for Period', fmtPlain(r.netIncomePeriod)],['Ending Equity', fmtPlain(r.endingEquity)]];
+  }
+  downloadCsv(currentReport + '-statement.csv', rows);
+});
+
+/* ---------- CSV HELPER ---------- */
+function downloadCsv(filename, rows){
+  const csv = rows.map(r => r.map(cell => {
+    const s = String(cell ?? '');
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- SETTINGS ---------- */
+document.getElementById('settingBizName').value = state.settings.businessName;
+document.getElementById('settingCurrency').value = state.settings.symbol;
+document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+  state.settings.businessName = document.getElementById('settingBizName').value || 'My Business';
+  state.settings.symbol = document.getElementById('settingCurrency').value || '₦';
+  saveState(); toast('Settings saved.'); refreshCurrentView();
+});
+document.getElementById('exportBackupBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `awa-accounting-backup-${todayStr()}.json`; a.click();
+  URL.revokeObjectURL(url);
+});
+document.getElementById('importBackupInput').addEventListener('change', (e) => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!parsed.accounts || !parsed.entries) throw new Error('Invalid backup file.');
+      if (!confirm('This will replace all current data with the backup. Continue?')) return;
+      state = parsed;
+      saveState(); toast('Backup restored.'); refreshCurrentView();
+      document.getElementById('settingBizName').value = state.settings.businessName;
+      document.getElementById('settingCurrency').value = state.settings.symbol;
+    } catch(err){ toast('Could not read backup file: ' + err.message, true); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+document.getElementById('resetAllBtn').addEventListener('click', () => {
+  if (confirm('This will permanently erase ALL transactions and reset accounts to defaults. This cannot be undone. Continue?')){
+    state = defaultState(); saveState(); toast('All data erased.'); refreshCurrentView();
+  }
+});
+
+/* ---------- REFRESH ---------- */
+function refreshCurrentView(){
+  const active = document.querySelector('#mainTabs button.active');
+  showView(active ? active.dataset.view : 'dashboard');
+}
+
+/* ---------- INIT ---------- */
+document.getElementById('yearNow').textContent = new Date().getFullYear();
+renderDashboard();
+
+})();
+</script>
+</body>
+</html>
