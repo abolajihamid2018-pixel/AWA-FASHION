@@ -29,33 +29,29 @@ Replace with your public key from [dashboard.paystack.com](https://dashboard.pay
 const PAYSTACK_KEY = 'pk_test_xxxxxxxx...'; // Your Paystack public key
 ```
 
-### 3. Enable Order Tracking (optional — Firebase)
-The "Track Your Order" section lets customers check their order status by reference. It's powered by a free [Firebase](https://console.firebase.google.com) Firestore database. The site works fully without it — payments and WhatsApp ordering are unaffected — but tracking will show a friendly "not connected" message until you set it up.
+### 3. Order Tracking (Firebase)
+The "Track Your Order" section lets customers check their order status by reference. It's powered by [Firebase](https://console.firebase.google.com) Firestore, and `index.html` already ships wired to the `awa-fashion` Firebase project's config — if you ever need to point it at a different project, replace the `firebaseConfig` object in `index.html`:
+```js
+const firebaseConfig = {
+  apiKey: "...", authDomain: "...", projectId: "...",
+  storageBucket: "...", messagingSenderId: "...", appId: "..."
+};
+```
+(If `firebaseConfig` is ever left with placeholder values, tracking gracefully degrades to a "not connected" message — payments and WhatsApp ordering are unaffected either way.)
 
-**Setup:**
-1. Go to [console.firebase.google.com](https://console.firebase.google.com) → Create a project (free tier is enough).
-2. In the project, go to **Build → Firestore Database → Create database** (start in production mode).
-3. Under **Project settings → General**, scroll to "Your apps" → add a **Web app** → copy the config object.
-4. Paste it into `index.html`, replacing the placeholder `firebaseConfig`:
-   ```js
-   const firebaseConfig = {
-     apiKey: "...", authDomain: "...", projectId: "...",
-     storageBucket: "...", messagingSenderId: "...", appId: "..."
-   };
-   ```
-5. In **Firestore → Rules**, paste the rules below and click **Publish**. This lets the site create an order and let a customer look up *one* order by its exact reference, but never list or browse all orders:
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /orders/{orderId} {
-         allow create: if true;
-         allow get: if true;
-         allow list, update, delete: if false;
-       }
-     }
-   }
-   ```
+**⚠️ Required one-time step — publish Firestore security rules.** Until this is done, order creation and lookup will fail. Go to your project's **Firestore Database → Rules** tab, paste the rules below, and click **Publish**. This lets the site create an order and let a customer look up *one* order by its exact reference, but never list or browse all orders, and never edit/delete from the client:
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /orders/{orderId} {
+      allow create: if true;
+      allow get: if true;
+      allow list, update, delete: if false;
+    }
+  }
+}
+```
 
 **How it works:** every time a customer completes a Paystack payment, an order document is automatically created in Firestore (document ID = the Paystack payment reference, e.g. `AWA_1737000000000`) with status `Processing`. Give this reference to the customer (it's already included in the WhatsApp confirmation message sent after payment) so they can track it.
 

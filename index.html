@@ -633,16 +633,15 @@
 const WHATSAPP_NUMBER = '2348000000000'; // e.g. 2348012345678
 const PAYSTACK_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // Your Paystack public key
 
-// Firebase project config (powers "Track Your Order"). Create a free project at
-// console.firebase.google.com, enable Firestore, and paste your config below.
-// Leave as-is to disable order tracking (the site still works fully without it).
+// Firebase project config (powers "Track Your Order"). Make sure Firestore
+// rules are published per README.md before relying on this in production.
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCCmoLThJ2g0EPCPyPchX-lUs5Rj6hAzvM",
+  authDomain: "awa-fashion.firebaseapp.com",
+  projectId: "awa-fashion",
+  storageBucket: "awa-fashion.firebasestorage.app",
+  messagingSenderId: "162922929354",
+  appId: "1:162922929354:web:6abd4688b4c3378605a833"
 };
 let db = null;
 try {
