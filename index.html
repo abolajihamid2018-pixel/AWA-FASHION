@@ -77,6 +77,8 @@
   .product-img { aspect-ratio: 3/4; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); overflow: hidden; position: relative; margin-bottom: 1rem; }
   .product-img-inner { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: rgba(13,34,64,0.08); transition: transform 0.5s ease; }
   .product-card:hover .product-img-inner { transform: scale(1.05); }
+  .product-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .product-card:hover .product-photo { transform: scale(1.05); }
   .product-overlay { position: absolute; inset: 0; background: rgba(13,34,64,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; opacity: 0; transition: opacity 0.3s; padding: 1.5rem; }
   .product-card:hover .product-overlay { opacity: 1; }
   .quick-view-btn { background: white; color: var(--navy); border: none; cursor: pointer; padding: 0.7rem 1.8rem; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; width: 100%; }
@@ -92,7 +94,8 @@
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal { background: white; width: 100%; max-width: 820px; max-height: 90vh; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; position: relative; animation: modalIn 0.35s cubic-bezier(0.4,0,0.2,1); }
   @keyframes modalIn { from { transform: scale(0.92) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-  .modal-img { background: linear-gradient(160deg, var(--sky) 0%, #c5ddf5 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 9rem; color: rgba(13,34,64,0.1); min-height: 400px; position: relative; }
+  .modal-img { background: linear-gradient(160deg, var(--sky) 0%, #c5ddf5 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 9rem; color: rgba(13,34,64,0.1); min-height: 400px; position: relative; overflow: hidden; }
+  .modal-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .modal-badge { position: absolute; top: 1.2rem; left: 1.2rem; background: var(--gold); color: white; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 0.8rem; }
   .modal-body { padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
   .modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--navy); color: white; border: none; cursor: pointer; width: 34px; height: 34px; font-size: 1rem; z-index: 10; display: flex; align-items: center; justify-content: center; }
@@ -130,9 +133,10 @@
   /* SIGNATURE DRESS */
   #signature { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); overflow: hidden; }
   .signature-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-  .signature-visual { aspect-ratio: 3/4; background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; position: relative; }
-  .signature-visual::after { content: ''; position: absolute; inset: 1.2rem; border: 1px solid rgba(255,255,255,0.12); }
+  .signature-visual { aspect-ratio: 3/4; background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .signature-visual::after { content: ''; position: absolute; inset: 1.2rem; border: 1px solid rgba(255,255,255,0.12); z-index: 1; }
   .signature-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 10rem; color: rgba(255,255,255,0.1); }
+  .signature-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .signature-tag { position: absolute; top: 1.5rem; left: 1.5rem; background: var(--gold); color: white; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.35rem 0.9rem; font-weight: 500; }
   #signature .section-label { color: var(--gold); }
   #signature .section-title { color: white; }
@@ -148,8 +152,9 @@
   .designs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
   .design-card { background: white; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
   .design-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(13,34,64,0.12); }
-  .design-visual { aspect-ratio: 4/3; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); display: flex; align-items: center; justify-content: center; }
+  .design-visual { aspect-ratio: 4/3; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
   .design-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; color: rgba(13,34,64,0.1); }
+  .design-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .design-info { padding: 1.6rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
   .design-tag { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-weight: 500; }
   .design-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--navy); }
@@ -270,7 +275,8 @@
   .cart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--muted); text-align: center; gap: 1rem; }
   .cart-empty-icon { font-size: 3rem; }
   .cart-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(13,34,64,0.07); }
-  .cart-item-img { width: 70px; height: 90px; background: var(--sky); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 2rem; color: rgba(13,34,64,0.2); }
+  .cart-item-img { width: 70px; height: 90px; background: var(--sky); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 2rem; color: rgba(13,34,64,0.2); position: relative; overflow: hidden; }
+  .cart-item-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .cart-item-info { flex: 1; }
   .cart-item-name { font-size: 0.9rem; font-weight: 500; color: var(--navy); }
   .cart-item-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
@@ -361,6 +367,7 @@
     <button class="modal-close" onclick="closeProductModal()">✕</button>
     <div class="modal-img" id="modalImg">
       <span id="modalLetter"></span>
+      <img id="modalPhoto" class="modal-photo" alt="" style="display:none">
       <div class="modal-badge" id="modalBadge" style="display:none"></div>
     </div>
     <div class="modal-body">
@@ -513,8 +520,9 @@
 <section id="signature">
   <div class="signature-wrap">
     <div class="signature-visual reveal">
-      <div class="signature-tag" id="sigTag">Signature</div>
       <span id="sigLetter"></span>
+      <img id="sigPhoto" class="signature-photo" alt="" style="display:none">
+      <div class="signature-tag" id="sigTag">Signature</div>
     </div>
     <div class="reveal">
       <p class="section-label">The Icon</p>
@@ -652,6 +660,10 @@ try {
 } catch (e) { console.warn('Firebase not configured:', e); }
 
 // ── PRODUCTS ─────────────────────────────────────────────────────────
+// Add an "img" field to any product to show a real photo instead of the
+// placeholder letter block, e.g. img: "images/executive-blazer.jpg" (a file
+// you add to the repo) or a full https:// URL. Omit it to keep the fallback.
+// A broken/missing image also falls back to the letter block automatically.
 const products = [
   { id:1, name:"The Executive Blazer",   sub:"Men's Tailoring",    price:85000,  tag:"New",        category:"men",         desc:"A power statement cut from premium wool blend fabric. Slim lapels, structured shoulders — made to own any boardroom.",    sizes:["S","M","L","XL","XXL"],        unavail:[] },
   { id:2, name:"Lagos Power Suit",        sub:"Men's Collection",   price:145000, tag:"Bestseller", category:"men",         desc:"Our signature two-piece suit — traditional African craftsmanship meets a sharp modern cut. A true investment piece.",      sizes:["S","M","L","XL","XXL"],        unavail:["S"] },
@@ -663,6 +675,8 @@ const products = [
 ];
 
 // ── DESIGNS / LOOKBOOK (editorial showcase, custom-order enquiries) ───
+// Same optional "img" field as products — add a photo path/URL per design,
+// or omit it to keep the placeholder letter block.
 const designs = [
   { name:"Sunset Ankara Gown",  tag:"Evening Wear",     desc:"A dramatic silhouette in sunset-toned Ankara with a hand-beaded bodice — built for red carpets and traditional ceremonies alike." },
   { name:"Midnight Tuxedo",     tag:"Men's Formal",     desc:"Satin-lapel tuxedo reimagined with a subtle Kente trim along the inner collar — quiet luxury with heritage roots." },
@@ -687,6 +701,7 @@ function renderProducts(filter) {
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img">
         <div class="product-img-inner">${p.name[0]}</div>
+        ${p.img ? `<img class="product-photo" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">` : ''}
         ${p.tag ? `<div class="product-tag">${p.tag}</div>` : ''}
         <div class="product-overlay">
           <button class="quick-view-btn" onclick="event.stopPropagation();openModal(${p.id})">Quick View & Buy</button>
@@ -710,6 +725,9 @@ function filterProducts(f, btn) {
 function renderSignature() {
   const p = products.find(x => x.isSignature) || products[0];
   document.getElementById('sigLetter').textContent = p.name[0];
+  const sigPhoto = document.getElementById('sigPhoto');
+  if (p.img) { sigPhoto.src = p.img; sigPhoto.alt = p.name; sigPhoto.style.display = ''; sigPhoto.onerror = () => { sigPhoto.style.display = 'none'; }; }
+  else { sigPhoto.removeAttribute('src'); sigPhoto.style.display = 'none'; }
   document.getElementById('sigTag').textContent = p.tag || 'Signature';
   document.getElementById('sigDesc').textContent = p.desc;
   document.getElementById('sigPrice').textContent = fmt(p.price);
@@ -724,7 +742,10 @@ function renderDesigns() {
     const msg = encodeURIComponent(`Hi AWA Fashion! I'm interested in a custom piece inspired by your "${d.name}" design. Could you tell me more?`);
     return `
     <div class="design-card reveal">
-      <div class="design-visual"><span>${d.name[0]}</span></div>
+      <div class="design-visual">
+        <span>${d.name[0]}</span>
+        ${d.img ? `<img class="design-photo" src="${d.img}" alt="${d.name}" onerror="this.style.display='none'">` : ''}
+      </div>
       <div class="design-info">
         <div class="design-tag">${d.tag}</div>
         <div class="design-name">${d.name}</div>
@@ -741,6 +762,9 @@ function openModal(id) {
   activeProd = p; activeSize = null; activeQty = 1;
   document.getElementById('qtyNum').value = 1;
   document.getElementById('modalLetter').textContent = p.name[0];
+  const photo = document.getElementById('modalPhoto');
+  if (p.img) { photo.src = p.img; photo.alt = p.name; photo.style.display = ''; photo.onerror = () => { photo.style.display = 'none'; }; }
+  else { photo.removeAttribute('src'); photo.style.display = 'none'; }
   const badge = document.getElementById('modalBadge');
   if (p.tag) { badge.textContent = p.tag; badge.style.display = 'block'; } else { badge.style.display = 'none'; }
   document.getElementById('modalCat').textContent = p.sub;
@@ -811,7 +835,7 @@ function refreshCart() {
   }
   el.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <div class="cart-item-img">${item.name[0]}</div>
+      <div class="cart-item-img">${item.name[0]}${item.img ? `<img class="cart-item-photo" src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">` : ''}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-meta">Size: ${item.selectedSize || '—'}</div>
