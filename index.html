@@ -6,6 +6,8 @@
 <title>AWA Fashion — Africa Grace. Global Style.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <style>
   :root {
     --navy: #0d2240; --navy-mid: #1a3a6b; --navy-light: #2a5298;
@@ -22,7 +24,7 @@
   .nav-logo svg { width: 36px; height: 36px; }
   .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--navy); letter-spacing: 2px; }
   .logo-sub { font-size: 0.6rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: -4px; }
-  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links { display: flex; gap: 1.8rem; list-style: none; }
   .nav-links a { text-decoration: none; font-size: 0.78rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--navy); position: relative; transition: color 0.2s; }
   .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1.5px; background: var(--gold); transition: width 0.3s; }
   .nav-links a:hover::after { width: 100%; }
@@ -75,6 +77,8 @@
   .product-img { aspect-ratio: 3/4; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); overflow: hidden; position: relative; margin-bottom: 1rem; }
   .product-img-inner { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: rgba(13,34,64,0.08); transition: transform 0.5s ease; }
   .product-card:hover .product-img-inner { transform: scale(1.05); }
+  .product-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+  .product-card:hover .product-photo { transform: scale(1.05); }
   .product-overlay { position: absolute; inset: 0; background: rgba(13,34,64,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; opacity: 0; transition: opacity 0.3s; padding: 1.5rem; }
   .product-card:hover .product-overlay { opacity: 1; }
   .quick-view-btn { background: white; color: var(--navy); border: none; cursor: pointer; padding: 0.7rem 1.8rem; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; width: 100%; }
@@ -90,7 +94,8 @@
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal { background: white; width: 100%; max-width: 820px; max-height: 90vh; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; position: relative; animation: modalIn 0.35s cubic-bezier(0.4,0,0.2,1); }
   @keyframes modalIn { from { transform: scale(0.92) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-  .modal-img { background: linear-gradient(160deg, var(--sky) 0%, #c5ddf5 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 9rem; color: rgba(13,34,64,0.1); min-height: 400px; position: relative; }
+  .modal-img { background: linear-gradient(160deg, var(--sky) 0%, #c5ddf5 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 9rem; color: rgba(13,34,64,0.1); min-height: 400px; position: relative; overflow: hidden; }
+  .modal-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .modal-badge { position: absolute; top: 1.2rem; left: 1.2rem; background: var(--gold); color: white; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 0.8rem; }
   .modal-body { padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
   .modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--navy); color: white; border: none; cursor: pointer; width: 34px; height: 34px; font-size: 1rem; z-index: 10; display: flex; align-items: center; justify-content: center; }
@@ -124,6 +129,58 @@
   .btn-wa:hover { background: #1da851; }
   .btn-add-cart-modal { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); cursor: pointer; padding: 0.8rem; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.25s; }
   .btn-add-cart-modal:hover { background: var(--navy); color: white; }
+
+  /* SIGNATURE DRESS */
+  #signature { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); overflow: hidden; }
+  .signature-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .signature-visual { aspect-ratio: 3/4; background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .signature-visual::after { content: ''; position: absolute; inset: 1.2rem; border: 1px solid rgba(255,255,255,0.12); z-index: 1; }
+  .signature-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 10rem; color: rgba(255,255,255,0.1); }
+  .signature-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .signature-tag { position: absolute; top: 1.5rem; left: 1.5rem; background: var(--gold); color: white; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.35rem 0.9rem; font-weight: 500; }
+  #signature .section-label { color: var(--gold); }
+  #signature .section-title { color: white; }
+  #signature .section-title em { color: var(--sky); font-style: italic; }
+  .signature-desc { font-size: 0.95rem; line-height: 1.85; color: rgba(255,255,255,0.7); margin: 1.2rem 0 1.6rem; max-width: 440px; }
+  .signature-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold); margin-bottom: 1.8rem; }
+  .signature-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .signature-actions .btn-primary { background: var(--gold); }
+  .signature-actions .btn-primary:hover { background: #dbb85c; }
+
+  /* DESIGNS / LOOKBOOK */
+  #designs { background: #edf2f8; }
+  .designs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+  .design-card { background: white; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
+  .design-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(13,34,64,0.12); }
+  .design-visual { aspect-ratio: 4/3; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .design-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; color: rgba(13,34,64,0.1); }
+  .design-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .design-info { padding: 1.6rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  .design-tag { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+  .design-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--navy); }
+  .design-desc { font-size: 0.85rem; line-height: 1.65; color: var(--muted); flex: 1; }
+  .design-link { font-size: 0.72rem; letter-spacing: 1px; color: var(--navy-light); text-decoration: none; font-weight: 600; margin-top: 0.4rem; }
+  .design-link:hover { color: var(--gold); }
+
+  /* TRACK ORDER */
+  #track { background: var(--white); }
+  .track-box { display: flex; gap: 0.8rem; max-width: 520px; margin-top: 2rem; flex-wrap: wrap; }
+  .track-box input { flex: 1; min-width: 220px; border: 1.5px solid rgba(13,34,64,0.15); padding: 0.9rem 1.1rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--navy); outline: none; transition: border-color 0.2s; }
+  .track-box input:focus { border-color: var(--navy-light); }
+  .track-box button { background: var(--navy); color: white; border: none; cursor: pointer; padding: 0.9rem 2rem; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; }
+  .track-box button:hover { background: var(--navy-light); }
+  #trackResult { margin-top: 2rem; max-width: 620px; }
+  .track-empty { font-size: 0.88rem; color: var(--muted); background: #edf2f8; padding: 1.2rem 1.5rem; line-height: 1.6; }
+  .track-card { background: #edf2f8; padding: 2rem; }
+  .track-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--navy); font-weight: 600; margin-bottom: 1.5rem; }
+  .track-status-badge { background: var(--navy); color: white; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.35rem 0.9rem; }
+  .track-stages { display: flex; justify-content: space-between; position: relative; }
+  .track-stages::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; height: 2px; background: rgba(13,34,64,0.12); z-index: 0; }
+  .track-stage { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; position: relative; z-index: 1; flex: 1; }
+  .track-dot { width: 18px; height: 18px; border-radius: 50%; background: white; border: 2px solid rgba(13,34,64,0.2); transition: all 0.2s; }
+  .track-stage.done .track-dot { background: var(--gold); border-color: var(--gold); }
+  .track-stage-label { font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .track-stage.done .track-stage-label { color: var(--navy); font-weight: 600; }
 
   /* FASHION NUGGETS */
   #nuggets { background: var(--navy); color: var(--white); }
@@ -218,7 +275,8 @@
   .cart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--muted); text-align: center; gap: 1rem; }
   .cart-empty-icon { font-size: 3rem; }
   .cart-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(13,34,64,0.07); }
-  .cart-item-img { width: 70px; height: 90px; background: var(--sky); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 2rem; color: rgba(13,34,64,0.2); }
+  .cart-item-img { width: 70px; height: 90px; background: var(--sky); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 2rem; color: rgba(13,34,64,0.2); position: relative; overflow: hidden; }
+  .cart-item-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .cart-item-info { flex: 1; }
   .cart-item-name { font-size: 0.9rem; font-weight: 500; color: var(--navy); }
   .cart-item-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
@@ -260,6 +318,11 @@
     .hero-left { padding: 4rem 1.5rem; }
     section { padding: 4rem 1.5rem; }
     .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .signature-wrap { grid-template-columns: 1fr; gap: 2rem; }
+    .signature-visual span { font-size: 6rem; }
+    .designs-grid { grid-template-columns: 1fr; }
+    .track-box { flex-direction: column; }
+    .track-stage-label { font-size: 0.55rem; }
     .nuggets-grid { grid-template-columns: 1fr; }
     #about { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
     .contact-grid { grid-template-columns: 1fr; }
@@ -277,7 +340,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- FLOATING WHATSAPP -->
-<a class="float-wa" href="https://wa.me/2348000000000?text=Hello%20AWA%20Fashion!%20I%27d%20like%20to%20enquire%20about%20your%20collection." target="_blank" title="Chat on WhatsApp">💬</a>
+<a class="float-wa" href="https://wa.me/2349073757945?text=Hello%20AWA%20Fashion!%20I%27d%20like%20to%20enquire%20about%20your%20collection." target="_blank" title="Chat on WhatsApp">💬</a>
 
 <!-- CART OVERLAY -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
@@ -304,6 +367,7 @@
     <button class="modal-close" onclick="closeProductModal()">✕</button>
     <div class="modal-img" id="modalImg">
       <span id="modalLetter"></span>
+      <img id="modalPhoto" class="modal-photo" alt="" style="display:none">
       <div class="modal-badge" id="modalBadge" style="display:none"></div>
     </div>
     <div class="modal-body">
@@ -399,12 +463,13 @@
   </a>
   <ul class="nav-links">
     <li><a href="#shop">Shop</a></li>
-    <li><a href="#nuggets">Style Tips</a></li>
+    <li><a href="#designs">Designs</a></li>
+    <li><a href="#track">Track Order</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-cart">
-    <a class="whatsapp-nav-btn" href="https://wa.me/2348000000000?text=Hi%20AWA%20Fashion!%20I%27d%20love%20to%20shop." target="_blank">💬 <span>WhatsApp</span></a>
+    <a class="whatsapp-nav-btn" href="https://wa.me/2349073757945?text=Hi%20AWA%20Fashion!%20I%27d%20love%20to%20shop." target="_blank">💬 <span>WhatsApp</span></a>
     <button class="cart-btn" onclick="toggleCart()">🛒 (<span id="cartCount">0</span>)</button>
   </div>
 </nav>
@@ -418,7 +483,7 @@
     <div class="hero-actions">
       <a href="#shop" class="btn-primary">Shop Now</a>
       <a href="#about" class="btn-outline">Our Story</a>
-      <a class="btn-whatsapp" href="https://wa.me/2348000000000?text=Hi!%20I%27d%20like%20to%20explore%20the%20AWA%20Fashion%20collection." target="_blank">💬 Chat with Us</a>
+      <a class="btn-whatsapp" href="https://wa.me/2349073757945?text=Hi!%20I%27d%20like%20to%20explore%20the%20AWA%20Fashion%20collection." target="_blank">💬 Chat with Us</a>
     </div>
   </div>
   <div class="hero-right">
@@ -449,6 +514,46 @@
     </div>
   </div>
   <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<!-- SIGNATURE DRESS -->
+<section id="signature">
+  <div class="signature-wrap">
+    <div class="signature-visual reveal">
+      <span id="sigLetter"></span>
+      <img id="sigPhoto" class="signature-photo" alt="" style="display:none">
+      <div class="signature-tag" id="sigTag">Signature</div>
+    </div>
+    <div class="reveal">
+      <p class="section-label">The Icon</p>
+      <h2 class="section-title" id="sigName">The <em>AWA Grace</em> Signature Dress</h2>
+      <p class="signature-desc" id="sigDesc"></p>
+      <div class="signature-price" id="sigPrice"></div>
+      <div class="signature-actions">
+        <button class="btn-primary" id="sigViewBtn">View & Order</button>
+        <a class="btn-whatsapp" id="sigWaBtn" href="#" target="_blank">💬 Enquire About This Piece</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGNS / LOOKBOOK -->
+<section id="designs">
+  <p class="section-label">The Lookbook</p>
+  <h2 class="section-title">Our Designs</h2>
+  <div class="designs-grid" id="designsGrid"></div>
+</section>
+
+<!-- TRACK ORDER -->
+<section id="track">
+  <p class="section-label">Order Status</p>
+  <h2 class="section-title">Track Your Order</h2>
+  <p style="font-size:0.9rem;color:var(--muted);max-width:520px;margin-top:0.8rem;line-height:1.7">Enter the order reference you received after checkout (e.g. from your payment confirmation) to see its current status.</p>
+  <div class="track-box reveal">
+    <input type="text" id="trackRefInput" placeholder="e.g. AWA_1737000000000" onkeydown="if(event.key==='Enter')trackOrder()">
+    <button onclick="trackOrder()">Track Order</button>
+  </div>
+  <div id="trackResult"></div>
 </section>
 
 <!-- FASHION NUGGETS -->
@@ -505,7 +610,7 @@
         <div class="wa-cta-block">
           <div class="wa-icon">💬</div>
           <div class="wa-text"><strong>Chat & Order on WhatsApp</strong><span>Fast replies · Mon–Sat 8AM–9PM</span></div>
-          <a class="wa-btn" href="https://wa.me/2348000000000?text=Hi%20AWA%20Fashion!%20I%27d%20like%20to%20place%20an%20order." target="_blank">Chat Now</a>
+          <a class="wa-btn" href="https://wa.me/2349073757945?text=Hi%20AWA%20Fashion!%20I%27d%20like%20to%20place%20an%20order." target="_blank">Chat Now</a>
         </div>
       </div>
       <div class="contact-block">
@@ -515,7 +620,7 @@
           <a href="#" class="social-link" title="Facebook">FB</a>
           <a href="#" class="social-link" title="Twitter/X">𝕏</a>
           <a href="#" class="social-link" title="TikTok">TK</a>
-          <a href="https://wa.me/2348000000000" class="social-link" style="background:var(--green);color:white;border-color:var(--green)" target="_blank">WA</a>
+          <a href="https://wa.me/2349073757945" class="social-link" style="background:var(--green);color:white;border-color:var(--green)" target="_blank">WA</a>
         </div>
       </div>
     </div>
@@ -533,10 +638,32 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── CONFIG ── Replace these with your real credentials ──────────────
-const WHATSAPP_NUMBER = '2348000000000'; // e.g. 2348012345678
+const WHATSAPP_NUMBER = '2349073757945';
 const PAYSTACK_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // Your Paystack public key
 
+// Firebase project config (powers "Track Your Order"). Make sure Firestore
+// rules are published per README.md before relying on this in production.
+const firebaseConfig = {
+  apiKey: "AIzaSyCCmoLThJ2g0EPCPyPchX-lUs5Rj6hAzvM",
+  authDomain: "awa-fashion.firebaseapp.com",
+  projectId: "awa-fashion",
+  storageBucket: "awa-fashion.firebasestorage.app",
+  messagingSenderId: "162922929354",
+  appId: "1:162922929354:web:6abd4688b4c3378605a833"
+};
+let db = null;
+try {
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== 'YOUR_API_KEY' && window.firebase) {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  }
+} catch (e) { console.warn('Firebase not configured:', e); }
+
 // ── PRODUCTS ─────────────────────────────────────────────────────────
+// Add an "img" field to any product to show a real photo instead of the
+// placeholder letter block, e.g. img: "images/executive-blazer.jpg" (a file
+// you add to the repo) or a full https:// URL. Omit it to keep the fallback.
+// A broken/missing image also falls back to the letter block automatically.
 const products = [
   { id:1, name:"The Executive Blazer",   sub:"Men's Tailoring",    price:85000,  tag:"New",        category:"men",         desc:"A power statement cut from premium wool blend fabric. Slim lapels, structured shoulders — made to own any boardroom.",    sizes:["S","M","L","XL","XXL"],        unavail:[] },
   { id:2, name:"Lagos Power Suit",        sub:"Men's Collection",   price:145000, tag:"Bestseller", category:"men",         desc:"Our signature two-piece suit — traditional African craftsmanship meets a sharp modern cut. A true investment piece.",      sizes:["S","M","L","XL","XXL"],        unavail:["S"] },
@@ -544,6 +671,19 @@ const products = [
   { id:4, name:"Ankara Accent Shirt",     sub:"Men's Collection",   price:38000,  tag:"",           category:"men",         desc:"Classic white Oxford shirt with bold Ankara cuff and collar accents — the perfect bridge between heritage and contemporary style.", sizes:["S","M","L","XL","XXL"], unavail:["XXL"] },
   { id:5, name:"Statement Kick Set",      sub:"Accessories",        price:55000,  tag:"Limited",    category:"accessories", desc:"Limited edition hand-crafted sneakers with woven Kente-inspired detailing. Only 50 pairs available worldwide.",             sizes:["40","41","42","43","44","45"], unavail:["40"] },
   { id:6, name:"Eko Linen Trousers",      sub:"Women's Collection", price:42000,  tag:"",           category:"women",       desc:"Breathable, wide-leg linen trousers in earth tones. Relaxed tailoring meets Lagos coastal vibes — ideal for any occasion.", sizes:["XS","S","M","L","XL","XXL"],   unavail:[] },
+  { id:7, name:"AWA Grace Signature Gown", sub:"Signature Collection", price:195000, tag:"Signature", category:"women",     desc:"Our most requested piece — a hand-beaded, floor-length gown cut from premium Ankara-silk blend. Every stitch is done in-house by our master tailors. This is the dress people remember you in.", sizes:["XS","S","M","L","XL"], unavail:[], isSignature:true },
+];
+
+// ── DESIGNS / LOOKBOOK (editorial showcase, custom-order enquiries) ───
+// Same optional "img" field as products — add a photo path/URL per design,
+// or omit it to keep the placeholder letter block.
+const designs = [
+  { name:"Sunset Ankara Gown",  tag:"Evening Wear",     desc:"A dramatic silhouette in sunset-toned Ankara with a hand-beaded bodice — built for red carpets and traditional ceremonies alike." },
+  { name:"Midnight Tuxedo",     tag:"Men's Formal",     desc:"Satin-lapel tuxedo reimagined with a subtle Kente trim along the inner collar — quiet luxury with heritage roots." },
+  { name:"Coastal Breeze Set",  tag:"Resort Wear",      desc:"An airy linen co-ord in soft indigo tones, designed for Lagos afternoons and island getaways." },
+  { name:"Heritage Agbada",     tag:"Ceremonial",       desc:"A hand-embroidered full Agbada set for the modern king — traditional grandeur, tailored for today." },
+  { name:"Urban Wrap",          tag:"Everyday Luxury",  desc:"A versatile wrap silhouette that moves from desk to dinner, cut from breathable premium cotton." },
+  { name:"Golden Hour Kaftan",  tag:"Statement Piece",  desc:"A flowing kaftan in gold-threaded fabric — for the woman who wants to be remembered in every room she enters." },
 ];
 
 let cart = [];
@@ -561,6 +701,7 @@ function renderProducts(filter) {
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img">
         <div class="product-img-inner">${p.name[0]}</div>
+        ${p.img ? `<img class="product-photo" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">` : ''}
         ${p.tag ? `<div class="product-tag">${p.tag}</div>` : ''}
         <div class="product-overlay">
           <button class="quick-view-btn" onclick="event.stopPropagation();openModal(${p.id})">Quick View & Buy</button>
@@ -580,12 +721,50 @@ function filterProducts(f, btn) {
   renderProducts(f);
 }
 
+// ── SIGNATURE DRESS ──────────────────────────────────────────────────
+function renderSignature() {
+  const p = products.find(x => x.isSignature) || products[0];
+  document.getElementById('sigLetter').textContent = p.name[0];
+  const sigPhoto = document.getElementById('sigPhoto');
+  if (p.img) { sigPhoto.src = p.img; sigPhoto.alt = p.name; sigPhoto.style.display = ''; sigPhoto.onerror = () => { sigPhoto.style.display = 'none'; }; }
+  else { sigPhoto.removeAttribute('src'); sigPhoto.style.display = 'none'; }
+  document.getElementById('sigTag').textContent = p.tag || 'Signature';
+  document.getElementById('sigDesc').textContent = p.desc;
+  document.getElementById('sigPrice').textContent = fmt(p.price);
+  document.getElementById('sigViewBtn').onclick = () => openModal(p.id);
+  const msg = encodeURIComponent(`Hi AWA Fashion! 👋\n\nI'd love to know more about the ${p.name}.`);
+  document.getElementById('sigWaBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+}
+
+// ── DESIGNS / LOOKBOOK ───────────────────────────────────────────────
+function renderDesigns() {
+  document.getElementById('designsGrid').innerHTML = designs.map(d => {
+    const msg = encodeURIComponent(`Hi AWA Fashion! I'm interested in a custom piece inspired by your "${d.name}" design. Could you tell me more?`);
+    return `
+    <div class="design-card reveal">
+      <div class="design-visual">
+        <span>${d.name[0]}</span>
+        ${d.img ? `<img class="design-photo" src="${d.img}" alt="${d.name}" onerror="this.style.display='none'">` : ''}
+      </div>
+      <div class="design-info">
+        <div class="design-tag">${d.tag}</div>
+        <div class="design-name">${d.name}</div>
+        <p class="design-desc">${d.desc}</p>
+        <a class="design-link" href="https://wa.me/${WHATSAPP_NUMBER}?text=${msg}" target="_blank">Enquire About This Design →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // ── PRODUCT MODAL ────────────────────────────────────────────────────
 function openModal(id) {
   const p = products.find(x => x.id === id);
   activeProd = p; activeSize = null; activeQty = 1;
   document.getElementById('qtyNum').value = 1;
   document.getElementById('modalLetter').textContent = p.name[0];
+  const photo = document.getElementById('modalPhoto');
+  if (p.img) { photo.src = p.img; photo.alt = p.name; photo.style.display = ''; photo.onerror = () => { photo.style.display = 'none'; }; }
+  else { photo.removeAttribute('src'); photo.style.display = 'none'; }
   const badge = document.getElementById('modalBadge');
   if (p.tag) { badge.textContent = p.tag; badge.style.display = 'block'; } else { badge.style.display = 'none'; }
   document.getElementById('modalCat').textContent = p.sub;
@@ -656,7 +835,7 @@ function refreshCart() {
   }
   el.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <div class="cart-item-img">${item.name[0]}</div>
+      <div class="cart-item-img">${item.name[0]}${item.img ? `<img class="cart-item-photo" src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">` : ''}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-meta">Size: ${item.selectedSize || '—'}</div>
@@ -732,6 +911,10 @@ function initiatePaystack() {
       { display_name: "Address", variable_name: "address", value: addr }
     ]},
     callback: function(res) {
+      const orderItems = payCtx === 'cart'
+        ? cart.map(i => ({ name: i.name, size: i.selectedSize, price: i.price }))
+        : [{ name: activeProd.name, size: activeSize, price: activeProd.price * activeQty, qty: activeQty }];
+      saveOrderToFirestore(res.reference, { name, email, phone, address: addr, items: orderItems, total });
       closePayModal();
       if (payCtx === 'cart') { cart = []; refreshCart(); }
       showToast('🎉 Payment successful! Order confirmed. Ref: ' + res.reference);
@@ -745,6 +928,55 @@ function initiatePaystack() {
   handler.openIframe();
 }
 
+// ── ORDER TRACKING (Firestore) ─────────────────────────────────────────
+const STAGES = ['Processing', 'Confirmed', 'In Production', 'Shipped', 'Completed'];
+
+function saveOrderToFirestore(ref, data) {
+  if (!db) return; // tracking disabled until Firebase is configured — payment still succeeds
+  db.collection('orders').doc(ref).set({
+    ...data,
+    status: 'Processing',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(e => console.warn('Could not save order for tracking:', e));
+}
+
+function trackOrder() {
+  const ref = document.getElementById('trackRefInput').value.trim();
+  const resultEl = document.getElementById('trackResult');
+  if (!ref) { showToast('⚠️ Please enter your order reference'); return; }
+  if (!db) {
+    resultEl.innerHTML = `<div class="track-empty">⚠️ Order tracking isn't connected yet. Please reach us on WhatsApp with your reference <strong>${ref}</strong> and we'll update you directly.</div>`;
+    return;
+  }
+  resultEl.innerHTML = `<div class="track-empty">Searching…</div>`;
+  db.collection('orders').doc(ref).get().then(doc => {
+    if (!doc.exists) {
+      resultEl.innerHTML = `<div class="track-empty">❌ No order found for reference "<strong>${ref}</strong>". Please double-check it, or contact us on WhatsApp for help.</div>`;
+      return;
+    }
+    renderTrackResult(doc.data(), ref);
+  }).catch(() => {
+    resultEl.innerHTML = `<div class="track-empty">⚠️ Something went wrong while looking up your order. Please try again or contact us on WhatsApp.</div>`;
+  });
+}
+
+function renderTrackResult(data, ref) {
+  const idx = Math.max(0, STAGES.indexOf(data.status));
+  const stagesHtml = STAGES.map((s, i) => `
+    <div class="track-stage ${i <= idx ? 'done' : ''}">
+      <div class="track-dot"></div><div class="track-stage-label">${s}</div>
+    </div>`).join('');
+  const itemsHtml = (data.items || []).map(i => `<div class="pay-row"><span>${i.name}${i.size ? ` (${i.size})` : ''}</span><span>${fmt(i.price)}</span></div>`).join('');
+  document.getElementById('trackResult').innerHTML = `
+    <div class="track-card reveal visible">
+      <div class="track-header"><span>Order ${ref}</span><span class="track-status-badge">${data.status || 'Processing'}</span></div>
+      <div class="track-stages">${stagesHtml}</div>
+      <div class="modal-divider" style="margin:1.5rem 0"></div>
+      ${itemsHtml}
+      <div class="pay-row total"><span>Total</span><span>${fmt(data.total || 0)}</span></div>
+    </div>`;
+}
+
 // ── TOAST ─────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -752,12 +984,14 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ── SCROLL REVEAL ─────────────────────────────────────────────────────
-new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 }).observe.bind(null);
+// ── INIT ────────────────────────────────────────────────────────────────
+renderProducts('all');
+renderSignature();
+renderDesigns();
 
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────
 const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
-
-// ── INIT ───────
+</script>
+</body>
+</html>
