@@ -5,10 +5,13 @@ A fully featured fashion e-commerce website built with HTML, CSS & JavaScript.
 
 ## Features
 - 🛍️ Product shop with category filters
+- 👌 Signature Dress showcase (your flagship, most-requested piece)
+- 🎨 Designs / Lookbook gallery for custom-order enquiries
 - 👗 Size selector with size guide
 - 🛒 Shopping cart sidebar
 - 💬 WhatsApp order integration
 - 💳 Paystack payment integration (Cards, Bank Transfer, USSD)
+- 📦 Track Your Order — customers look up their order status by reference
 - 📱 Mobile responsive
 - ✨ Scroll animations
 
@@ -25,6 +28,40 @@ Replace with your public key from [dashboard.paystack.com](https://dashboard.pay
 ```js
 const PAYSTACK_KEY = 'pk_test_xxxxxxxx...'; // Your Paystack public key
 ```
+
+### 3. Enable Order Tracking (optional — Firebase)
+The "Track Your Order" section lets customers check their order status by reference. It's powered by a free [Firebase](https://console.firebase.google.com) Firestore database. The site works fully without it — payments and WhatsApp ordering are unaffected — but tracking will show a friendly "not connected" message until you set it up.
+
+**Setup:**
+1. Go to [console.firebase.google.com](https://console.firebase.google.com) → Create a project (free tier is enough).
+2. In the project, go to **Build → Firestore Database → Create database** (start in production mode).
+3. Under **Project settings → General**, scroll to "Your apps" → add a **Web app** → copy the config object.
+4. Paste it into `index.html`, replacing the placeholder `firebaseConfig`:
+   ```js
+   const firebaseConfig = {
+     apiKey: "...", authDomain: "...", projectId: "...",
+     storageBucket: "...", messagingSenderId: "...", appId: "..."
+   };
+   ```
+5. In **Firestore → Rules**, paste the rules below and click **Publish**. This lets the site create an order and let a customer look up *one* order by its exact reference, but never list or browse all orders:
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /orders/{orderId} {
+         allow create: if true;
+         allow get: if true;
+         allow list, update, delete: if false;
+       }
+     }
+   }
+   ```
+
+**How it works:** every time a customer completes a Paystack payment, an order document is automatically created in Firestore (document ID = the Paystack payment reference, e.g. `AWA_1737000000000`) with status `Processing`. Give this reference to the customer (it's already included in the WhatsApp confirmation message sent after payment) so they can track it.
+
+**Updating order status:** as the order moves along, open the document in the Firebase Console (**Firestore Database → orders → [reference]**) and edit its `status` field to one of: `Processing`, `Confirmed`, `In Production`, `Shipped`, `Completed`. The tracker page updates instantly to reflect it.
+
+**For WhatsApp-only orders** (no card payment), you can manually create a matching document in the Firebase Console — set the document ID to whatever reference you give the customer, and add `status`, `total`, and `items` fields — so they can track it the same way.
 
 ## Deploy to Vercel
 

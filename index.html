@@ -6,6 +6,8 @@
 <title>AWA Fashion — Africa Grace. Global Style.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <style>
   :root {
     --navy: #0d2240; --navy-mid: #1a3a6b; --navy-light: #2a5298;
@@ -22,7 +24,7 @@
   .nav-logo svg { width: 36px; height: 36px; }
   .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--navy); letter-spacing: 2px; }
   .logo-sub { font-size: 0.6rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: -4px; }
-  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links { display: flex; gap: 1.8rem; list-style: none; }
   .nav-links a { text-decoration: none; font-size: 0.78rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--navy); position: relative; transition: color 0.2s; }
   .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1.5px; background: var(--gold); transition: width 0.3s; }
   .nav-links a:hover::after { width: 100%; }
@@ -124,6 +126,56 @@
   .btn-wa:hover { background: #1da851; }
   .btn-add-cart-modal { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); cursor: pointer; padding: 0.8rem; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.25s; }
   .btn-add-cart-modal:hover { background: var(--navy); color: white; }
+
+  /* SIGNATURE DRESS */
+  #signature { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); overflow: hidden; }
+  .signature-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .signature-visual { aspect-ratio: 3/4; background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; position: relative; }
+  .signature-visual::after { content: ''; position: absolute; inset: 1.2rem; border: 1px solid rgba(255,255,255,0.12); }
+  .signature-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 10rem; color: rgba(255,255,255,0.1); }
+  .signature-tag { position: absolute; top: 1.5rem; left: 1.5rem; background: var(--gold); color: white; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.35rem 0.9rem; font-weight: 500; }
+  #signature .section-label { color: var(--gold); }
+  #signature .section-title { color: white; }
+  #signature .section-title em { color: var(--sky); font-style: italic; }
+  .signature-desc { font-size: 0.95rem; line-height: 1.85; color: rgba(255,255,255,0.7); margin: 1.2rem 0 1.6rem; max-width: 440px; }
+  .signature-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold); margin-bottom: 1.8rem; }
+  .signature-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .signature-actions .btn-primary { background: var(--gold); }
+  .signature-actions .btn-primary:hover { background: #dbb85c; }
+
+  /* DESIGNS / LOOKBOOK */
+  #designs { background: #edf2f8; }
+  .designs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+  .design-card { background: white; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
+  .design-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(13,34,64,0.12); }
+  .design-visual { aspect-ratio: 4/3; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); display: flex; align-items: center; justify-content: center; }
+  .design-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; color: rgba(13,34,64,0.1); }
+  .design-info { padding: 1.6rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  .design-tag { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+  .design-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--navy); }
+  .design-desc { font-size: 0.85rem; line-height: 1.65; color: var(--muted); flex: 1; }
+  .design-link { font-size: 0.72rem; letter-spacing: 1px; color: var(--navy-light); text-decoration: none; font-weight: 600; margin-top: 0.4rem; }
+  .design-link:hover { color: var(--gold); }
+
+  /* TRACK ORDER */
+  #track { background: var(--white); }
+  .track-box { display: flex; gap: 0.8rem; max-width: 520px; margin-top: 2rem; flex-wrap: wrap; }
+  .track-box input { flex: 1; min-width: 220px; border: 1.5px solid rgba(13,34,64,0.15); padding: 0.9rem 1.1rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--navy); outline: none; transition: border-color 0.2s; }
+  .track-box input:focus { border-color: var(--navy-light); }
+  .track-box button { background: var(--navy); color: white; border: none; cursor: pointer; padding: 0.9rem 2rem; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; }
+  .track-box button:hover { background: var(--navy-light); }
+  #trackResult { margin-top: 2rem; max-width: 620px; }
+  .track-empty { font-size: 0.88rem; color: var(--muted); background: #edf2f8; padding: 1.2rem 1.5rem; line-height: 1.6; }
+  .track-card { background: #edf2f8; padding: 2rem; }
+  .track-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--navy); font-weight: 600; margin-bottom: 1.5rem; }
+  .track-status-badge { background: var(--navy); color: white; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.35rem 0.9rem; }
+  .track-stages { display: flex; justify-content: space-between; position: relative; }
+  .track-stages::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; height: 2px; background: rgba(13,34,64,0.12); z-index: 0; }
+  .track-stage { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; position: relative; z-index: 1; flex: 1; }
+  .track-dot { width: 18px; height: 18px; border-radius: 50%; background: white; border: 2px solid rgba(13,34,64,0.2); transition: all 0.2s; }
+  .track-stage.done .track-dot { background: var(--gold); border-color: var(--gold); }
+  .track-stage-label { font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); text-align: center; }
+  .track-stage.done .track-stage-label { color: var(--navy); font-weight: 600; }
 
   /* FASHION NUGGETS */
   #nuggets { background: var(--navy); color: var(--white); }
@@ -260,6 +312,11 @@
     .hero-left { padding: 4rem 1.5rem; }
     section { padding: 4rem 1.5rem; }
     .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .signature-wrap { grid-template-columns: 1fr; gap: 2rem; }
+    .signature-visual span { font-size: 6rem; }
+    .designs-grid { grid-template-columns: 1fr; }
+    .track-box { flex-direction: column; }
+    .track-stage-label { font-size: 0.55rem; }
     .nuggets-grid { grid-template-columns: 1fr; }
     #about { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
     .contact-grid { grid-template-columns: 1fr; }
@@ -399,7 +456,8 @@
   </a>
   <ul class="nav-links">
     <li><a href="#shop">Shop</a></li>
-    <li><a href="#nuggets">Style Tips</a></li>
+    <li><a href="#designs">Designs</a></li>
+    <li><a href="#track">Track Order</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -449,6 +507,45 @@
     </div>
   </div>
   <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<!-- SIGNATURE DRESS -->
+<section id="signature">
+  <div class="signature-wrap">
+    <div class="signature-visual reveal">
+      <div class="signature-tag" id="sigTag">Signature</div>
+      <span id="sigLetter"></span>
+    </div>
+    <div class="reveal">
+      <p class="section-label">The Icon</p>
+      <h2 class="section-title" id="sigName">The <em>AWA Grace</em> Signature Dress</h2>
+      <p class="signature-desc" id="sigDesc"></p>
+      <div class="signature-price" id="sigPrice"></div>
+      <div class="signature-actions">
+        <button class="btn-primary" id="sigViewBtn">View & Order</button>
+        <a class="btn-whatsapp" id="sigWaBtn" href="#" target="_blank">💬 Enquire About This Piece</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGNS / LOOKBOOK -->
+<section id="designs">
+  <p class="section-label">The Lookbook</p>
+  <h2 class="section-title">Our Designs</h2>
+  <div class="designs-grid" id="designsGrid"></div>
+</section>
+
+<!-- TRACK ORDER -->
+<section id="track">
+  <p class="section-label">Order Status</p>
+  <h2 class="section-title">Track Your Order</h2>
+  <p style="font-size:0.9rem;color:var(--muted);max-width:520px;margin-top:0.8rem;line-height:1.7">Enter the order reference you received after checkout (e.g. from your payment confirmation) to see its current status.</p>
+  <div class="track-box reveal">
+    <input type="text" id="trackRefInput" placeholder="e.g. AWA_1737000000000" onkeydown="if(event.key==='Enter')trackOrder()">
+    <button onclick="trackOrder()">Track Order</button>
+  </div>
+  <div id="trackResult"></div>
 </section>
 
 <!-- FASHION NUGGETS -->
@@ -536,6 +633,25 @@
 const WHATSAPP_NUMBER = '2348000000000'; // e.g. 2348012345678
 const PAYSTACK_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // Your Paystack public key
 
+// Firebase project config (powers "Track Your Order"). Create a free project at
+// console.firebase.google.com, enable Firestore, and paste your config below.
+// Leave as-is to disable order tracking (the site still works fully without it).
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+let db = null;
+try {
+  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== 'YOUR_API_KEY' && window.firebase) {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  }
+} catch (e) { console.warn('Firebase not configured:', e); }
+
 // ── PRODUCTS ─────────────────────────────────────────────────────────
 const products = [
   { id:1, name:"The Executive Blazer",   sub:"Men's Tailoring",    price:85000,  tag:"New",        category:"men",         desc:"A power statement cut from premium wool blend fabric. Slim lapels, structured shoulders — made to own any boardroom.",    sizes:["S","M","L","XL","XXL"],        unavail:[] },
@@ -544,6 +660,17 @@ const products = [
   { id:4, name:"Ankara Accent Shirt",     sub:"Men's Collection",   price:38000,  tag:"",           category:"men",         desc:"Classic white Oxford shirt with bold Ankara cuff and collar accents — the perfect bridge between heritage and contemporary style.", sizes:["S","M","L","XL","XXL"], unavail:["XXL"] },
   { id:5, name:"Statement Kick Set",      sub:"Accessories",        price:55000,  tag:"Limited",    category:"accessories", desc:"Limited edition hand-crafted sneakers with woven Kente-inspired detailing. Only 50 pairs available worldwide.",             sizes:["40","41","42","43","44","45"], unavail:["40"] },
   { id:6, name:"Eko Linen Trousers",      sub:"Women's Collection", price:42000,  tag:"",           category:"women",       desc:"Breathable, wide-leg linen trousers in earth tones. Relaxed tailoring meets Lagos coastal vibes — ideal for any occasion.", sizes:["XS","S","M","L","XL","XXL"],   unavail:[] },
+  { id:7, name:"AWA Grace Signature Gown", sub:"Signature Collection", price:195000, tag:"Signature", category:"women",     desc:"Our most requested piece — a hand-beaded, floor-length gown cut from premium Ankara-silk blend. Every stitch is done in-house by our master tailors. This is the dress people remember you in.", sizes:["XS","S","M","L","XL"], unavail:[], isSignature:true },
+];
+
+// ── DESIGNS / LOOKBOOK (editorial showcase, custom-order enquiries) ───
+const designs = [
+  { name:"Sunset Ankara Gown",  tag:"Evening Wear",     desc:"A dramatic silhouette in sunset-toned Ankara with a hand-beaded bodice — built for red carpets and traditional ceremonies alike." },
+  { name:"Midnight Tuxedo",     tag:"Men's Formal",     desc:"Satin-lapel tuxedo reimagined with a subtle Kente trim along the inner collar — quiet luxury with heritage roots." },
+  { name:"Coastal Breeze Set",  tag:"Resort Wear",      desc:"An airy linen co-ord in soft indigo tones, designed for Lagos afternoons and island getaways." },
+  { name:"Heritage Agbada",     tag:"Ceremonial",       desc:"A hand-embroidered full Agbada set for the modern king — traditional grandeur, tailored for today." },
+  { name:"Urban Wrap",          tag:"Everyday Luxury",  desc:"A versatile wrap silhouette that moves from desk to dinner, cut from breathable premium cotton." },
+  { name:"Golden Hour Kaftan",  tag:"Statement Piece",  desc:"A flowing kaftan in gold-threaded fabric — for the woman who wants to be remembered in every room she enters." },
 ];
 
 let cart = [];
@@ -578,6 +705,35 @@ function filterProducts(f, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderProducts(f);
+}
+
+// ── SIGNATURE DRESS ──────────────────────────────────────────────────
+function renderSignature() {
+  const p = products.find(x => x.isSignature) || products[0];
+  document.getElementById('sigLetter').textContent = p.name[0];
+  document.getElementById('sigTag').textContent = p.tag || 'Signature';
+  document.getElementById('sigDesc').textContent = p.desc;
+  document.getElementById('sigPrice').textContent = fmt(p.price);
+  document.getElementById('sigViewBtn').onclick = () => openModal(p.id);
+  const msg = encodeURIComponent(`Hi AWA Fashion! 👋\n\nI'd love to know more about the ${p.name}.`);
+  document.getElementById('sigWaBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+}
+
+// ── DESIGNS / LOOKBOOK ───────────────────────────────────────────────
+function renderDesigns() {
+  document.getElementById('designsGrid').innerHTML = designs.map(d => {
+    const msg = encodeURIComponent(`Hi AWA Fashion! I'm interested in a custom piece inspired by your "${d.name}" design. Could you tell me more?`);
+    return `
+    <div class="design-card reveal">
+      <div class="design-visual"><span>${d.name[0]}</span></div>
+      <div class="design-info">
+        <div class="design-tag">${d.tag}</div>
+        <div class="design-name">${d.name}</div>
+        <p class="design-desc">${d.desc}</p>
+        <a class="design-link" href="https://wa.me/${WHATSAPP_NUMBER}?text=${msg}" target="_blank">Enquire About This Design →</a>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── PRODUCT MODAL ────────────────────────────────────────────────────
@@ -732,6 +888,10 @@ function initiatePaystack() {
       { display_name: "Address", variable_name: "address", value: addr }
     ]},
     callback: function(res) {
+      const orderItems = payCtx === 'cart'
+        ? cart.map(i => ({ name: i.name, size: i.selectedSize, price: i.price }))
+        : [{ name: activeProd.name, size: activeSize, price: activeProd.price * activeQty, qty: activeQty }];
+      saveOrderToFirestore(res.reference, { name, email, phone, address: addr, items: orderItems, total });
       closePayModal();
       if (payCtx === 'cart') { cart = []; refreshCart(); }
       showToast('🎉 Payment successful! Order confirmed. Ref: ' + res.reference);
@@ -745,6 +905,55 @@ function initiatePaystack() {
   handler.openIframe();
 }
 
+// ── ORDER TRACKING (Firestore) ─────────────────────────────────────────
+const STAGES = ['Processing', 'Confirmed', 'In Production', 'Shipped', 'Completed'];
+
+function saveOrderToFirestore(ref, data) {
+  if (!db) return; // tracking disabled until Firebase is configured — payment still succeeds
+  db.collection('orders').doc(ref).set({
+    ...data,
+    status: 'Processing',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(e => console.warn('Could not save order for tracking:', e));
+}
+
+function trackOrder() {
+  const ref = document.getElementById('trackRefInput').value.trim();
+  const resultEl = document.getElementById('trackResult');
+  if (!ref) { showToast('⚠️ Please enter your order reference'); return; }
+  if (!db) {
+    resultEl.innerHTML = `<div class="track-empty">⚠️ Order tracking isn't connected yet. Please reach us on WhatsApp with your reference <strong>${ref}</strong> and we'll update you directly.</div>`;
+    return;
+  }
+  resultEl.innerHTML = `<div class="track-empty">Searching…</div>`;
+  db.collection('orders').doc(ref).get().then(doc => {
+    if (!doc.exists) {
+      resultEl.innerHTML = `<div class="track-empty">❌ No order found for reference "<strong>${ref}</strong>". Please double-check it, or contact us on WhatsApp for help.</div>`;
+      return;
+    }
+    renderTrackResult(doc.data(), ref);
+  }).catch(() => {
+    resultEl.innerHTML = `<div class="track-empty">⚠️ Something went wrong while looking up your order. Please try again or contact us on WhatsApp.</div>`;
+  });
+}
+
+function renderTrackResult(data, ref) {
+  const idx = Math.max(0, STAGES.indexOf(data.status));
+  const stagesHtml = STAGES.map((s, i) => `
+    <div class="track-stage ${i <= idx ? 'done' : ''}">
+      <div class="track-dot"></div><div class="track-stage-label">${s}</div>
+    </div>`).join('');
+  const itemsHtml = (data.items || []).map(i => `<div class="pay-row"><span>${i.name}${i.size ? ` (${i.size})` : ''}</span><span>${fmt(i.price)}</span></div>`).join('');
+  document.getElementById('trackResult').innerHTML = `
+    <div class="track-card reveal visible">
+      <div class="track-header"><span>Order ${ref}</span><span class="track-status-badge">${data.status || 'Processing'}</span></div>
+      <div class="track-stages">${stagesHtml}</div>
+      <div class="modal-divider" style="margin:1.5rem 0"></div>
+      ${itemsHtml}
+      <div class="pay-row total"><span>Total</span><span>${fmt(data.total || 0)}</span></div>
+    </div>`;
+}
+
 // ── TOAST ─────────────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -752,12 +961,14 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ── SCROLL REVEAL ─────────────────────────────────────────────────────
-new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 }).observe.bind(null);
+// ── INIT ────────────────────────────────────────────────────────────────
+renderProducts('all');
+renderSignature();
+renderDesigns();
 
+// ── SCROLL REVEAL ─────────────────────────────────────────────────────
 const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
-
-// ── INIT ───────
+</script>
+</body>
+</html>
