@@ -1,36 +1,34 @@
-[README.md](https://github.com/user-attachments/files/25682625/README.md)
-# AWA Fashion — Africa Grace. Global Style.
+# AWA Fashion · Africa Grace. Global Style.
 
-A fully featured fashion e-commerce website built with HTML, CSS & JavaScript.
+The AWA Fashion website. Plain HTML, CSS and vanilla JavaScript: one `index.html` plus `assets/`, with no build step.
 
-## Features
-- 🛍️ Product shop with category filters
-- 👗 Size selector with size guide
-- 🛒 Shopping cart sidebar
-- 💬 WhatsApp order integration
-- 💳 Paystack payment integration (Cards, Bank Transfer, USSD)
-- 📱 Mobile responsive
-- ✨ Scroll animations
+## What is on the site
 
-## Setup
+- **Hero**: the brand line and a real AWA look.
+- **The Edit**: a scroll-linked lookbook of five real pieces on desktop, and a swipe track on phones and with reduced motion.
+- **Collection**: every real piece, filterable. Each piece has its own shareable page at `#/piece/<slug>`.
+- **Make it yours**: a customisation request (piece, colour, shape, fit, embroidery, measurements) that opens WhatsApp with the request already written out.
+- **The House** and **Contact**: WhatsApp, Instagram and TikTok (@fashionwithawa).
 
-### 1. Update WhatsApp Number
-In `index.html`, find this line and replace with your number:
-```js
-const WHATSAPP_NUMBER = '2348000000000'; // e.g. 2348012345678
+Prices show as "Price on request" until AWA confirms real prices. The old demo cart and Paystack checkout used invented products and prices, so they were removed. They can come back once real prices exist.
+
+## Edit the basics
+
+- WhatsApp number: `WHATSAPP_NUMBER` near the top of the script in `index.html`.
+- Pieces: the `pieces` array in the same script. Describe only what is real.
+- Images: replace files in `assets/img/` with higher-resolution originals, keeping the same names.
+
+## Docs
+
+- `docs/visual-direction.md`: the design direction, the 10k-websites techniques used and not used, image status, and the facts still needed from AWA.
+- `docs/higgsfield-workflow.md`: what the Higgsfield connection can do, garment-fidelity rules, and the first prompts to run.
+
+## Preview locally
+
+```
+npx http-server -p 8080
 ```
 
-### 2. Update Paystack Key
-Replace with your public key from [dashboard.paystack.com](https://dashboard.paystack.com):
-```js
-const PAYSTACK_KEY = 'pk_test_xxxxxxxx...'; // Your Paystack public key
-```
+## Deploy
 
-## Deploy to Vercel
-
-1. Push this repo to GitHub
-2. Go to [vercel.com](https://vercel.com) → New Project
-3. Import your GitHub repo
-4. Click **Deploy** — no build settings needed!
-
-Your site will be live at `https://your-project.vercel.app`
+Vercel, with no build settings. `vercel.json` serves the files as they are and caches `assets/`.
