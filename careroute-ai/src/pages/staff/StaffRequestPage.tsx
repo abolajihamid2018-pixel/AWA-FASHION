@@ -14,11 +14,13 @@ import {
   getRequest,
   listRequestEvents,
   listStaff,
+  notifyPatient,
   rerunAi,
   updateRequestStatus,
   type RequestEvent,
   type RequestStatus,
   type StaffMember,
+  type NotifyResult,
   type StaffRequest,
 } from '../../lib/staffApi'
 import { StaffStatusBadge } from './StaffDashboardPage'
@@ -29,6 +31,13 @@ const ACTION_STYLES: Record<RequestStatus, string> = {
   approved: 'bg-teal-600 text-white hover:bg-teal-700',
   declined: 'border border-red-300 bg-white text-red-700 hover:bg-red-50',
   cancelled: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50',
+}
+
+const EMAIL_RESULT_COPY: Record<NotifyResult, string> = {
+  sent: 'The patient has been emailed.',
+  not_configured: 'No email was sent because email isn’t configured yet.',
+  failed: 'The patient email could not be sent — see History.',
+  skipped: '',
 }
 
 /** What the patient will see after each change — shown in the confirm step. */
@@ -103,14 +112,24 @@ export function StaffRequestPage() {
     setSaveError(null)
     try {
       await updateRequestStatus(request.id, pending)
+      const emailed = await notifyPatient(request.id)
       await load()
-      setFlash(`Status changed to “${STAFF_STATUS_LABELS[pending]}”.`)
+      setFlash(`Status changed to “${STAFF_STATUS_LABELS[pending]}”. ${EMAIL_RESULT_COPY[emailed]}`)
       setPending(null)
     } catch (e) {
       setSaveError((e as Error).message)
     } finally {
       setSaving(false)
     }
+  }
+
+  const lastStatusEventId = [...events].reverse().find((e) => e.event_type === 'status_changed')?.id
+
+  async function retryEmail() {
+    if (!request) return
+    const r = await notifyPatient(request.id)
+    await load()
+    setFlash(EMAIL_RESULT_COPY[r] || 'Email already sent.')
   }
 
   const actorName = (uid: string | null) => {
@@ -261,6 +280,7 @@ export function StaffRequestPage() {
                   <p className="text-xs text-slate-500">
                     {actorName(e.actor_user_id)} · {formatDateTime(e.created_at)}
                   </p>
+                  <EmailStatus event={e} onRetry={e.id === lastStatusEventId ? retryEmail : undefined} />
                 </li>
               ))}
             </ol>
@@ -349,6 +369,31 @@ function AiPanel({ request, onRerun }: { request: StaffRequest; onRerun: () => P
         <div>
           {rerunButton(request.ai_status === 'failed' ? 'Try again' : request.ai_status === 'pending' ? 'Generate summary' : 'Run AI again')}
         </div>
+      )}
+    </div>
+  )
+}
+
+function EmailStatus({ event, onRetry }: { event: RequestEvent; onRetry?: () => Promise<void> }) {
+  const [busy, setBusy] = useState(false)
+  if (event.event_type !== 'created' && event.event_type !== 'status_changed') return null
+  if (event.notified_at && !event.notify_error) {
+    return <p className="mt-0.5 text-xs font-medium text-teal-700">✓ Patient emailed</p>
+  }
+  if (!event.notify_error) return null
+  const notConfigured = event.notify_error.startsWith('Email is not configured')
+  return (
+    <div className="mt-0.5 text-xs text-amber-700">
+      <span title={event.notify_error}>{notConfigured ? 'Email not sent (email not configured)' : 'Email not sent'}</span>
+      {onRetry && (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={async () => { setBusy(true); await onRetry(); setBusy(false) }}
+          className="ml-2 font-semibold text-blue-700 hover:underline disabled:opacity-60"
+        >
+          {busy ? 'Retrying…' : 'Retry'}
+        </button>
       )}
     </div>
   )

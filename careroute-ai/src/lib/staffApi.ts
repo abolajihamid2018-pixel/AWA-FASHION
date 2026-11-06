@@ -16,6 +16,8 @@ export interface RequestEvent {
   to_status: RequestStatus | null
   actor_user_id: string | null
   created_at: string
+  notified_at: string | null
+  notify_error: string | null
 }
 
 export interface StaffMember {
@@ -58,7 +60,7 @@ export async function getRequest(id: string): Promise<StaffRequest | null> {
 export async function listRequestEvents(requestId: string): Promise<RequestEvent[]> {
   const { data, error } = await client()
     .from('request_events')
-    .select('id, event_type, from_status, to_status, actor_user_id, created_at')
+    .select('id, event_type, from_status, to_status, actor_user_id, created_at, notified_at, notify_error')
     .eq('request_id', requestId)
     .order('created_at')
   if (error) throw new Error('Could not load request history.')
@@ -87,6 +89,21 @@ export async function updateRequestStatus(id: string, status: RequestStatus): Pr
 export async function rerunAi(id: string): Promise<void> {
   const { error } = await client().functions.invoke('process-request', { body: { request_id: id } })
   if (error) throw new Error('Could not start the AI summary. Please try again.')
+}
+
+export type NotifyResult = 'sent' | 'not_configured' | 'failed' | 'skipped'
+
+/** Email the patient about the latest status change. Never throws. */
+export async function notifyPatient(id: string): Promise<NotifyResult> {
+  try {
+    const { data, error } = await client().functions.invoke('send-notification', { body: { request_id: id } })
+    if (error) return 'failed'
+    if (data?.status === 'sent') return 'sent'
+    if (data?.status === 'skipped') return 'skipped'
+    return data?.error === 'not_configured' ? 'not_configured' : 'failed'
+  } catch {
+    return 'failed'
+  }
 }
 
 /** Which status changes staff can make from each status. */

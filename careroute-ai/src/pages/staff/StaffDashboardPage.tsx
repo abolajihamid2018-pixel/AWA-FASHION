@@ -18,6 +18,15 @@ const FILTERS: { key: Filter; label: string }[] = [
 ]
 
 const REFRESH_MS = 30_000
+const SEEN_KEY = 'careroute.staff.lastSeen'
+
+function readLastSeen(): number {
+  try {
+    return Number(localStorage.getItem(SEEN_KEY)) || 0
+  } catch {
+    return 0
+  }
+}
 
 function matchesFilter(r: StaffRequest, f: Filter) {
   if (f === 'all') return true
@@ -57,6 +66,8 @@ export function StaffDashboardPage() {
   const [query, setQuery] = useState('')
   const [lastLoaded, setLastLoaded] = useState<Date | null>(null)
   const [refreshing, setRefreshing] = useState(false)
+  // Requests newer than this are highlighted as new; captured once per visit.
+  const [lastSeen] = useState(readLastSeen)
 
   const load = useCallback(async () => {
     setRefreshing(true)
@@ -86,6 +97,27 @@ export function StaffDashboardPage() {
     for (const r of requests ?? []) for (const f of FILTERS) if (matchesFilter(r, f.key)) c[f.key]++
     return c
   }, [requests])
+
+  const newCount = useMemo(
+    () => (requests ?? []).filter((r) => r.status === 'submitted' && Date.parse(r.created_at) > lastSeen).length,
+    [requests, lastSeen],
+  )
+
+  // Remember this visit and surface new requests in the browser tab title.
+  useEffect(() => {
+    if (!requests) return
+    try {
+      localStorage.setItem(SEEN_KEY, String(Date.now()))
+    } catch {
+      /* storage unavailable */
+    }
+    document.title = newCount > 0 ? `(${newCount}) New requests · CareRoute AI` : 'Requests · CareRoute AI'
+    return () => {
+      document.title = 'CareRoute AI'
+    }
+  }, [requests, newCount])
+
+  const isNew = (r: StaffRequest) => r.status === 'submitted' && Date.parse(r.created_at) > lastSeen
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -127,6 +159,12 @@ export function StaffDashboardPage() {
           </button>
         </div>
       </div>
+
+      {newCount > 0 && (
+        <div role="status" className="mt-5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-900">
+          {newCount} new {newCount === 1 ? 'request has' : 'requests have'} arrived since your last visit.
+        </div>
+      )}
 
       <div className="mt-6 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         <div role="tablist" aria-label="Filter by status" className="flex gap-2">
@@ -183,6 +221,7 @@ export function StaffDashboardPage() {
                         <Link to={`/staff/requests/${r.id}`} className="font-semibold text-blue-700 hover:underline">
                           {r.reference_code}
                         </Link>
+                        {isNew(r) && <span className="ml-2 rounded bg-blue-600 px-1.5 py-0.5 text-[10px] font-bold text-white uppercase">New</span>}
                       </td>
                       <td className="px-4 py-3">
                         <p className="font-medium text-slate-900">{r.patient_name}</p>

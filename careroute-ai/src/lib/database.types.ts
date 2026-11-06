@@ -16,6 +16,8 @@ export type Database = {
           event_type: string
           from_status: Database['public']['Enums']['request_status'] | null
           id: number
+          notified_at: string | null
+          notify_error: string | null
           request_id: string
           to_status: Database['public']['Enums']['request_status'] | null
         }

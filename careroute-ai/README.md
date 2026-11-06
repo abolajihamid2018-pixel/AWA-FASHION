@@ -17,8 +17,8 @@ Stack: React · TypeScript · Vite · Tailwind CSS v4 · Supabase (Postgres, Aut
 | 1. Services catalogue, patient request submission, private status page, DB + RLS | ✅ Done |
 | 2. Staff sign-in, dashboard, status management | ✅ Done |
 | 3. OpenAI summaries + service suggestions (Edge Function) | ✅ Done |
-| 4. Email notifications | Next |
-| 5. Polish + Vercel deployment | Planned |
+| 4. Email notifications | ✅ Done (needs `RESEND_API_KEY` to actually send) |
+| 5. Polish + Vercel deployment | Next |
 
 ## Run
 
@@ -77,6 +77,17 @@ Migrations are applied to the Supabase project via the Supabase connector; the S
 - Secrets (Supabase → Edge Functions → Secrets): `OPENAI_API_KEY` (or `open_ai_key`), optional `OPENAI_MODEL`
   (default `gpt-4.1-mini`). The key never reaches the browser.
 - Deployed with `verify_jwt = false`; the function authenticates callers itself.
+
+## Notifications (Edge Function `supabase/functions/send-notification`)
+
+- **Patient:** "request received" email after submitting, and an email after every staff status change
+  (in review / approved / declined / cancelled). Sent via [Resend](https://resend.com).
+- Each email is tied to a `request_events` row (`notified_at`, `notify_error`), sent at most once, and can be retried
+  by staff from the request history. Failures never affect the request.
+- **Staff:** dashboard highlights requests that arrived since their last visit and shows the count in the tab title.
+- Secrets: `RESEND_API_KEY` (or `resend_api_key`), optional `EMAIL_FROM`
+  (default `CareRoute AI <onboarding@resend.dev>`), optional `PUBLIC_APP_URL` (adds the status link to the
+  "received" email once the app is deployed). Without a verified domain, Resend only delivers to your own address.
 
 ## Structure
 

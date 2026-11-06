@@ -54,7 +54,8 @@ export function SubmittedPage() {
 
         <p className="mt-6 leading-relaxed text-slate-700">
           Your <strong>{state.serviceName}</strong> request has been sent to the clinic. Staff will review it.{' '}
-          <strong>This is not a confirmed appointment yet.</strong>
+          <strong>This is not a confirmed appointment yet.</strong> If email updates are enabled for this demo,
+          you'll also get a confirmation email.
         </p>
 
         <div className="mt-6">

@@ -299,8 +299,8 @@ function ForClinics() {
           <Feature
             icon={<BellIcon className="h-6 w-6" />}
             title="Patient updates"
-            body="Patients can see status changes through their private link, with email updates planned."
-            soon
+            body="Patients follow their request on a private status page and get an email when staff change its status."
+
           />
           <Feature
             icon={<ShieldIcon className="h-6 w-6" />}
@@ -327,7 +327,8 @@ function Roadmap() {
     { label: 'Secure staff sign-in & request dashboard', status: 'done' },
     { label: 'Request status management with audit history', status: 'done' },
     { label: 'AI request summaries & service suggestions (OpenAI)', status: 'done' },
-    { label: 'Email notifications on status changes', status: 'next' },
+    { label: 'Email notifications for patients (Resend)', status: 'done' },
+    { label: 'Deployment on Vercel', status: 'next' },
   ]
   const badge = {
     done: 'bg-teal-100 text-teal-800',
