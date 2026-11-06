@@ -27,3 +27,4 @@ dist-ssr
 # .env holds only public values and is committed intentionally
 .env.local
 .env.*.local
+.vercel

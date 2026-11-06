@@ -18,7 +18,17 @@ Stack: React · TypeScript · Vite · Tailwind CSS v4 · Supabase (Postgres, Aut
 | 2. Staff sign-in, dashboard, status management | ✅ Done |
 | 3. OpenAI summaries + service suggestions (Edge Function) | ✅ Done |
 | 4. Email notifications | ✅ Done (needs `RESEND_API_KEY` to actually send) |
-| 5. Polish + Vercel deployment | Next |
+| 5. Vercel deployment | ✅ Live at https://careroute-ai.vercel.app |
+
+## Live
+
+**https://careroute-ai.vercel.app** — patient site; staff sign-in at `/staff/login`.
+
+Deploy (from this folder, Vercel CLI, no Git integration):
+
+```bash
+vercel deploy --prod --yes
+```
 
 ## Run
 

@@ -328,7 +328,7 @@ function Roadmap() {
     { label: 'Request status management with audit history', status: 'done' },
     { label: 'AI request summaries & service suggestions (OpenAI)', status: 'done' },
     { label: 'Email notifications for patients (Resend)', status: 'done' },
-    { label: 'Deployment on Vercel', status: 'next' },
+    { label: 'Live deployment on Vercel', status: 'done' },
   ]
   const badge = {
     done: 'bg-teal-100 text-teal-800',

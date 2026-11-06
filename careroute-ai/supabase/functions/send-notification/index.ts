@@ -5,13 +5,14 @@
 //   - Signed-in staff after a status change:  { request_id }   -> email for the latest status change (once)
 //
 // Secrets: RESEND_API_KEY (or resend_api_key), optional EMAIL_FROM, optional PUBLIC_APP_URL
-// (when set, the "received" email includes the private status link).
+// (defaults to the Vercel deployment; used for the private status link in the "received" email).
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 const RESEND_API_KEY = (Deno.env.get('RESEND_API_KEY') ?? Deno.env.get('resend_api_key'))?.trim()
 const EMAIL_FROM = Deno.env.get('EMAIL_FROM') || 'CareRoute AI <onboarding@resend.dev>'
-const APP_URL = Deno.env.get('PUBLIC_APP_URL')?.trim().replace(/\/+$/, '') || null
+// Public site address used for the status link (override with the PUBLIC_APP_URL secret).
+const APP_URL = (Deno.env.get('PUBLIC_APP_URL')?.trim() || 'https://careroute-ai.vercel.app').replace(/\/+$/, '')
 const CLINIC_NAME = 'Riverside Community Clinic'
 
 const corsHeaders = {
