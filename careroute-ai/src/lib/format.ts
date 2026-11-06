@@ -68,3 +68,21 @@ export function todayISO(offsetDays = 0): string {
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
+
+/** Staff-facing status labels (shorter than the patient copy). */
+export const STAFF_STATUS_LABELS: Record<RequestStatus, string> = {
+  submitted: 'New',
+  in_review: 'In review',
+  approved: 'Approved',
+  declined: 'Declined',
+  cancelled: 'Cancelled',
+}
+
+/** Button labels for moving a request *to* a status. */
+export const STATUS_ACTION_LABELS: Record<RequestStatus, string> = {
+  submitted: 'Mark as new',
+  in_review: 'Mark in review',
+  approved: 'Approve',
+  declined: 'Decline',
+  cancelled: 'Cancel request',
+}

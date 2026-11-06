@@ -276,13 +276,13 @@ function ForClinics() {
             icon={<UsersIcon className="h-6 w-6" />}
             title="Secure staff sign-in"
             body="Only authenticated clinic staff can view patient requests."
-            soon
+
           />
           <Feature
             icon={<InboxIcon className="h-6 w-6" />}
             title="Request dashboard"
             body="See every request with its service, preferred date and current status."
-            soon
+
           />
           <Feature
             icon={<SparkleIcon className="h-6 w-6" />}
@@ -294,7 +294,7 @@ function ForClinics() {
             icon={<CheckIcon className="h-6 w-6" />}
             title="Status management"
             body="Move requests through review to approval. Nothing is confirmed until staff approve it."
-            soon
+
           />
           <Feature
             icon={<BellIcon className="h-6 w-6" />}
@@ -324,8 +324,9 @@ function Roadmap() {
     { label: 'Clinic service catalogue', status: 'done' },
     { label: 'Patient request submission (saved in Supabase)', status: 'done' },
     { label: 'Private patient status page', status: 'done' },
-    { label: 'Staff sign-in & request dashboard', status: 'next' },
-    { label: 'AI request summaries & service suggestions (OpenAI)', status: 'planned' },
+    { label: 'Secure staff sign-in & request dashboard', status: 'done' },
+    { label: 'Request status management with audit history', status: 'done' },
+    { label: 'AI request summaries & service suggestions (OpenAI)', status: 'next' },
     { label: 'Email notifications on status changes', status: 'planned' },
   ]
   const badge = {

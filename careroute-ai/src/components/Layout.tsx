@@ -40,6 +40,7 @@ export function Layout() {
               <Link to="/services" className="hover:text-slate-800">Services</Link>
               <a href="/#how-it-works" className="hover:text-slate-800">How it works</a>
               <a href="/#roadmap" className="hover:text-slate-800">Project status</a>
+              <Link to="/staff/login" className="hover:text-slate-800">Staff sign-in</Link>
             </div>
           </div>
         </div>

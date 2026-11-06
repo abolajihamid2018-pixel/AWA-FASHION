@@ -15,8 +15,8 @@ Stack: React · TypeScript · Vite · Tailwind CSS v4 · Supabase (Postgres, Aut
 | Milestone | State |
 |---|---|
 | 1. Services catalogue, patient request submission, private status page, DB + RLS | ✅ Done |
-| 2. Staff sign-in, dashboard, status management | Next |
-| 3. OpenAI summaries + service suggestions (Edge Function) | Planned |
+| 2. Staff sign-in, dashboard, status management | ✅ Done |
+| 3. OpenAI summaries + service suggestions (Edge Function) | Next |
 | 4. Email notifications | Planned |
 | 5. Polish + Vercel deployment | Planned |
 
@@ -42,13 +42,24 @@ Supabase Edge Function secrets.
 | `/request/:slug` | Request form for a service |
 | `/request/submitted` | Confirmation with reference code + private status link |
 | `/status/:token` | Patient status page |
+| `/staff/login` | Staff sign-in (email + password) |
+| `/staff` | Staff request dashboard (filters, search, auto-refresh) |
+| `/staff/requests/:id` | Request detail, AI panel, status changes, history |
 
 ## Database (`supabase/migrations`)
 
 - `services` — configured clinic services (public read of active services).
 - `requests` — patient requests incl. AI fields for milestone 3. **No anon access.** Staff read + update `status` only.
 - `request_events` — audit trail (created / status changes with acting staff user).
-- `staff` — allow-list of auth users who are clinic staff (`private.is_staff()` gates RLS).
+- `staff` — auth users who are clinic staff (`private.is_staff()` gates RLS). Rows are created automatically.
+- `staff_allowlist` — emails allowed to become staff. When an auth user with a **confirmed** email on this list
+  exists, a `staff` row is created by trigger. No API access; manage it in the SQL editor:
+  ```sql
+  insert into public.staff_allowlist (email, display_name) values ('someone@example.com', 'Their Name');
+  ```
+  Create the matching user in Supabase → Authentication → Users (with a password, auto-confirmed).
+- Staff may only change a request's `status` (column-level grant); every change is logged with the staff user.
+  Requests can't be moved back to `submitted`.
 - RPC `submit_request(...)` — validates & inserts; returns reference code + one-time status token (only its SHA-256 hash is stored). Rate-limited to 5 requests/hour per email.
 - RPC `get_request_status(token)` — returns minimal, non-identifying status info for a valid token.
 
