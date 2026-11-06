@@ -288,7 +288,7 @@ function ForClinics() {
             icon={<SparkleIcon className="h-6 w-6" />}
             title="AI summaries"
             body="Concise summaries of administrative notes and a suggested service, with uncertain cases flagged for review."
-            soon
+
           />
           <Feature
             icon={<CheckIcon className="h-6 w-6" />}
@@ -326,8 +326,8 @@ function Roadmap() {
     { label: 'Private patient status page', status: 'done' },
     { label: 'Secure staff sign-in & request dashboard', status: 'done' },
     { label: 'Request status management with audit history', status: 'done' },
-    { label: 'AI request summaries & service suggestions (OpenAI)', status: 'next' },
-    { label: 'Email notifications on status changes', status: 'planned' },
+    { label: 'AI request summaries & service suggestions (OpenAI)', status: 'done' },
+    { label: 'Email notifications on status changes', status: 'next' },
   ]
   const badge = {
     done: 'bg-teal-100 text-teal-800',

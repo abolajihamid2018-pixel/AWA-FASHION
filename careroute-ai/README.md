@@ -16,8 +16,8 @@ Stack: React · TypeScript · Vite · Tailwind CSS v4 · Supabase (Postgres, Aut
 |---|---|
 | 1. Services catalogue, patient request submission, private status page, DB + RLS | ✅ Done |
 | 2. Staff sign-in, dashboard, status management | ✅ Done |
-| 3. OpenAI summaries + service suggestions (Edge Function) | Next |
-| 4. Email notifications | Planned |
+| 3. OpenAI summaries + service suggestions (Edge Function) | ✅ Done |
+| 4. Email notifications | Next |
 | 5. Polish + Vercel deployment | Planned |
 
 ## Run
@@ -64,6 +64,19 @@ Supabase Edge Function secrets.
 - RPC `get_request_status(token)` — returns minimal, non-identifying status info for a valid token.
 
 Migrations are applied to the Supabase project via the Supabase connector; the SQL files here are the source of truth.
+
+## AI (Edge Function `supabase/functions/process-request`)
+
+- Runs **after** the request is saved (patient browser triggers it with the status token; staff can re-run).
+  AI failures only set `ai_status = 'failed'` — the request is never lost.
+- OpenAI Chat Completions with a strict JSON schema; output is re-validated server-side.
+- Staff review is forced when: model is unsure, confidence is low, the note contains clinical details,
+  no service matches, or the suggested service differs from the patient's choice.
+- Administrative only: the prompt forbids diagnosis, symptom assessment, treatment or clinical decisions,
+  and treats the patient note as untrusted (prompt-injection resistant).
+- Secrets (Supabase → Edge Functions → Secrets): `OPENAI_API_KEY` (or `open_ai_key`), optional `OPENAI_MODEL`
+  (default `gpt-4.1-mini`). The key never reaches the browser.
+- Deployed with `verify_jwt = false`; the function authenticates callers itself.
 
 ## Structure
 

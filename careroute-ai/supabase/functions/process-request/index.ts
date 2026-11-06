@@ -7,7 +7,7 @@
 //   - Patient browser right after submitting: { status_token }  -> processed only if still 'pending'
 //   - Signed-in staff (Authorization: Bearer <user JWT>): { request_id } -> (re)processes on demand
 //
-// Secrets: OPENAI_API_KEY (required), OPENAI_MODEL (optional).
+// Secrets: OPENAI_API_KEY or open_ai_key (required), OPENAI_MODEL (optional).
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by the platform.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
@@ -76,8 +76,15 @@ Strict rules:
 - summary: one or two plain sentences, max 280 characters, no personal contact details.`
 
 async function callOpenAI(services: ServiceRow[], request: Record<string, unknown>): Promise<AiResult> {
-  const apiKey = Deno.env.get('OPENAI_API_KEY')
-  if (!apiKey) throw new Error('OPENAI_API_KEY is not configured')
+  // Accept the conventional name plus the name used in this project's dashboard.
+  const apiKey = (Deno.env.get('OPENAI_API_KEY') ?? Deno.env.get('open_ai_key') ?? Deno.env.get('OPEN_AI_KEY'))?.trim()
+  if (!apiKey) {
+    // Help diagnose mis-named secrets: report similar NAMES only (never values).
+    const similar = Object.keys(Deno.env.toObject()).filter((k) => /openai|api_?key|^sk/i.test(k) && !k.startsWith('SUPABASE'))
+    throw new Error(
+      `OPENAI_API_KEY is not configured${similar.length ? ` (similar secret names found: ${similar.join(', ')})` : ' (no similar secret names found)'}`,
+    )
+  }
 
   const slugs = [...services.map((s) => s.slug), 'none']
   const schema = {
