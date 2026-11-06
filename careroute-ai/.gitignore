@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 
 # Env
-.env
+# .env holds only public values and is committed intentionally
 .env.local
 .env.*.local

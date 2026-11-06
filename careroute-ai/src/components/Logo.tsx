@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom'
+
 export function Logo({ className = '' }: { className?: string }) {
   return (
-    <a href="#top" className={`flex items-center gap-2.5 ${className}`} aria-label="CareRoute AI home">
+    <Link to="/" className={`flex items-center gap-2.5 ${className}`} aria-label="CareRoute AI home">
       <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden="true">
         <defs>
           <linearGradient id="logo-g" x1="0" y1="0" x2="1" y2="1">
@@ -16,6 +18,6 @@ export function Logo({ className = '' }: { className?: string }) {
       <span className="text-lg font-bold tracking-tight text-slate-900">
         CareRoute <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">AI</span>
       </span>
-    </a>
+    </Link>
   )
 }
