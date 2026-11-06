@@ -212,7 +212,7 @@ export type Database = {
       }
     }
     Enums: {
-      ai_status: 'pending' | 'completed' | 'failed' | 'skipped'
+      ai_status: 'pending' | 'processing' | 'completed' | 'failed' | 'skipped'
       request_status: 'submitted' | 'in_review' | 'approved' | 'declined' | 'cancelled'
       service_kind: 'appointment' | 'administrative'
     }

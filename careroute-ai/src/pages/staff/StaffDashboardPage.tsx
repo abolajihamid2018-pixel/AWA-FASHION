@@ -45,6 +45,8 @@ function AiCell({ r }: { r: StaffRequest }) {
     )
   }
   if (r.ai_status === 'failed') return <span className="text-xs text-red-700">AI failed</span>
+  if (r.ai_status === 'processing') return <span className="text-xs text-blue-700">Processing…</span>
+  if (r.ai_status === 'skipped') return <span className="text-xs text-slate-400">No note</span>
   return <span className="text-xs text-slate-400">Not processed</span>
 }
 

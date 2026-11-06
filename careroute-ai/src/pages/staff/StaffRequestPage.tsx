@@ -14,6 +14,7 @@ import {
   getRequest,
   listRequestEvents,
   listStaff,
+  rerunAi,
   updateRequestStatus,
   type RequestEvent,
   type RequestStatus,
@@ -87,6 +88,14 @@ export function StaffRequestPage() {
     const t = setTimeout(load, 0)
     return () => clearTimeout(t)
   }, [load])
+
+  // Poll while the AI summary is being generated.
+  const processing = request?.ai_status === 'processing'
+  useEffect(() => {
+    if (!processing) return
+    const t = setInterval(load, 4000)
+    return () => clearInterval(t)
+  }, [processing, load])
 
   async function confirmChange() {
     if (!pending || !request) return
@@ -184,7 +193,7 @@ export function StaffRequestPage() {
             title="AI summary"
             action={<SparkleIcon className="h-5 w-5 text-teal-600" />}
           >
-            <AiPanel request={request} />
+            <AiPanel request={request} onRerun={async () => { await rerunAi(request.id); await load() }} />
           </Card>
         </div>
 
@@ -262,35 +271,85 @@ export function StaffRequestPage() {
   )
 }
 
-function AiPanel({ request }: { request: StaffRequest }) {
+function AiPanel({ request, onRerun }: { request: StaffRequest; onRerun: () => Promise<void> }) {
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  const rerun = async () => {
+    setBusy(true)
+    setErr(null)
+    try {
+      await onRerun()
+    } catch (e) {
+      setErr((e as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const rerunButton = (label: string) => (
+    <button
+      type="button"
+      onClick={rerun}
+      disabled={busy}
+      className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+    >
+      {busy ? 'Running…' : label}
+    </button>
+  )
+
+  let body: ReactNode
   if (request.ai_status === 'completed') {
-    return (
+    body = (
       <div className="space-y-4">
-        {request.ai_needs_review && (
+        {request.ai_needs_review ? (
           <Alert tone="amber" title="Flagged for staff review">{request.ai_reason}</Alert>
+        ) : (
+          <p className="inline-flex rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-teal-800 ring-1 ring-teal-200">
+            No issues flagged
+          </p>
         )}
         <p className="text-sm leading-relaxed text-slate-800">{request.ai_summary}</p>
         <dl className="grid gap-4 sm:grid-cols-2">
           <Detail label="Suggested service">{request.suggested_service?.name ?? 'No suggestion'}</Detail>
-          <Detail label="Confidence">{request.ai_confidence ?? '—'}</Detail>
+          <Detail label="Confidence"><span className="capitalize">{request.ai_confidence ?? '—'}</span></Detail>
         </dl>
         <p className="text-xs text-slate-500">
-          AI output is administrative assistance only and may be wrong. Always check the original request.
+          Administrative assistance only — it may be wrong and is never clinical advice. Always check the original note.
         </p>
       </div>
     )
-  }
-  if (request.ai_status === 'failed') {
-    return (
-      <p className="text-sm text-slate-600">
-        The AI summary could not be generated for this request. The original request above is complete and can be
-        handled normally.
-      </p>
+  } else if (request.ai_status === 'processing') {
+    body = <Spinner label="Generating summary…" />
+  } else if (request.ai_status === 'pending') {
+    body = <p className="text-sm text-slate-600">This request hasn't been processed by the AI yet.</p>
+  } else if (request.ai_status === 'skipped') {
+    body = <p className="text-sm text-slate-600">{request.ai_reason ?? 'No note was provided, so there was nothing to summarise.'}</p>
+  } else {
+    body = (
+      <div className="space-y-2">
+        <p className="text-sm text-slate-600">
+          The AI summary couldn't be generated. The original request above is complete and can be handled normally.
+        </p>
+        {request.ai_error && (
+          <details className="text-xs text-slate-500">
+            <summary className="cursor-pointer">Technical details</summary>
+            <p className="mt-1 break-words">{request.ai_error}</p>
+          </details>
+        )}
+      </div>
     )
   }
+
   return (
-    <p className="text-sm text-slate-500">
-      No AI summary yet. AI summaries and service suggestions (OpenAI) are being added in the next milestone.
-    </p>
+    <div className="space-y-4">
+      {body}
+      {err && <Alert title="AI not started">{err}</Alert>}
+      {request.ai_status !== 'processing' && (
+        <div>
+          {rerunButton(request.ai_status === 'failed' ? 'Try again' : request.ai_status === 'pending' ? 'Generate summary' : 'Run AI again')}
+        </div>
+      )}
+    </div>
   )
 }

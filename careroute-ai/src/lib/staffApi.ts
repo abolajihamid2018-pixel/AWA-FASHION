@@ -83,6 +83,12 @@ export async function updateRequestStatus(id: string, status: RequestStatus): Pr
   if (!data || data.length === 0) throw new Error('You do not have permission to update this request.')
 }
 
+/** Staff-triggered (re)run of the AI summary for one request. */
+export async function rerunAi(id: string): Promise<void> {
+  const { error } = await client().functions.invoke('process-request', { body: { request_id: id } })
+  if (error) throw new Error('Could not start the AI summary. Please try again.')
+}
+
 /** Which status changes staff can make from each status. */
 export const NEXT_STATUSES: Record<RequestStatus, RequestStatus[]> = {
   submitted: ['in_review', 'approved', 'declined', 'cancelled'],

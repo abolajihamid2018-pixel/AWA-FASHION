@@ -87,7 +87,13 @@ export async function submitRequest(input: SubmitRequestInput): Promise<SubmitRe
   if (error) {
     throw new Error(SUBMIT_ERRORS[error.message] ?? 'Something went wrong while sending your request. Please try again.')
   }
-  return data as unknown as SubmitRequestResult
+  const result = data as unknown as SubmitRequestResult
+  // The request is already saved. Ask the server to generate the staff-facing AI summary in the
+  // background; failures are recorded server-side and never affect the patient.
+  void client()
+    .functions.invoke('process-request', { body: { status_token: result.status_token } })
+    .catch(() => undefined)
+  return result
 }
 
 export async function getRequestStatus(token: string): Promise<RequestStatusView | null> {
