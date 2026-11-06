@@ -1,6 +1,6 @@
 import type { PreferredTime, RequestStatus } from './api'
 
-/** Fictional clinic used for the hackathon demo. */
+/** Clinic shown throughout the app. */
 export const CLINIC_NAME = 'Riverside Community Clinic'
 
 export function formatDate(iso: string | null): string {

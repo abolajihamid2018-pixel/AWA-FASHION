@@ -8,7 +8,7 @@ const links: { to: string; label: string; hash?: boolean }[] = [
   { to: '/services', label: 'Services' },
   { to: '/#how-it-works', label: 'How it works', hash: true },
   { to: '/#for-clinics', label: 'For clinics', hash: true },
-  { to: '/#roadmap', label: 'Project status', hash: true },
+  { to: '/#safety', label: 'Safety', hash: true },
 ]
 
 const linkClass = 'text-sm font-medium text-slate-600 transition hover:text-blue-700'

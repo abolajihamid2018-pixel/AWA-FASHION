@@ -237,7 +237,9 @@ Deno.serve(async (req) => {
 
     // Server-side review rules on top of the model's own flag.
     const reasons: string[] = []
-    if (result.needs_review && result.review_reason) reasons.push(result.review_reason)
+    // Skip the model's own reason when it only repeats the clinical-content flag added below.
+    const repeatsClinical = result.contains_clinical_content && /clinical|medical/i.test(result.review_reason)
+    if (result.needs_review && result.review_reason && !repeatsClinical) reasons.push(result.review_reason)
     if (result.contains_clinical_content) reasons.push('Note appears to contain clinical details — read the original note.')
     if (result.confidence === 'low') reasons.push('Low confidence.')
     if (!suggested) reasons.push('No matching service found.')

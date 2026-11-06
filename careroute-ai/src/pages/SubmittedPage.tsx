@@ -54,14 +54,14 @@ export function SubmittedPage() {
 
         <p className="mt-6 leading-relaxed text-slate-700">
           Your <strong>{state.serviceName}</strong> request has been sent to the clinic. Staff will review it.{' '}
-          <strong>This is not a confirmed appointment yet.</strong> If email updates are enabled for this demo,
-          you'll also get a confirmation email.
+          <strong>This is not a confirmed appointment yet.</strong> We'll also send updates to your email
+          address.
         </p>
 
         <div className="mt-6">
           <Alert tone="amber" title="Save your private status link">
-            This link is the only way to check your request status in this prototype, and it's shown only once.
-            Anyone with the link can see the request's status, so keep it private.
+            Use this link to check your request status at any time. It's also in your confirmation email. Anyone
+            with the link can see the request's status, so keep it private.
           </Alert>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row">
             <input

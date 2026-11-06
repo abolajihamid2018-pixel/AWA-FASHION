@@ -214,8 +214,8 @@ export function RequestPage() {
               className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 accent-blue-600"
             />
             <span>
-              I understand this is a <strong>request, not a confirmed appointment</strong>, that this demo uses
-              fictional data, and that I haven't included medical information.
+              I understand this is a <strong>request, not a confirmed appointment</strong>, and that I haven't
+              included medical information.
             </span>
           </label>
 

@@ -132,8 +132,8 @@ export function StaffRequestPage() {
     setFlash(EMAIL_RESULT_COPY[r] || 'Email already sent.')
   }
 
-  const actorName = (uid: string | null) => {
-    if (!uid) return 'Patient'
+  const actorName = (uid: string | null, eventType?: string) => {
+    if (!uid) return eventType === 'created' ? 'Patient' : 'Clinic staff'
     const s = staff.find((m) => m.user_id === uid)
     return s?.display_name || s?.email || 'Staff member'
   }
@@ -278,7 +278,7 @@ export function StaffRequestPage() {
                         : e.event_type.replace('_', ' ')}
                   </p>
                   <p className="text-xs text-slate-500">
-                    {actorName(e.actor_user_id)} · {formatDateTime(e.created_at)}
+                    {actorName(e.actor_user_id, e.event_type)} · {formatDateTime(e.created_at)}
                   </p>
                   <EmailStatus event={e} onRetry={e.id === lastStatusEventId ? retryEmail : undefined} />
                 </li>

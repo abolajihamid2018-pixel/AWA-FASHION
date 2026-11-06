@@ -40,7 +40,7 @@ function Hero() {
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-800">
             <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
-            Built for DSH Hacks V2
+            AI-assisted clinic coordination
           </span>
 
           <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
@@ -89,7 +89,7 @@ function Hero() {
   )
 }
 
-/** Static, illustrative UI mock — not live data. */
+/** Static product illustration (not live data). */
 function HeroPreview() {
   return (
     <div className="relative mx-auto w-full max-w-md lg:max-w-none">
@@ -97,7 +97,7 @@ function HeroPreview() {
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm font-semibold text-slate-900">Request CR-7KQ2MD</p>
           <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-500">
-            Illustrative preview
+            Example
           </span>
         </div>
 
@@ -247,14 +247,11 @@ function HowItWorks() {
 
 /* ---------------- For clinics ---------------- */
 
-function Feature({ icon, title, body, soon }: { icon: ReactNode; title: string; body: string; soon?: boolean }) {
+function Feature({ icon, title, body }: { icon: ReactNode; title: string; body: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-xl hover:shadow-slate-900/5">
       <div className="flex items-start justify-between gap-3">
         <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600">{icon}</div>
-        {soon && (
-          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-500">In development</span>
-        )}
       </div>
       <h3 className="mt-5 text-lg font-semibold text-slate-900">{title}</h3>
       <p className="mt-2 leading-relaxed text-slate-600">{body}</p>
@@ -299,7 +296,7 @@ function ForClinics() {
           <Feature
             icon={<BellIcon className="h-6 w-6" />}
             title="Patient updates"
-            body="Patients follow their request on a private status page and get an email when staff change its status."
+            body="Patients follow their request on a private status page and receive email updates when its status changes."
 
           />
           <Feature
@@ -317,44 +314,41 @@ function ForClinics() {
   )
 }
 
-/* ---------------- Roadmap ---------------- */
+/* ---------------- Built responsibly ---------------- */
 
-function Roadmap() {
-  const items: { label: string; status: 'done' | 'next' | 'planned' }[] = [
-    { label: 'Clinic service catalogue', status: 'done' },
-    { label: 'Patient request submission (saved in Supabase)', status: 'done' },
-    { label: 'Private patient status page', status: 'done' },
-    { label: 'Secure staff sign-in & request dashboard', status: 'done' },
-    { label: 'Request status management with audit history', status: 'done' },
-    { label: 'AI request summaries & service suggestions (OpenAI)', status: 'done' },
-    { label: 'Email notifications for patients (Resend)', status: 'done' },
-    { label: 'Live deployment on Vercel', status: 'done' },
+function Responsible() {
+  const points = [
+    {
+      icon: <UsersIcon className="h-6 w-6" />,
+      title: 'Humans make every decision',
+      body: 'A request is never treated as a confirmed appointment until clinic staff approve it.',
+    },
+    {
+      icon: <SparkleIcon className="h-6 w-6" />,
+      title: 'AI stays administrative',
+      body: 'AI summarises requests and suggests services. It never diagnoses, assesses symptoms or recommends treatment, and flags anything uncertain for staff.',
+    },
+    {
+      icon: <ShieldIcon className="h-6 w-6" />,
+      title: 'Private by default',
+      body: 'Each patient can only see their own request through a private link, and only signed-in staff can view the request queue.',
+    },
   ]
-  const badge = {
-    done: 'bg-teal-100 text-teal-800',
-    next: 'bg-blue-100 text-blue-800',
-    planned: 'bg-slate-100 text-slate-600',
-  }
-  const text = { done: 'Live', next: 'Up next', planned: 'Planned' }
-
   return (
-    <section id="roadmap" className="scroll-mt-20 py-20 sm:py-24">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Project status"
-          title="Where we are today"
-          intro="CareRoute AI is a hackathon prototype. Here's exactly what works now and what's coming."
-        />
-        <ul className="mt-12 divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          {items.map((it) => (
-            <li key={it.label} className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6">
-              <span className="font-medium text-slate-800">{it.label}</span>
-              <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${badge[it.status]}`}>
-                {text[it.status]}
-              </span>
-            </li>
+    <section id="safety" className="scroll-mt-20 py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <SectionHeading eyebrow="Built responsibly" title="Safe, private and human-led" />
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
+          {points.map((p) => (
+            <div key={p.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-teal-500 text-white">
+                {p.icon}
+              </div>
+              <h3 className="mt-5 text-lg font-semibold text-slate-900">{p.title}</h3>
+              <p className="mt-2 leading-relaxed text-slate-600">{p.body}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   )
@@ -368,10 +362,10 @@ function CallToAction() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-teal-500 px-6 py-14 text-center shadow-xl sm:px-12 sm:py-16">
           <div aria-hidden="true" className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
-          <h2 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">Try the patient experience</h2>
+          <h2 className="relative text-3xl font-bold tracking-tight text-white sm:text-4xl">Need something from the clinic?</h2>
           <p className="relative mx-auto mt-4 max-w-xl text-lg text-blue-50">
-            Submit a demo request to <span className="font-semibold">{CLINIC_NAME}</span>, our fictional clinic. Please
-            use made-up details.
+            Send a request to <span className="font-semibold">{CLINIC_NAME}</span> in a few minutes and follow it
+            online.
           </p>
           <div className="relative mt-8 flex justify-center">
             <Link
@@ -395,7 +389,7 @@ export function LandingPage() {
       <Problem />
       <HowItWorks />
       <ForClinics />
-      <Roadmap />
+      <Responsible />
       <CallToAction />
     </>
   )

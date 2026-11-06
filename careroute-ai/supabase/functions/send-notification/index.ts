@@ -72,7 +72,7 @@ function layout(title: string, paragraphs: string[], cta?: { href: string; label
       <h1 style="margin:0 0 16px;font-size:20px;color:#0f172a">${esc(title)}</h1>${body}${button}
     </div>
     <p style="margin:18px 0 0;font-size:12px;line-height:1.5;color:#64748b">
-      Hackathon prototype for ${CLINIC_NAME}, a fictional clinic. Administrative messages only — not medical advice.
+      Sent by CareRoute AI on behalf of ${CLINIC_NAME}. Administrative messages only — not medical advice.
       In an emergency, call 911 or your local emergency number.
     </p>
   </div></body></html>`

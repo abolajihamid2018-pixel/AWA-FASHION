@@ -27,8 +27,7 @@ export function ServicesPage() {
       title="Clinic services"
       intro={
         <>
-          Choose the service that best matches your request to <strong className="text-slate-800">{CLINIC_NAME}</strong>{' '}
-          <span className="text-base text-slate-500">(fictional demo clinic)</span>.
+          Choose the service that best matches your request to <strong className="text-slate-800">{CLINIC_NAME}</strong>.
         </>
       }
     >

@@ -62,7 +62,7 @@ export function StaffLayout() {
       </main>
 
       <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">
-        CareRoute AI staff area · prototype with fictional data · requests are not confirmed until approved
+        CareRoute AI staff area · requests are not confirmed until approved by staff · AI output is advisory only
       </footer>
     </div>
   )

@@ -29,17 +29,16 @@ export function Layout() {
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
-            <strong className="font-semibold">Prototype notice:</strong> CareRoute AI is a hackathon prototype using
-            fictional demo data for <em>{CLINIC_NAME}</em>, a fictional clinic. It handles administrative requests only
-            and does not give medical advice. Please don't enter real personal or medical information. In an
-            emergency, call 911 or your local emergency number.
+            <strong className="font-semibold">Important:</strong> CareRoute AI handles administrative requests for{' '}
+            {CLINIC_NAME} only. It does not provide medical advice, diagnosis or treatment, so please don't include
+            medical details in your request. In an emergency, call 911 or your local emergency number.
           </div>
           <div className="mt-8 flex flex-col items-center justify-between gap-4 text-sm text-slate-500 sm:flex-row">
-            <p>© {YEAR} CareRoute AI · A DSH Hacks V2 project</p>
+            <p>© {YEAR} CareRoute AI</p>
             <div className="flex gap-6">
               <Link to="/services" className="hover:text-slate-800">Services</Link>
               <a href="/#how-it-works" className="hover:text-slate-800">How it works</a>
-              <a href="/#roadmap" className="hover:text-slate-800">Project status</a>
+              <a href="/#safety" className="hover:text-slate-800">Safety</a>
               <Link to="/staff/login" className="hover:text-slate-800">Staff sign-in</Link>
             </div>
           </div>
