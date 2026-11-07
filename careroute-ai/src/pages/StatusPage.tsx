@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Alert, ButtonLink, NotConfigured, PageShell, Spinner, StatusBadge } from '../components/ui'
 import { getRequestStatus, type RequestStatusView } from '../lib/api'
-import { CLINIC_NAME, STATUS_INFO, TIME_LABELS, formatDate, formatDateTime } from '../lib/format'
+import { CLINIC_NAME, STATUS_INFO, TIME_LABELS, formatClock, formatDate, formatDateTime } from '../lib/format'
 import { isSupabaseConfigured } from '../lib/supabase'
 
 type State =
@@ -73,6 +73,15 @@ function StatusCard({ request }: { request: RequestStatusView }) {
         {info.description}
       </p>
 
+      {confirmed && request.appointment_time && (
+        <div className="mt-4 rounded-xl border border-teal-200 bg-white p-4">
+          <p className="text-xs font-semibold tracking-wide text-teal-700 uppercase">Your appointment</p>
+          <p className="mt-1 text-lg font-bold text-slate-900">
+            {formatDate(request.preferred_date)} at {formatClock(request.appointment_time)}
+          </p>
+        </div>
+      )}
+
       <dl className="mt-6 grid gap-4 sm:grid-cols-3">
         <div>
           <dt className="text-xs font-medium tracking-wide text-slate-500 uppercase">Service</dt>
@@ -95,8 +104,15 @@ function StatusCard({ request }: { request: RequestStatusView }) {
         {request.history.map((h, i) => (
           <li key={i} className="relative">
             <span className="absolute top-1.5 -left-[27px] h-3 w-3 rounded-full border-2 border-white bg-blue-600 ring-2 ring-blue-100" />
-            <p className="text-sm font-medium text-slate-800">{STATUS_INFO[h.status].label}</p>
+            <p className="text-sm font-medium text-slate-800">
+              {h.type === 'staff_message' ? 'Message from the clinic' : h.status ? STATUS_INFO[h.status].label : ''}
+            </p>
             <p className="text-xs text-slate-500">{formatDateTime(h.at)}</p>
+            {h.message && (
+              <p className="mt-1.5 rounded-lg bg-slate-50 px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap text-slate-700">
+                {h.message}
+              </p>
+            )}
           </li>
         ))}
       </ol>

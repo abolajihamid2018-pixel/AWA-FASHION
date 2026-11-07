@@ -16,6 +16,7 @@ export interface RequestEvent {
   to_status: RequestStatus | null
   actor_user_id: string | null
   created_at: string
+  message: string | null
   notified_at: string | null
   notify_error: string | null
 }
@@ -29,7 +30,7 @@ export interface StaffMember {
 // Everything except the token hash, plus the joined service names.
 const REQUEST_COLUMNS = `
   id, reference_code, service_id, patient_name, patient_email, patient_phone,
-  preferred_date, preferred_time, enquiry, status,
+  preferred_date, preferred_time, appointment_time, enquiry, status,
   ai_status, ai_summary, ai_suggested_service_id, ai_confidence, ai_needs_review, ai_reason, ai_error, ai_processed_at,
   created_at, updated_at,
   service:services!requests_service_id_fkey ( name, kind ),
@@ -60,7 +61,7 @@ export async function getRequest(id: string): Promise<StaffRequest | null> {
 export async function listRequestEvents(requestId: string): Promise<RequestEvent[]> {
   const { data, error } = await client()
     .from('request_events')
-    .select('id, event_type, from_status, to_status, actor_user_id, created_at, notified_at, notify_error')
+    .select('id, event_type, from_status, to_status, actor_user_id, created_at, message, notified_at, notify_error')
     .eq('request_id', requestId)
     .order('created_at')
   if (error) throw new Error('Could not load request history.')
@@ -73,16 +74,31 @@ export async function listStaff(): Promise<StaffMember[]> {
   return data
 }
 
-export async function updateRequestStatus(id: string, status: RequestStatus): Promise<void> {
-  const { data, error } = await client().from('requests').update({ status }).eq('id', id).select('id')
-  if (error) {
-    throw new Error(
-      error.message === 'invalid_status_transition'
-        ? 'That status change is not allowed.'
-        : 'Could not update the status. Please try again.',
-    )
-  }
-  if (!data || data.length === 0) throw new Error('You do not have permission to update this request.')
+const STAFF_ERRORS: Record<string, string> = {
+  invalid_status_transition: 'That status change is not allowed.',
+  status_unchanged: 'The request already has this status.',
+  time_required: 'Choose an appointment time before approving.',
+  message_required: 'Write a message first.',
+  message_too_long: 'Messages can be up to 500 characters.',
+  forbidden: 'You do not have permission to update this request.',
+  not_found: 'This request no longer exists.',
+}
+
+/** Change status, optionally with a confirmed time ("HH:MM") and a message to the patient. */
+export async function setRequestStatus(id: string, status: RequestStatus, opts: { time?: string; message?: string } = {}) {
+  const { error } = await client().rpc('staff_set_status', {
+    p_request_id: id,
+    p_status: status,
+    p_appointment_time: opts.time || null,
+    p_message: opts.message?.trim() || null,
+  })
+  if (error) throw new Error(STAFF_ERRORS[error.message] ?? 'Could not update the status. Please try again.')
+}
+
+/** Send the patient a message without changing the status. */
+export async function sendPatientMessage(id: string, message: string) {
+  const { error } = await client().rpc('staff_send_message', { p_request_id: id, p_message: message })
+  if (error) throw new Error(STAFF_ERRORS[error.message] ?? 'Could not send the message. Please try again.')
 }
 
 /** Staff-triggered (re)run of the AI summary for one request. */

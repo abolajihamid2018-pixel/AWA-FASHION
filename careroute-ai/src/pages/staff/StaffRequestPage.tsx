@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { SparkleIcon } from '../../components/Icons'
 import { Alert, Spinner } from '../../components/ui'
@@ -6,6 +6,7 @@ import {
   STAFF_STATUS_LABELS,
   STATUS_ACTION_LABELS,
   TIME_LABELS,
+  formatClock,
   formatDate,
   formatDateTime,
 } from '../../lib/format'
@@ -16,7 +17,8 @@ import {
   listStaff,
   notifyPatient,
   rerunAi,
-  updateRequestStatus,
+  sendPatientMessage,
+  setRequestStatus,
   type RequestEvent,
   type RequestStatus,
   type StaffMember,
@@ -78,6 +80,8 @@ export function StaffRequestPage() {
   const [error, setError] = useState<string | null>(null)
 
   const [pending, setPending] = useState<RequestStatus | null>(null)
+  const [apptTime, setApptTime] = useState('')
+  const [statusMessage, setStatusMessage] = useState('')
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [flash, setFlash] = useState<string | null>(null)
@@ -111,8 +115,10 @@ export function StaffRequestPage() {
     setSaving(true)
     setSaveError(null)
     try {
-      await updateRequestStatus(request.id, pending)
+      await setRequestStatus(request.id, pending, { time: apptTime, message: statusMessage })
       const emailed = await notifyPatient(request.id)
+      setApptTime('')
+      setStatusMessage('')
       await load()
       setFlash(`Status changed to “${STAFF_STATUS_LABELS[pending]}”. ${EMAIL_RESULT_COPY[emailed]}`)
       setPending(null)
@@ -123,7 +129,16 @@ export function StaffRequestPage() {
     }
   }
 
-  const lastStatusEventId = [...events].reverse().find((e) => e.event_type === 'status_changed')?.id
+  // The newest status change or message is the one the email function sends for.
+  const lastStatusEventId = [...events].reverse().find((e) => e.event_type === 'status_changed' || e.event_type === 'staff_message')?.id
+
+  async function sendMessage(text: string) {
+    if (!request) return
+    await sendPatientMessage(request.id, text)
+    const emailed = await notifyPatient(request.id)
+    await load()
+    setFlash(`Message sent to the patient's status page. ${EMAIL_RESULT_COPY[emailed]}`)
+  }
 
   async function retryEmail() {
     if (!request) return
@@ -133,7 +148,7 @@ export function StaffRequestPage() {
   }
 
   const actorName = (uid: string | null, eventType?: string) => {
-    if (!uid) return eventType === 'created' ? 'Patient' : 'Clinic staff'
+    if (!uid) return eventType === 'created' ? 'Patient' : eventType?.startsWith('ai_') ? 'CareRoute AI' : 'Clinic staff'
     const s = staff.find((m) => m.user_id === uid)
     return s?.display_name || s?.email || 'Staff member'
   }
@@ -197,6 +212,13 @@ export function StaffRequestPage() {
                 {formatDate(request.preferred_date)}
               </Detail>
               <Detail label="Time of day">{TIME_LABELS[request.preferred_time as keyof typeof TIME_LABELS]}</Detail>
+              {request.appointment_time && (
+                <Detail label="Confirmed appointment">
+                  <span className="font-semibold text-teal-700">
+                    {formatDate(request.preferred_date)} at {formatClock(request.appointment_time.slice(0, 5))}
+                  </span>
+                </Detail>
+              )}
             </dl>
             <div className="mt-5">
               <p className="text-xs font-medium text-slate-500">Original note from patient</p>
@@ -226,19 +248,53 @@ export function StaffRequestPage() {
                   {STATUS_ACTION_LABELS[pending]} {request.reference_code}?
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">{CONFIRM_COPY[pending]}</p>
+                {pending === 'approved' && request.service?.kind === 'appointment' && (
+                  <div className="mt-4">
+                    <label htmlFor="appt-time" className="block text-xs font-medium text-slate-700">
+                      Appointment time on {formatDate(request.preferred_date)} <span className="text-red-600">*</span>
+                    </label>
+                    <input
+                      id="appt-time"
+                      type="time"
+                      required
+                      step={300}
+                      value={apptTime}
+                      onChange={(e) => setApptTime(e.target.value)}
+                      className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+                    />
+                    <p className="mt-1 text-xs text-slate-500">
+                      Patient preferred: {TIME_LABELS[request.preferred_time as keyof typeof TIME_LABELS].toLowerCase()}
+                    </p>
+                  </div>
+                )}
+                <div className="mt-4">
+                  <label htmlFor="status-msg" className="block text-xs font-medium text-slate-700">
+                    Message to patient <span className="font-normal text-slate-500">(optional)</span>
+                  </label>
+                  <textarea
+                    id="status-msg"
+                    rows={3}
+                    maxLength={500}
+                    value={statusMessage}
+                    onChange={(e) => setStatusMessage(e.target.value)}
+                    placeholder="e.g. Please arrive 10 minutes early and bring photo ID."
+                    className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+                  />
+                  <p className="mt-1 text-xs text-slate-500">Shown on the patient's status page and included in the email.</p>
+                </div>
                 {saveError && <div className="mt-3"><Alert title="Not saved">{saveError}</Alert></div>}
                 <div className="mt-4 flex gap-2">
                   <button
                     type="button"
                     onClick={confirmChange}
-                    disabled={saving}
+                    disabled={saving || (pending === 'approved' && request.service?.kind === 'appointment' && !apptTime)}
                     className="flex-1 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
                   >
                     {saving ? 'Saving…' : 'Confirm'}
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setPending(null); setSaveError(null) }}
+                    onClick={() => { setPending(null); setSaveError(null); setApptTime(''); setStatusMessage('') }}
                     disabled={saving}
                     className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   >
@@ -265,6 +321,10 @@ export function StaffRequestPage() {
             )}
           </Card>
 
+          <Card title="Message the patient">
+            <MessageForm onSend={sendMessage} />
+          </Card>
+
           <Card title="History">
             <ol className="space-y-4 border-l-2 border-slate-200 pl-5">
               {events.map((e) => (
@@ -273,13 +333,24 @@ export function StaffRequestPage() {
                   <p className="text-sm font-medium text-slate-800">
                     {e.event_type === 'created'
                       ? 'Request submitted'
+                      : e.event_type === 'staff_message'
+                        ? 'Message to patient'
                       : e.event_type === 'status_changed' && e.to_status
                         ? `${e.from_status ? STAFF_STATUS_LABELS[e.from_status] : ''} → ${STAFF_STATUS_LABELS[e.to_status]}`
-                        : e.event_type.replace('_', ' ')}
+                        : e.event_type === 'ai_completed'
+                          ? 'AI summary generated'
+                          : e.event_type === 'ai_failed'
+                            ? 'AI summary failed'
+                            : e.event_type.replace('_', ' ')}
                   </p>
                   <p className="text-xs text-slate-500">
                     {actorName(e.actor_user_id, e.event_type)} · {formatDateTime(e.created_at)}
                   </p>
+                  {e.message && (
+                    <p className="mt-1 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap text-slate-700">
+                      “{e.message}”
+                    </p>
+                  )}
                   <EmailStatus event={e} onRetry={e.id === lastStatusEventId ? retryEmail : undefined} />
                 </li>
               ))}
@@ -376,7 +447,7 @@ function AiPanel({ request, onRerun }: { request: StaffRequest; onRerun: () => P
 
 function EmailStatus({ event, onRetry }: { event: RequestEvent; onRetry?: () => Promise<void> }) {
   const [busy, setBusy] = useState(false)
-  if (event.event_type !== 'created' && event.event_type !== 'status_changed') return null
+  if (!['created', 'status_changed', 'staff_message'].includes(event.event_type)) return null
   if (event.notified_at && !event.notify_error) {
     return <p className="mt-0.5 text-xs font-medium text-teal-700">✓ Patient emailed</p>
   }
@@ -396,5 +467,52 @@ function EmailStatus({ event, onRetry }: { event: RequestEvent; onRetry?: () => 
         </button>
       )}
     </div>
+  )
+}
+
+function MessageForm({ onSend }: { onSend: (text: string) => Promise<void> }) {
+  const [text, setText] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  async function submit(e: FormEvent) {
+    e.preventDefault()
+    if (!text.trim()) return
+    setBusy(true)
+    setErr(null)
+    try {
+      await onSend(text)
+      setText('')
+    } catch (error) {
+      setErr((error as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="space-y-3">
+      <textarea
+        rows={3}
+        maxLength={500}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        aria-label="Message to patient"
+        placeholder="e.g. Please bring your insurance card to the appointment."
+        className="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
+      />
+      {err && <Alert title="Not sent">{err}</Alert>}
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-xs text-slate-500 tabular-nums">{text.length}/500</span>
+        <button
+          type="submit"
+          disabled={busy || !text.trim()}
+          className="rounded-lg bg-blue-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+        >
+          {busy ? 'Sending…' : 'Send message'}
+        </button>
+      </div>
+      <p className="text-xs text-slate-500">The patient sees this on their status page and receives it by email.</p>
+    </form>
   )
 }

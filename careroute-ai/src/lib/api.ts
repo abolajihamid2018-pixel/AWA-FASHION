@@ -30,10 +30,16 @@ export interface RequestStatusView {
   service_kind: Database['public']['Enums']['service_kind']
   preferred_date: string | null
   preferred_time: PreferredTime
+  appointment_time: string | null
   status: RequestStatus
   created_at: string
   updated_at: string
-  history: { status: RequestStatus; at: string }[]
+  history: {
+    type: 'created' | 'status_changed' | 'staff_message'
+    status: RequestStatus | null
+    at: string
+    message: string | null
+  }[]
 }
 
 export class NotConfiguredError extends Error {

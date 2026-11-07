@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SparkleIcon } from '../../components/Icons'
 import { Alert, Spinner } from '../../components/ui'
-import { STAFF_STATUS_LABELS, STATUS_INFO, TIME_LABELS, TONE_CLASSES, formatDate, formatDateTime } from '../../lib/format'
+import { STAFF_STATUS_LABELS, STATUS_INFO, TIME_LABELS, TONE_CLASSES, formatClock, formatDate, formatDateTime } from '../../lib/format'
 import { listRequests, type RequestStatus, type StaffRequest } from '../../lib/staffApi'
 
 type Filter = 'open' | RequestStatus | 'all'
@@ -230,7 +230,13 @@ export function StaffDashboardPage() {
                       <td className="px-4 py-3 text-slate-700">{r.service?.name ?? '—'}</td>
                       <td className="px-4 py-3 text-slate-700">
                         {formatDate(r.preferred_date)}
-                        <p className="text-xs text-slate-500">{TIME_LABELS[r.preferred_time as keyof typeof TIME_LABELS]}</p>
+                        <p className="text-xs text-slate-500">
+                          {r.appointment_time ? (
+                            <span className="font-semibold text-teal-700">Booked {formatClock(r.appointment_time.slice(0, 5))}</span>
+                          ) : (
+                            TIME_LABELS[r.preferred_time as keyof typeof TIME_LABELS]
+                          )}
+                        </p>
                       </td>
                       <td className="px-4 py-3"><StaffStatusBadge status={r.status} /></td>
                       <td className="px-4 py-3"><AiCell r={r} /></td>

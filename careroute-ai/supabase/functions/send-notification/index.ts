@@ -2,7 +2,7 @@
 //
 // Emails the patient about their request (Brevo, or Resend as a fallback). Never affects the saved request.
 //   - Patient browser right after submitting: { status_token } -> "request received" email (once)
-//   - Signed-in staff after a status change:  { request_id }   -> email for the latest status change (once)
+//   - Signed-in staff after a status change or message: { request_id } -> email for the latest one (once)
 //
 // Secrets (email provider, first one configured wins):
 //   Brevo:  BREVO_API_KEY + BREVO_SENDER_EMAIL (a sender verified in Brevo); optional EMAIL_SENDER_NAME
@@ -85,6 +85,16 @@ function layout(title: string, paragraphs: string[], cta?: { href: string; label
   </div></body></html>`
 }
 
+/** e.g. "Tuesday, 10 November 2026 at 10:30" (clock time as set by staff, no timezone shift). */
+function formatAppointment(date: string | null, time: string | null): string | null {
+  if (!time) return null
+  const hhmm = time.slice(0, 5)
+  if (!date) return hhmm
+  const d = new Date(`${date}T00:00:00Z`)
+  const day = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+  return `${day} at ${hhmm}`
+}
+
 async function sendEmail(to: string, subject: string, html: string, text: string) {
   if (BREVO_API_KEY) {
     if (!BREVO_SENDER_EMAIL) throw new Error('Email is not configured (BREVO_SENDER_EMAIL secret is missing)')
@@ -148,17 +158,17 @@ Deno.serve(async (req) => {
 
   const { data: request } = await admin
     .from('requests')
-    .select('id, reference_code, patient_name, patient_email, status, service:services!requests_service_id_fkey(name)')
+    .select('id, reference_code, patient_name, patient_email, status, preferred_date, appointment_time, service:services!requests_service_id_fkey(name)')
     .eq('id', requestId)
     .maybeSingle()
   if (!request) return json({ error: 'not_found' }, 404)
 
   // Pick the event this email is about.
-  const eventQuery = admin.from('request_events').select('id, to_status, notified_at').eq('request_id', requestId)
+  const eventQuery = admin.from('request_events').select('id, event_type, to_status, message, notified_at').eq('request_id', requestId)
   const { data: event } =
     mode === 'received'
       ? await eventQuery.eq('event_type', 'created').maybeSingle()
-      : await eventQuery.eq('event_type', 'status_changed').order('id', { ascending: false }).limit(1).maybeSingle()
+      : await eventQuery.in('event_type', ['status_changed', 'staff_message']).order('id', { ascending: false }).limit(1).maybeSingle()
   if (!event) return json({ status: 'skipped', reason: 'no_event' })
   if (event.notified_at) return json({ status: 'skipped', reason: 'already_sent' })
 
@@ -196,17 +206,37 @@ Deno.serve(async (req) => {
       ].join('\n\n')
       await sendEmail(request.patient_email, subject, layout('Request received', paragraphs, link ? { href: link, label: 'View request status' } : undefined), text)
     } else {
-      const copy = STATUS_COPY[event.to_status ?? '']
-      if (!copy) throw new Error(`No email template for status ${event.to_status}`)
-      const subject = `Your request ${request.reference_code} ${copy.subject}`
-      const paragraphs = [
-        `Hi ${name},`,
-        `Update on your <strong>${esc(serviceName)}</strong> request (reference <strong>${ref}</strong>):`,
-        `<strong>${esc(copy.line)}</strong>`,
-        'You can see the full history on your private status page.',
-      ]
-      const text = `Hi ${request.patient_name},\n\nUpdate on your ${serviceName} request (reference ${request.reference_code}):\n\n${copy.line}`
-      await sendEmail(request.patient_email, subject, layout('Request update', paragraphs), text)
+      const msg = event.message ? esc(event.message) : null
+      const messageBlock = msg
+        ? `<div style="margin:0 0 14px;padding:12px 14px;background:#f1f5f9;border-left:3px solid #0d9488;border-radius:6px"><strong>Message from the clinic:</strong><br>${msg.replace(/\n/g, '<br>')}</div>`
+        : null
+      if (event.event_type === 'staff_message') {
+        const subject = `A message about your request ${request.reference_code}`
+        const paragraphs = [`Hi ${name},`, `The clinic sent a message about your <strong>${esc(serviceName)}</strong> request (reference <strong>${ref}</strong>):`, messageBlock!]
+        const text = `Hi ${request.patient_name},\n\nThe clinic sent a message about your ${serviceName} request (reference ${request.reference_code}):\n\n${event.message}`
+        await sendEmail(request.patient_email, subject, layout('New message', paragraphs), text)
+      } else {
+        const copy = STATUS_COPY[event.to_status ?? '']
+        if (!copy) throw new Error(`No email template for status ${event.to_status}`)
+        const when = event.to_status === 'approved' ? formatAppointment(request.preferred_date, request.appointment_time) : null
+        const subject = `Your request ${request.reference_code} ${copy.subject}`
+        const paragraphs = [
+          `Hi ${name},`,
+          `Update on your <strong>${esc(serviceName)}</strong> request (reference <strong>${ref}</strong>):`,
+          `<strong>${esc(copy.line)}</strong>`,
+          ...(when ? [`<span style="display:inline-block;padding:10px 14px;background:#ecfdf5;border-radius:8px;color:#065f46">Appointment: <strong>${esc(when)}</strong></span>`] : []),
+          ...(messageBlock ? [messageBlock] : []),
+          'You can see the full history on your private status page.',
+        ]
+        const text = [
+          `Hi ${request.patient_name},`,
+          `Update on your ${serviceName} request (reference ${request.reference_code}):`,
+          copy.line,
+          when ? `Appointment: ${when}` : '',
+          event.message ? `Message from the clinic: ${event.message}` : '',
+        ].filter(Boolean).join('\n\n')
+        await sendEmail(request.patient_email, subject, layout('Request update', paragraphs), text)
+      }
     }
     return json({ status: 'sent' })
   } catch (err) {

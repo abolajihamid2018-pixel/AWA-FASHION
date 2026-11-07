@@ -88,6 +88,13 @@ Migrations are applied to the Supabase project via the Supabase connector; the S
   (default `gpt-4.1-mini`). The key never reaches the browser.
 - Deployed with `verify_jwt = false`; the function authenticates callers itself.
 
+## Staff tools
+
+- **Confirmed time:** approving an appointment requires a time (the patient already picked the date); the patient
+  sees "Your appointment: date at time" on their status page and in the approval email.
+- **Messages to patients:** optional message on any status change, or a standalone message at any time. Shown on the
+  patient's status page and emailed. RPCs: `staff_set_status`, `staff_send_message` (staff-only).
+
 ## Notifications (Edge Function `supabase/functions/send-notification`)
 
 - **Patient:** "request received" email after submitting, and an email after every staff status change

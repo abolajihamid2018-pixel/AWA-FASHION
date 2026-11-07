@@ -16,6 +16,7 @@ export type Database = {
           event_type: string
           from_status: Database['public']['Enums']['request_status'] | null
           id: number
+          message: string | null
           notified_at: string | null
           notify_error: string | null
           request_id: string
@@ -59,6 +60,7 @@ export type Database = {
           ai_status: Database['public']['Enums']['ai_status']
           ai_suggested_service_id: string | null
           ai_summary: string | null
+          appointment_time: string | null
           created_at: string
           enquiry: string | null
           id: string
@@ -199,6 +201,16 @@ export type Database = {
     }
     Functions: {
       get_request_status: { Args: { p_token: string }; Returns: Json }
+      staff_set_status: {
+        Args: {
+          p_request_id: string
+          p_status: Database['public']['Enums']['request_status']
+          p_appointment_time?: string | null
+          p_message?: string | null
+        }
+        Returns: undefined
+      }
+      staff_send_message: { Args: { p_request_id: string; p_message: string }; Returns: number }
       submit_request: {
         Args: {
           p_consent: boolean

@@ -14,6 +14,13 @@ export function formatDateTime(iso: string): string {
   return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
 }
 
+/** "14:30" -> "2:30 PM" in the viewer's locale (clock time, no timezone shift). */
+export function formatClock(hhmm: string | null): string | null {
+  if (!hhmm) return null
+  const [h, m] = hhmm.split(':').map(Number)
+  return new Date(2000, 0, 1, h, m).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+}
+
 export const TIME_LABELS: Record<PreferredTime, string> = {
   morning: 'Morning',
   afternoon: 'Afternoon',
