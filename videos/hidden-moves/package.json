@@ -1,0 +1,11 @@
+{
+  "name": "hidden-moves",
+  "private": true,
+  "type": "module",
+  "description": "Hidden Moves animation engine: code-drawn 9:16 explainer episodes rendered with @napi-rs/canvas + ffmpeg",
+  "dependencies": {"@napi-rs/canvas": "0.1.100"},
+  "scripts": {
+    "stills": "node render.mjs ep01 stills ep01/stills.png 0.5,4,9.5,15,21,29,33,37,44,52,56,60",
+    "video": "node render.mjs ep01 video ep01/picture.mp4"
+  }
+}

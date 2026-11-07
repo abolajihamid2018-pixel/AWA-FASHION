@@ -1,0 +1,133 @@
+[
+ {
+  "id": "hook",
+  "tts": "Why do rival gas stations always end up right next to each other?",
+  "caps": [
+   "Why do rival gas stations",
+   "always end up",
+   "right next to each other?"
+  ]
+ },
+ {
+  "id": "doubt",
+  "tts": "Sharing customers sounds like terrible business.",
+  "caps": [
+   "Sharing customers sounds",
+   "like terrible business."
+  ]
+ },
+ {
+  "id": "play",
+  "tts": "So let's play the game.",
+  "caps": [
+   "So let's play the game."
+  ]
+ },
+ {
+  "id": "road",
+  "tts": "One road. Drivers spread evenly. Everyone fills up at the closest station.",
+  "caps": [
+   "One road.",
+   "Drivers spread evenly.",
+   "Everyone fills up",
+   "at the closest station."
+  ]
+ },
+ {
+  "id": "setup",
+  "tts": "Pip sets up at one end. Dot at the other. Half the road each.",
+  "caps": [
+   "Pip sets up at one end.",
+   "Dot at the other.",
+   "Half the road each."
+  ]
+ },
+ {
+  "id": "idea",
+  "tts": "Ooh. Wait.",
+  "voice": "am_puck",
+  "caps": [
+   "Ooh. Wait."
+  ]
+ },
+ {
+  "id": "pipmove",
+  "tts": "Pip slides toward the middle. Everyone behind still comes to Pip, plus a chunk of Dot's drivers.",
+  "caps": [
+   "Pip slides toward the middle.",
+   "Everyone behind",
+   "still comes to Pip,",
+   "plus a chunk of Dot's drivers."
+  ]
+ },
+ {
+  "id": "dotmove",
+  "tts": "So Dot slides in too, and steals them back.",
+  "caps": [
+   "So Dot slides in too,",
+   "and steals them back."
+  ]
+ },
+ {
+  "id": "race",
+  "tts": "Move, counter move, until they're back to back in the center.",
+  "caps": [
+   "Move, counter-move,",
+   "until they're back to back",
+   "in the center."
+  ]
+ },
+ {
+  "id": "stuck",
+  "tts": "And now they're stuck. Whoever steps away hands the other a bigger share.",
+  "caps": [
+   "And now they're stuck.",
+   "Whoever steps away",
+   "hands the other",
+   "a bigger share."
+  ]
+ },
+ {
+  "id": "law",
+  "tts": "This is Hotelling's Law, first described in 1929.",
+  "caps": [
+   "This is Hotelling's Law,",
+   "first described in 1929."
+  ]
+ },
+ {
+  "id": "twist",
+  "tts": "The twist? Drivers at the ends now drive farther. Two stations at the quarter marks would split customers just the same, and serve everyone better.",
+  "caps": [
+   "The twist?",
+   "Drivers at the ends",
+   "now drive farther.",
+   "Two stations",
+   "at the quarter marks",
+   "would split customers",
+   "just the same,",
+   "and serve everyone better."
+  ]
+ },
+ {
+  "id": "world",
+  "tts": "Real towns add other reasons, like busy corners. But this pull shows up everywhere. Coffee shops. Even politicians chasing the middle.",
+  "caps": [
+   "Real towns add other reasons,",
+   "like busy corners.",
+   "But this pull",
+   "shows up everywhere.",
+   "Coffee shops.",
+   "Even politicians",
+   "chasing the middle."
+  ]
+ },
+ {
+  "id": "end",
+  "tts": "Everything is a game. These are the hidden moves.",
+  "caps": [
+   "Everything is a game.",
+   "These are the hidden moves."
+  ]
+ }
+]

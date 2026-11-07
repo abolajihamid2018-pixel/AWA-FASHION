@@ -1,0 +1,412 @@
+<title>Hidden Moves Brand Bible</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a single reading column laid on the "game board" ground; light theme = the Surface world, dark theme = the Hidden Layer (blueprint). */
+:root {
+  --ground: #F6EEDF; --ground-2: #EFE3CF; --dot: rgba(28,32,48,0.10);
+  --ink: #1C2030; --ink-soft: #4b5066; --line: rgba(28,32,48,0.16);
+  --pip: #FF6A55; --dot-teal: #16B3A6; --coin: #FFC53D; --navy: #12203A; --cyan: #7CD8FF; --plum: #4A3F75; --crowd: #B9B4C7; --loss: #D7263D;
+  --card: #FFF9F0; --chip: #fff3dc;
+  --display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ground: #12203A; --ground-2: #172848; --dot: rgba(124,216,255,0.13);
+  --ink: #EAF6FF; --ink-soft: #a9c3d9; --line: rgba(124,216,255,0.22);
+  --card: #172848; --chip: #1d3157; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --ground: #12203A; --ground-2: #172848; --dot: rgba(124,216,255,0.13);
+  --ink: #EAF6FF; --ink-soft: #a9c3d9; --line: rgba(124,216,255,0.22);
+  --card: #172848; --chip: #1d3157; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font: 400 17px/1.6 var(--body);
+  background-image: radial-gradient(var(--dot) 1.4px, transparent 1.6px); background-size: 22px 22px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+.wrap { max-width: 1040px; margin: 0 auto; }
+.read { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--display); font-weight: 800; letter-spacing: -0.01em; text-wrap: balance; line-height: 1.08; margin: 0; }
+h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); }
+h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); }
+h3 { font-size: 1.25rem; }
+p { margin: 0; }
+a { color: inherit; text-decoration-color: var(--pip); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--coin); outline-offset: 2px; }
+.eyebrow { font: 700 0.78rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
+section { padding-block: 56px 8px; display: grid; gap: 22px; }
+.stack { display: grid; gap: 14px; }
+.hero { padding-block: 48px 8px; display: grid; gap: 20px; }
+.hero .lede { font-size: 1.2rem; max-width: 60ch; color: var(--ink-soft); }
+.tag { display: inline-flex; align-items: center; gap: 8px; font: 700 0.8rem/1 var(--mono); padding: 8px 12px; border: 2px solid var(--ink); border-radius: 999px; background: var(--chip); }
+.tags { display: flex; flex-wrap: wrap; gap: 10px; }
+.phase { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.phase .num { font: 800 1rem/1 var(--mono); background: var(--ink); color: var(--ground); padding: 6px 10px; border-radius: 8px; }
+
+/* scorecard */
+.table-scroll { overflow-x: auto; border: 2px solid var(--ink); border-radius: 14px; background: var(--card); }
+table { border-collapse: collapse; width: 100%; min-width: 860px; font-size: 0.93rem; }
+th, td { padding: 10px 10px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+th { font: 700 0.72rem/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); background: var(--ground-2); }
+td.n { font: 700 0.95rem/1 var(--mono); text-align: center; font-variant-numeric: tabular-nums; }
+td.tot { font: 800 1.05rem/1 var(--mono); text-align: center; }
+tr.top td:first-child { box-shadow: inset 6px 0 0 var(--coin); }
+tr.win td.tot { background: var(--coin); color: #1C2030; }
+.niche { font-weight: 800; }
+.niche small { display: block; font-weight: 400; color: var(--ink-soft); font-size: 0.85rem; line-height: 1.4; margin-top: 2px; }
+.bar { display: block; height: 6px; border-radius: 3px; background: var(--line); margin-top: 6px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--dot-teal); }
+
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.card { background: var(--card); border: 2px solid var(--ink); border-radius: 16px; padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card.win { box-shadow: 6px 6px 0 var(--coin); }
+.card h3 { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.card .score { font: 800 1.4rem/1 var(--mono); }
+ul.clean { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.note { font-size: 0.88rem; color: var(--ink-soft); }
+.callout { border-left: 6px solid var(--pip); padding: 4px 0 4px 16px; }
+
+/* brand visuals */
+.sheet { background: #F6EEDF; border: 2px solid #1C2030; border-radius: 18px; overflow: hidden; }
+.sheet svg { display: block; width: 100%; height: auto; }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.sw { border: 2px solid var(--ink); border-radius: 14px; overflow: hidden; background: var(--card); }
+.sw .chip { height: 70px; }
+.sw .meta { padding: 10px 12px; display: grid; gap: 2px; }
+.sw b { font-size: 0.95rem; }
+.sw code { font: 700 0.82rem/1 var(--mono); }
+.sw span { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.35; }
+.frames { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.frame { display: grid; gap: 8px; }
+.frame svg { width: 100%; max-width: 100%; height: auto; border-radius: 22px; border: 2px solid var(--ink); display: block; }
+.frame p { font-size: 0.88rem; color: var(--ink-soft); }
+.type-specimen { display: grid; gap: 14px; }
+.spec { border: 2px solid var(--ink); border-radius: 14px; background: var(--card); padding: 16px; display: grid; gap: 6px; min-width: 0; }
+.spec .s1 { font: 800 clamp(1.8rem, 5vw, 2.8rem)/1.05 var(--display); }
+.spec .s2 { font: 800 1.6rem/1.15 var(--body); text-transform: uppercase; }
+.spec .s3 { font: 700 1.4rem/1.2 var(--mono); }
+.kv { display: grid; grid-template-columns: minmax(130px, 200px) 1fr; gap: 8px 16px; }
+.kv dt { font: 700 0.8rem/1.4 var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+.kv dd { margin: 0; min-width: 0; }
+@media (max-width: 560px) { .kv { grid-template-columns: 1fr; } .kv dd { margin-bottom: 8px; } }
+ol.rules { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; }
+.sources { font-size: 0.86rem; }
+.sources li { word-break: break-word; }
+.next { border: 2px dashed var(--ink); border-radius: 16px; padding: 20px; display: grid; gap: 10px; background: var(--card); }
+@media (prefers-reduced-motion: no-preference) {
+  .blink { animation: blink 5s infinite; transform-origin: center; transform-box: fill-box; }
+  @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="eyebrow">Creative direction · Phases 1 and 2 · Niche research and brand identity</span>
+    <h1>Hidden Moves</h1>
+    <p class="lede">Every ordinary situation is a game. Most people never notice they are playing. This is the case for building a short-form animated brand around <b>everyday game theory</b>: the strategic logic behind ordinary situations. Below are the research, the scoring, and the visual identity.</p>
+    <div class="tags"><span class="tag">9:16 · TikTok · Reels · Shorts</span><span class="tag">International English</span><span class="tag">45–60 s episodes</span></div>
+  </header>
+
+  <!-- PHASE 1 -->
+  <section>
+    <div class="phase"><span class="num">PHASE 1</span><h2>Finding an underexploited niche</h2></div>
+    <div class="read stack">
+      <p><b>How I evaluated.</b> I looked for niches where there is clear evidence of demand (large audiences for the subject in long-form video, books or communities) but the presentation, short animated stories with recurring characters, is thin. A niche doesn't count as "untapped" just because I found no competitors. A low competition score here means strong incumbents already own the subject in the format we would use.</p>
+      <p class="note">Scores are out of 10, and higher is better in every column. For <b>Competition</b>, 10 means little direct competition in short-form animated explainers. For <b>Ease</b>, 10 means easy to research and produce. Audience figures are third-party tracker estimates, linked in Sources. I could not run TikTok search from this environment, so competition scores for TikTok are judgement. Before committing, a one-hour manual audit of TikTok and YouTube search for each top-three niche is a cheap check.</p>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th style="width:30%">Niche</th><th>Demand</th><th>Compet&shy;ition</th><th>Curiosity / viral</th><th>Repeat&shy;ability</th><th>Visual</th><th>Monetis&shy;ation</th><th>Ease</th><th>Total /70</th></tr></thead>
+        <tbody id="scores"></tbody>
+      </table>
+    </div>
+
+    <div class="read stack">
+      <h3>Evidence behind the key scores</h3>
+      <ul class="clean">
+        <li><b>Game theory is in demand but rarely in short form.</b> Veritasium's prisoner's-dilemma video is around 23M views (third-party trackers). TED-Ed has a lesson on why competing stores cluster (Hotelling's model). The closest format match, Rational Animations (about 460K subscribers), does game-theory and rationality stories in long form and, per one tracker, publishes essentially no Shorts. Freakonomics, the "hidden side of everything" book, reports 4M+ copies sold. I found no recurring-character Shorts brand that explains everyday situations as games.</li>
+        <li><b>Infrastructure has proven demand and strong incumbents.</b> Practical Engineering has about 4.8M subscribers. Wendover and Half as Interesting (about 2.9M) are adjacent. A newcomer competes with engineers who have credentials and footage.</li>
+        <li><b>Price mechanics has huge demand and a crowded field.</b> Single episodes of Insider's "So Expensive" have passed 20M views, and business-breakdown Shorts are plentiful.</li>
+        <li><b>Systems and traffic videos can explode.</b> CGP Grey's "The Simple Solution to Traffic" is around 44M views. The topic pool is narrower, though.</li>
+        <li><b>Educational animation monetises.</b> Trackers count Brilliant.org sponsoring 300+ YouTube education channels, including Veritasium and Alan Becker. "Explain it to me" demand is broad: r/explainlikeimfive has about 23M members.</li>
+      </ul>
+    </div>
+
+    <h3>The three strongest, compared</h3>
+    <div class="grid3" id="top3"></div>
+
+    <div class="read callout stack">
+      <h3>Recommendation: Everyday Game Theory</h3>
+      <p><b>The cast is built into the subject.</b> Game theory is about <i>players</i>, and stickmen make perfect players. Every episode has built-in conflict (two characters want things), a twist (the equilibrium is rarely what you'd guess), and a payoff the viewer can reuse: a named rule like Hotelling's Law or the Winner's Curse. That rule is what makes people feel smarter and share the video.</p>
+      <p><b>It absorbs the next two niches.</b> Decoy pricing, supermarket loss leaders, airline overbooking and "free" apps are games companies play with customers. The brand can cover pricing and choice-architecture topics without becoming a generic business or psychology channel. That breadth gives well over 100 ideas without repeating a mechanism.</p>
+      <p><b>The risks I'd manage:</b> oversimplifying or misapplying models. Each script would cite a textbook or paper (for example Dixit and Nalebuff's <i>The Art of Strategy</i>) and say "in the simple model" where real markets add complications. Hot-button politics would be used sparingly, for brand safety.</p>
+    </div>
+  </section>
+
+  <!-- PHASE 2 -->
+  <section>
+    <div class="phase"><span class="num">PHASE 2</span><h2>Brand identity</h2></div>
+
+    <div class="grid2">
+      <div class="card stack">
+        <span class="eyebrow">Channel name</span>
+        <h3>Hidden Moves <span class="score" style="font-size:1rem">recommended</span></h3>
+        <p>Short and international. It describes the payoff of every episode, which is showing the move everyone is making without knowing it. It also works as a verb phrase in titles ("The hidden move behind…").</p>
+        <p class="note">Alternatives: <b>Payoff</b>, <b>Nash Street</b>, <b>Board Logic</b>, <b>The Game You're In</b>, <b>Smallgames</b>. I have not checked handle or trademark availability. That needs doing before you commit.</p>
+      </div>
+      <div class="card stack">
+        <span class="eyebrow">Positioning</span>
+        <h3>Everything is a game. Here are the rules.</h3>
+        <p>For curious people who like to understand how the world really works. Each Hidden Moves episode takes a moment you've lived through, like a half-empty train or two gas stations facing each other, finds the players, and reveals the hidden move that explains it. You leave with one rule you'll start noticing everywhere.</p>
+        <p class="note">Tone: playful, precise, never smug at the viewer. The characters can be smug at each other.</p>
+      </div>
+    </div>
+
+    <h3>Character design guide</h3>
+    <div class="sheet"><svg id="cast" viewBox="0 0 1200 560" role="img" aria-label="Character line-up: Pip in coral, Dot in teal, Ref the yellow referee token, and the grey crowd pawns"></svg></div>
+    <div class="grid2">
+      <div class="card stack">
+        <h3>The cast</h3>
+        <dl class="kv">
+          <dt>Pip · Coral</dt><dd>Player one. Optimistic, impulsive, always takes the "obvious" move first. Their mistakes set up the twist.</dd>
+          <dt>Dot · Teal</dt><dd>Player two. Dry, observant, half-lidded eyes. Usually spots the hidden move, or gets caught by it so Pip can gloat.</dd>
+          <dt>Ref · Yellow</dt><dd>The referee token. Never speaks. Blows the whistle at reveals, holds up rule cards and scoreboards, and carries the kinetic typography.</dd>
+          <dt>The Crowd</dt><dd>Faceless grey pawns that show what happens when thousands of people play the same game: queues, traffic, markets.</dd>
+        </dl>
+      </div>
+      <div class="card stack">
+        <h3>Proportions and construction</h3>
+        <ul class="clean">
+          <li><b>Pawn silhouette:</b> a big round head (about 40% of height) sits on a coloured collar disk, like a board-game pawn. You can recognise it as a black silhouette.</li>
+          <li><b>Body:</b> a short capsule torso in the team colour. Limbs are rubber-hose ink noodles (9 px at 1080 width) with round cream mitten hands, so arms bend in smooth arcs instead of hinging.</li>
+          <li><b>Face:</b> tall oval eyes with a white glint. The thick eyebrows do most of the acting. A mouth appears only for big emotions, which makes those moments land.</li>
+          <li><b>Outline:</b> a 6 px ink stroke on everything (characters, props and buildings), so the whole world reads as one toy set.</li>
+          <li><b>Coloured by side:</b> coral stands left of frame, teal stands right. Viewers learn "coral versus teal" within one episode.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sheet"><svg id="faces" viewBox="0 0 1200 230" role="img" aria-label="Pip's six expressions: neutral, smug, shocked, suspicious, eureka, defeated"></svg></div>
+
+    <h3>Colour palette</h3>
+    <div class="swatches" id="swatches"></div>
+
+    <h3>Typography</h3>
+    <div class="type-specimen">
+      <div class="spec"><span class="eyebrow">Display · Bricolage Grotesque ExtraBold · hooks and titles, 120–150 px</span><span class="s1">Why do gas stations come in pairs?</span></div>
+      <div class="grid2">
+        <div class="spec"><span class="eyebrow">Captions · Figtree ExtraBold · 64 px, uppercase, one line</span><span class="s2">Neither of them wants to move</span></div>
+        <div class="spec"><span class="eyebrow">Numbers and payoffs · JetBrains Mono Bold · scoreboards, payoff matrices</span><span class="s3">+3 / −1 · 50% · 2:1</span></div>
+      </div>
+      <p class="note read">All three are open-licence (OFL) and available on Google Fonts and as npm packages, so the rendering pipeline can bundle them. Kinetic text rule: words snap in on the stressed syllable, numbers count up, and only one line of display type is on screen at a time.</p>
+    </div>
+
+    <h3>Environments: the Board and the Hidden Layer</h3>
+    <div class="frames">
+      <div class="frame"><svg id="f1" viewBox="0 0 1080 1920" role="img" aria-label="Style frame of the Surface world"></svg><p><b>The Board.</b> Every story is staged on floating isometric tiles over the dotted cream table. Buildings are chunky toy tokens. The camera dollies between boards like moving pieces.</p></div>
+      <div class="frame"><svg id="f2" viewBox="0 0 1080 1920" role="img" aria-label="Style frame of the Hidden Layer"></svg><p><b>The Hidden Layer.</b> At the reveal, the tiles flip over to blueprint navy. Cyan lines show the logic: who moves, where the payoffs go, why nobody changes strategy. This flip is the channel's signature.</p></div>
+      <div class="frame"><svg id="f3" viewBox="0 0 1080 1920" role="img" aria-label="Style frame of the payoff matrix moment"></svg><p><b>The Rule Card.</b> Ref blows the whistle and a 2×2 payoff matrix rises from the board as four tiles. Customer shares count up in mono, the stable cell lights up yellow, and the named rule stamps in.</p></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card stack">
+        <h3>Animation principles</h3>
+        <ul class="clean">
+          <li><b>Anticipate, then overshoot:</b> 3–4 frames of wind-up before every move. Pops use ease-out-back with about 8% overshoot.</li>
+          <li><b>Squash and stretch on contact:</b> heads squash 6% on landings, and hands stretch along fast moves.</li>
+          <li><b>Secondary motion:</b> eyebrows and the collar disk lag 2 frames behind the head. The Crowd moves with 1–3 frame offsets so it feels alive.</li>
+          <li><b>No dead air:</b> no shot holds still for more than 0.6 s. Something meaningful changes every 1–2 s, and characters blink and breathe while they wait.</li>
+          <li><b>Camera follows story beats:</b> pushes in on realisations and pulls out on consequences. Background, board and foreground move at 0.3×, 1× and 1.4× for parallax.</li>
+          <li><b>Signature transitions:</b> Tile Flip (Surface to Hidden Layer), Board Slide (next location), Coin Wipe (a yellow chip rolls across and wipes the frame), Zoom-Through (into a window or token).</li>
+        </ul>
+      </div>
+      <div class="card stack">
+        <h3>Visual consistency rules</h3>
+        <ol class="rules">
+          <li>Coral is always on the left and teal on the right, except when a story deliberately swaps them.</li>
+          <li>Yellow is reserved for value: coins, points, the answer, Ref.</li>
+          <li>Blueprint navy appears only in the Hidden Layer, never as a plain background.</li>
+          <li>At most three things move at once, and the hero action is always the largest movement.</li>
+          <li>The hero object fills at least 30% of the frame. Nothing important sits in the bottom 330 px or top 220 px (platform UI).</li>
+          <li>Captions use one line, Figtree ExtraBold, inside the 1430–1590 px band.</li>
+          <li>Every episode ends on a Rule Card and a callback to its opening image.</li>
+          <li>No stock icons, emoji or clip art. Every prop is drawn in the 6 px ink-outline toy style.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="next">
+      <span class="eyebrow">Checkpoint</span>
+      <h3>Next: Phases 3–8</h3>
+      <p class="read">With the niche and identity confirmed, the next pass delivers 30 episode concepts, the retention blueprint, a full script and storyboard for the first episode, the rendered 1080×1920 video built from reusable character, environment and transition components, a QA review, and the production system with its testing framework.</p>
+    </div>
+  </section>
+
+  <section class="read">
+    <h3>Sources</h3>
+    <ul class="clean sources">
+      <li><a href="https://vidiq.com/youtube-stats/channel/@practicalengineeringchannel/">vidIQ: Practical Engineering channel stats</a> · <a href="https://www.speakrj.com/audit/report/UCMOqf8ab-42UUQIdVoKwjlQ/youtube">speakrj audit</a></li>
+      <li><a href="https://rosetta.to/u/veritasium/this-game-theory-problem-will-change-the-way-you-see-the-world">Rosetta: Veritasium "This game theory problem…" view count</a></li>
+      <li><a href="https://outlierkit.com/channel/rationalanimations">OutlierKit: Rational Animations</a> · <a href="https://sponsorradar.com/channels/rationalanimations">SponsorRadar: Rational Animations</a></li>
+      <li><a href="https://www.thescienceexplorer.com/the-math-behind-why-competing-stores-always-open-next-to-each-other-898">The Science Explorer: TED-Ed lesson on Hotelling's model</a></li>
+      <li><a href="https://freakonomics.com/2014/05/seven-million-copies-sold/">Freakonomics: "Seven Million Copies Sold" (both books)</a></li>
+      <li><a href="https://creatordb.app/creatorstats/halfasinteresting/">CreatorDB: Half as Interesting</a> · <a href="https://sponsorradar.com/channels/halfasinteresting">SponsorRadar: Half as Interesting</a></li>
+      <li><a href="https://vidiq.com/youtube-stats/channel/@businessinsider/videos/62VYumto5Jc/">vidIQ: Insider "So Expensive" episode stats</a> · <a href="https://iq.videonuze.com/content/view/23726">VideoNuze: Insider video strategy</a></li>
+      <li><a href="https://rosetta.to/u/cgpgrey/topic/automotive">Rosetta: CGP Grey "The Simple Solution to Traffic"</a></li>
+      <li><a href="https://qz.com/1241558/the-psychological-design-tricks-websites-like-facebook-and-amazon-use-to-keep-you-addicted">Quartz: Nerdwriter on dark patterns</a></li>
+      <li><a href="https://gummysearch.com/r/explainlikeimfive">GummySearch: r/explainlikeimfive</a></li>
+      <li><a href="https://sponsorradar.com/brands/brilliant-org">SponsorRadar: Brilliant.org sponsorships</a> · <a href="https://creatordb.app/brands/brilliant.org">CreatorDB: Brilliant.org</a></li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const NICHES = [
+  {n: 'Everyday Game Theory', d: 'Why gas stations pair up, why everyone arrives early, why bids overshoot: the strategic logic of ordinary situations.', s: [8, 8, 9, 9, 9, 8, 6], win: true},
+  {n: 'Price Mechanics', d: 'Why things cost what they cost: decoys, anchors, loss leaders, surge pricing.', s: [9, 4, 8, 9, 7, 8, 7]},
+  {n: 'Choice Architecture', d: 'How shops, apps and buildings steer what you do: layouts, defaults, dark patterns.', s: [8, 6, 8, 8, 8, 7, 6]},
+  {n: 'Invisible Infrastructure', d: 'Water, power, sewage, the internet, logistics: the systems you only notice when they fail.', s: [8, 4, 8, 9, 9, 7, 5]},
+  {n: 'Business-Model Mechanics', d: 'How "free" things make money: apps, airline miles, gyms, printers.', s: [8, 4, 8, 8, 7, 8, 6]},
+  {n: 'Queues, Traffic & Crowds', d: 'The maths of waiting, merging and crowd flow.', s: [7, 7, 8, 6, 9, 5, 6]},
+  {n: 'Rules Behind Everyday Design', d: 'Why regulations require the things around you: codes, standards, safety rules.', s: [7, 7, 8, 7, 7, 5, 5]},
+  {n: 'Unwritten Social Protocols', d: 'Tipping, queueing, lift silence: the hidden etiquette systems of daily life. Risk of stereotyping across cultures.', s: [7, 6, 7, 8, 7, 5, 5]},
+  {n: 'Standards & Measurement', d: 'Time zones, paper sizes, units, plugs: who decided, and why it stuck.', s: [6, 7, 8, 6, 7, 4, 6]},
+  {n: 'Hidden Design of Objects', d: 'The niche of our EP.01–09. Listicle-saturated and myth-prone, and the single-fact topics run thin fast.', s: [7, 3, 7, 5, 7, 5, 8]},
+];
+const tbody = document.getElementById('scores');
+NICHES.map(x => ({...x, t: x.s.reduce((a, b) => a + b, 0)})).sort((a, b) => b.t - a.t).forEach((x, i) => {
+  const tr = document.createElement('tr');
+  if (i < 3) tr.className = 'top' + (x.win ? ' win' : '');
+  tr.innerHTML = `<td class="niche">${x.n}<small>${x.d}</small></td>` + x.s.map(v => `<td class="n">${v}<span class="bar"><i style="width:${v * 10}%"></i></span></td>`).join('') + `<td class="tot">${x.t}</td>`;
+  tbody.appendChild(tr);
+});
+
+const TOP = [
+  {n: 'Everyday Game Theory', t: 57, win: true, pro: ['Characters are the subject. Every episode has players, conflict and a twist.', 'Each video teaches a named, reusable rule viewers can quote.', 'Short-form animated version barely exists; long-form proves demand.'], con: ['Needs careful sourcing so models are not oversold.', 'Abstract ideas need strong visual metaphors (the Hidden Layer solves this).']},
+  {n: 'Price Mechanics', t: 52, pro: ['Biggest raw demand. Money is universal.', 'Easy to research, with many documented cases.'], con: ['Crowded with business-breakdown Shorts.', 'Harder to own a distinctive voice. Many topics go stale or are region-specific.']},
+  {n: 'Choice Architecture', t: 51, pro: ['Relatable: shops, apps, menus.', 'Strong visuals (store layouts, interfaces).'], con: ['Slides easily into generic psychology facts.', 'Much of the research is contested (replication issues in nudge studies).']},
+];
+document.getElementById('top3').innerHTML = TOP.map(x => `<div class="card${x.win ? ' win' : ''}"><h3>${x.n}<span class="score">${x.t}</span></h3><ul class="clean">${x.pro.map(p => `<li>${p}</li>`).join('')}</ul><p class="note"><b>Watch-outs:</b> ${x.con.join(' ')}</p></div>`).join('');
+
+const PAL = [
+  ['Board Cream', '#F6EEDF', 'Surface ground, the table the boards float on'],
+  ['Ink', '#1C2030', 'All outlines and text'],
+  ['Pip Coral', '#FF6A55', 'Player one, left side'],
+  ['Dot Teal', '#16B3A6', 'Player two, right side'],
+  ['Coin Yellow', '#FFC53D', 'Value only: points, money, answers, Ref'],
+  ['Blueprint Navy', '#12203A', 'Hidden Layer ground'],
+  ['Blueprint Cyan', '#7CD8FF', 'Hidden Layer lines and labels'],
+  ['Plum Shadow', '#4A3F75', 'Tile sides, cast shadows'],
+  ['Crowd Grey', '#B9B4C7', 'The Crowd, inactive pieces'],
+  ['Loss Red', '#D7263D', 'Penalties, losses, wrong moves'],
+];
+document.getElementById('swatches').innerHTML = PAL.map(([n, h, u]) => `<div class="sw"><div class="chip" style="background:${h}"></div><div class="meta"><b>${n}</b><code>${h}</code><span>${u}</span></div></div>`).join('');
+
+// ---------- character drawing (same construction the animation rig will use) ----------
+const INK = '#1C2030', CREAM = '#FFF8EF';
+function face(expr) {
+  const eye = (x) => `<g class="blink"><ellipse cx="${x}" cy="-252" rx="8" ry="12" fill="${INK}"/><circle cx="${x + 3}" cy="-257" r="3" fill="#fff"/></g>`;
+  switch (expr) {
+    case 'smug': return `<ellipse cx="-18" cy="-250" rx="8" ry="10" fill="${INK}"/><ellipse cx="18" cy="-250" rx="8" ry="10" fill="${INK}"/><rect x="-30" y="-264" width="60" height="13" fill="${CREAM}"/><path d="M-30 -252 h24 M6 -252 h24" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><path d="M-30 -276 L-8 -272 M8 -284 Q20 -290 32 -282" stroke="${INK}" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M-6 -222 Q8 -214 20 -226" stroke="${INK}" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+    case 'shocked': return `<circle cx="-18" cy="-252" r="13" fill="#fff" stroke="${INK}" stroke-width="4"/><circle cx="18" cy="-252" r="13" fill="#fff" stroke="${INK}" stroke-width="4"/><circle cx="-18" cy="-252" r="4" fill="${INK}"/><circle cx="18" cy="-252" r="4" fill="${INK}"/><path d="M-32 -282 Q-20 -292 -8 -284 M8 -284 Q20 -292 32 -282" stroke="${INK}" stroke-width="7" stroke-linecap="round" fill="none"/><ellipse cx="0" cy="-219" rx="9" ry="12" fill="${INK}"/>`;
+    case 'suspicious': return `<path d="M-28 -252 h20 M8 -252 h20" stroke="${INK}" stroke-width="8" stroke-linecap="round"/><path d="M-32 -276 L-8 -266 M8 -266 L32 -276" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><path d="M-4 -222 h18" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>`;
+    case 'eureka': return `<path d="M-28 -250 Q-18 -264 -8 -250 M8 -250 Q18 -264 28 -250" stroke="${INK}" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M-30 -282 Q-18 -290 -6 -282 M6 -282 Q18 -290 30 -282" stroke="${INK}" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M-16 -230 Q0 -206 16 -230 Z" fill="${INK}"/><path d="M-8 -222 Q0 -212 8 -222" fill="#FF6A55"/>`;
+    case 'defeated': return `<ellipse cx="-18" cy="-246" rx="7" ry="9" fill="${INK}"/><ellipse cx="18" cy="-246" rx="7" ry="9" fill="${INK}"/><path d="M-30 -262 L-8 -270 M8 -270 L30 -262" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><path d="M-12 -216 Q0 -226 12 -216" stroke="${INK}" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+    default: return eye(-18) + eye(18) + `<path d="M-30 -276 Q-19 -282 -8 -277 M8 -277 Q19 -282 30 -276" stroke="${INK}" stroke-width="7" stroke-linecap="round" fill="none"/>`;
+  }
+}
+// pose: hand targets relative to shoulders
+function player(x, y, s, col, expr = 'neutral', pose = {}) {
+  const L = pose.L ?? [-58, -110], R = pose.R ?? [58, -110], tilt = pose.tilt ?? 0;
+  const arm = (sx, [hx, hy], bend) => `<path d="M${sx} -176 Q${(sx + hx) / 2 + bend} ${(-176 + hy) / 2 + 18} ${hx} ${hy}" stroke="${INK}" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="${hx}" cy="${hy}" r="12" fill="${CREAM}" stroke="${INK}" stroke-width="5"/>`;
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+    <ellipse cx="0" cy="2" rx="56" ry="9" fill="rgba(74,63,117,0.25)"/>
+    <path d="M-14 -108 Q-22 -54 -26 -10 M14 -108 Q22 -54 26 -10" stroke="${INK}" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <ellipse cx="-32" cy="-6" rx="17" ry="8" fill="${INK}"/><ellipse cx="32" cy="-6" rx="17" ry="8" fill="${INK}"/>
+    ${arm(26, R, 14)}
+    <rect x="-30" y="-194" width="60" height="96" rx="30" fill="${col}" stroke="${INK}" stroke-width="6"/>
+    <g transform="rotate(${tilt} 0 -200)">
+      <ellipse cx="0" cy="-198" rx="46" ry="13" fill="${col}" stroke="${INK}" stroke-width="6"/>
+      <circle cx="0" cy="-252" r="58" fill="${CREAM}" stroke="${INK}" stroke-width="6"/>
+      ${face(expr)}
+    </g>
+    ${arm(-26, L, -14)}
+  </g>`;
+}
+function ref(x, y, s) {
+  return `<g transform="translate(${x} ${y}) scale(${s})">
+    <ellipse cx="0" cy="62" rx="50" ry="9" fill="rgba(74,63,117,0.25)"/>
+    <clipPath id="refclip"><circle cx="0" cy="0" r="52"/></clipPath>
+    <circle cx="0" cy="0" r="52" fill="#FFC53D" stroke="${INK}" stroke-width="6"/>
+    <g clip-path="url(#refclip)">${[-44, -26, -8, 10, 28, 46].map(v => `<rect x="${v}" y="14" width="10" height="44" fill="${INK}"/>`).join('')}</g>
+    <circle cx="0" cy="0" r="52" fill="none" stroke="${INK}" stroke-width="6"/>
+    <g class="blink"><ellipse cx="-14" cy="-14" rx="6" ry="9" fill="${INK}"/><ellipse cx="14" cy="-14" rx="6" ry="9" fill="${INK}"/></g>
+    <path d="M30 -2 Q60 10 70 34" stroke="${INK}" stroke-width="4" fill="none"/><rect x="62" y="30" width="34" height="18" rx="8" fill="#B9B4C7" stroke="${INK}" stroke-width="4"/>
+  </g>`;
+}
+const pawn = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M-30 0 Q-24 -60 0 -64 Q24 -60 30 0 Z" fill="#B9B4C7" stroke="${INK}" stroke-width="6"/><ellipse cx="0" cy="-66" rx="26" ry="8" fill="#B9B4C7" stroke="${INK}" stroke-width="5"/><circle cx="0" cy="-96" r="26" fill="#B9B4C7" stroke="${INK}" stroke-width="6"/></g>`;
+
+const label = (x, y, t, sub) => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Bricolage Grotesque, Arial Black, sans-serif" font-weight="800" font-size="34" fill="${INK}">${t}</text><text x="${x}" y="${y + 30}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="18" fill="#4b5066">${sub}</text>`;
+document.getElementById('cast').innerHTML = `
+  <defs><pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="rgba(28,32,48,0.12)"/></pattern></defs>
+  <rect width="1200" height="560" fill="#F6EEDF"/><rect width="1200" height="560" fill="url(#dots)"/>
+  ${player(200, 430, 1.1, '#FF6A55', 'eureka', {L: [-80, -230], R: [70, -120]})}
+  ${player(520, 430, 1.1, '#16B3A6', 'smug', {L: [-50, -120], R: [40, -150], tilt: -6})}
+  ${ref(790, 300, 1.4)}
+  ${pawn(980, 430, 1.0)}${pawn(1060, 440, 0.85)}${pawn(1120, 425, 1.05)}
+  ${label(200, 490, 'PIP', 'PLAYER ONE · CORAL')}${label(520, 490, 'DOT', 'PLAYER TWO · TEAL')}${label(790, 490, 'REF', 'REFEREE · YELLOW')}${label(1050, 490, 'THE CROWD', 'MANY PLAYERS')}`;
+
+const EX = ['neutral', 'smug', 'shocked', 'suspicious', 'eureka', 'defeated'];
+document.getElementById('faces').innerHTML = `<rect width="1200" height="230" fill="#F6EEDF"/>` + EX.map((e, i) => `<g transform="translate(${100 + i * 200} 380)"><g transform="scale(0.85)"><g transform="translate(0 0)"><circle cx="0" cy="-252" r="58" fill="${CREAM}" stroke="${INK}" stroke-width="6"/>${face(e)}</g></g></g><text x="${100 + i * 200}" y="205" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="20" fill="#4b5066">${e.toUpperCase()}</text>`).join('').replace(/translate\((\d+) 380\)/g, (m, x) => `translate(${x} 330)`);
+
+// ---------- style frames (isometric board) ----------
+const iso = (cx, cy, u, v) => [cx + (u - v) * 0.866, cy + (u + v) * 0.5];
+function tile(cx, cy, w, top, side1, side2, stroke) {
+  const a = iso(cx, cy, -w, -w), b = iso(cx, cy, w, -w), c = iso(cx, cy, w, w), d = iso(cx, cy, -w, w), h = 46;
+  return `<path d="M${d[0]} ${d[1]} L${c[0]} ${c[1]} L${c[0]} ${c[1] + h} L${d[0]} ${d[1] + h} Z" fill="${side1}" stroke="${stroke}" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M${c[0]} ${c[1]} L${b[0]} ${b[1]} L${b[0]} ${b[1] + h} L${c[0]} ${c[1] + h} Z" fill="${side2}" stroke="${stroke}" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M${a[0]} ${a[1]} L${b[0]} ${b[1]} L${c[0]} ${c[1]} L${d[0]} ${d[1]} Z" fill="${top}" stroke="${stroke}" stroke-width="6" stroke-linejoin="round"/>`;
+}
+function station(x, y, col, hidden) {
+  const ink = hidden ? '#7CD8FF' : INK, fill = hidden ? 'none' : col, body = hidden ? 'none' : '#FFF8EF';
+  return `<g transform="translate(${x} ${y})"><path d="M-70 0 L0 40 L70 0 L70 -90 L0 -50 L-70 -90 Z" fill="${body}" stroke="${ink}" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M-90 -100 L0 -48 L90 -100 L0 -152 Z" fill="${fill}" stroke="${ink}" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="-12" y="-40" width="24" height="44" rx="6" fill="${hidden ? 'none' : '#1C2030'}" stroke="${ink}" stroke-width="4"/></g>`;
+}
+const caption = (t, fg, bg) => `<rect x="90" y="1440" width="900" height="120" rx="26" fill="${bg}"/><text x="540" y="1520" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="800" font-size="56" fill="${fg}">${t}</text>`;
+const safe = `<rect x="0" y="0" width="1080" height="220" fill="rgba(28,32,48,0.05)"/><rect x="0" y="1590" width="1080" height="330" fill="rgba(28,32,48,0.05)"/>`;
+const dotsBg = (col, dot) => `<defs><pattern id="d${col.slice(1)}" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="3" fill="${dot}"/></pattern></defs><rect width="1080" height="1920" fill="${col}"/><rect width="1080" height="1920" fill="url(#d${col.slice(1)})"/>`;
+
+document.getElementById('f1').innerHTML = dotsBg('#F6EEDF', 'rgba(28,32,48,0.10)') + safe +
+  `<text x="540" y="380" text-anchor="middle" font-family="Bricolage Grotesque, Arial Black, sans-serif" font-weight="800" font-size="104" fill="${INK}">WHY ALWAYS</text><text x="540" y="490" text-anchor="middle" font-family="Bricolage Grotesque, Arial Black, sans-serif" font-weight="800" font-size="104" fill="${INK}">IN PAIRS?</text>` +
+  tile(540, 820, 330, '#9BD58A', '#4A3F75', '#5b4f8c', INK) +
+  `<path d="${(() => { const p = iso(540, 820, -330, 0), q = iso(540, 820, 330, 0); return `M${p[0]} ${p[1]} L${q[0]} ${q[1]}`; })()}" stroke="#5e6378" stroke-width="70"/>` +
+  station(470, 880, '#FF6A55') + station(620, 960, '#16B3A6') +
+  player(330, 1230, 0.8, '#FF6A55', 'shocked', {L: [-70, -230], R: [60, -130]}) + player(760, 1250, 0.8, '#16B3A6', 'suspicious', {L: [-60, -120], R: [70, -120]}) +
+  caption('NEITHER OF THEM WANTS TO MOVE', INK, '#FFF8EF');
+
+document.getElementById('f2').innerHTML = dotsBg('#12203A', 'rgba(124,216,255,0.14)') +
+  `<text x="540" y="380" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="44" fill="#7CD8FF">HIDDEN LAYER</text>` +
+  tile(540, 820, 330, '#172848', '#0c172b', '#0f1d36', '#7CD8FF') +
+  station(470, 880, '#FF6A55', true) + station(620, 960, '#16B3A6', true) +
+  [[-300, '#FF6A55'], [-200, '#FF6A55'], [-100, '#FF6A55'], [100, '#16B3A6'], [200, '#16B3A6'], [300, '#16B3A6']].map(([u, c]) => { const p = iso(540, 820, u, 220); return `<circle cx="${p[0]}" cy="${p[1]}" r="18" fill="${c}" stroke="#7CD8FF" stroke-width="4"/>`; }).join('') +
+  (() => { const a = iso(540, 820, -330, 300), b = iso(540, 820, 330, 300), m = iso(540, 820, 0, 300); return `<path d="M${a[0]} ${a[1]} L${b[0]} ${b[1]}" stroke="#7CD8FF" stroke-width="4" stroke-dasharray="14 12"/><path d="M${m[0]} ${m[1] - 40} L${m[0]} ${m[1] + 40}" stroke="#FFC53D" stroke-width="8"/><text x="${m[0]}" y="${m[1] + 90}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="40" fill="#FFC53D">50 | 50</text>`; })() +
+  `<path d="M260 1160 C 380 1100, 420 1040, 460 990" stroke="#7CD8FF" stroke-width="6" fill="none"/><path d="M820 1160 C 700 1110, 660 1060, 630 1030" stroke="#7CD8FF" stroke-width="6" fill="none"/>` +
+  `<text x="540" y="1300" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="800" font-size="46" fill="#EAF6FF">MOVE AWAY = LOSE CUSTOMERS</text>` +
+  caption('EACH ONE GUARDS THE MIDDLE', '#12203A', '#7CD8FF');
+
+document.getElementById('f3').innerHTML = dotsBg('#F6EEDF', 'rgba(28,32,48,0.10)') + safe +
+  ref(540, 370, 1.5) +
+  [[0, 0, '50%', '50%', '#FFC53D'], [1, 0, '62%', '38%', '#FFF8EF'], [0, 1, '38%', '62%', '#FFF8EF'], [1, 1, '50%', '50%', '#FFF8EF']].map(([c, r, a, b, f]) => `<g transform="translate(${190 + c * 360} ${640 + r * 360})"><rect width="340" height="340" rx="28" fill="${f}" stroke="${INK}" stroke-width="6"/><text x="170" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="72" fill="#d94b38">${a}</text><text x="170" y="250" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="72" fill="#0f8f85">${b}</text></g>`).join('') +
+  `<text x="360" y="615" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="30" fill="#0f8f85">DOT: MIDDLE</text><text x="720" y="615" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="30" fill="#0f8f85">DOT: SIDE</text>` +
+  `<text x="150" y="810" text-anchor="middle" transform="rotate(-90 150 810)" font-family="JetBrains Mono, monospace" font-weight="700" font-size="30" fill="#d94b38">PIP: MIDDLE</text><text x="150" y="1170" text-anchor="middle" transform="rotate(-90 150 1170)" font-family="JetBrains Mono, monospace" font-weight="700" font-size="30" fill="#d94b38">PIP: SIDE</text>` +
+  `<text x="540" y="1370" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="600" font-size="30" fill="#4b5066">Share of customers · simple beach model</text>` +
+  `<g transform="translate(540 1470) rotate(-4)"><rect x="-400" y="-60" width="800" height="120" rx="20" fill="#12203A" stroke="#FFC53D" stroke-width="8"/><text x="0" y="22" text-anchor="middle" font-family="Bricolage Grotesque, Arial Black, sans-serif" font-weight="800" font-size="64" fill="#FFC53D">HOTELLING'S LAW</text></g>` +
+  '';
+</script>
