@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1536px; height: 864px; overflow: hidden; font-family: Inter, 'Inter Display', sans-serif; }
+  body { background: #06122b; color: #fff; position: relative; }
+  .bg { position: absolute; inset: 0; background: radial-gradient(1200px 700px at 20% 10%, #0b3b8f 0%, transparent 60%),
+        radial-gradient(900px 600px at 85% 90%, #0d7f7a 0%, transparent 60%), #06122b; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .55; }
+  .b1 { width: 520px; height: 520px; background: #2563eb; left: -120px; top: -140px; animation: drift1 7s ease-in-out infinite alternate; }
+  .b2 { width: 480px; height: 480px; background: #14b8a6; right: -120px; bottom: -160px; animation: drift2 8s ease-in-out infinite alternate; }
+  .b3 { width: 300px; height: 300px; background: #60a5fa; left: 55%; top: 10%; opacity: .25; animation: drift1 6s ease-in-out infinite alternate-reverse; }
+  @keyframes drift1 { to { transform: translate(140px, 90px) scale(1.15); } }
+  @keyframes drift2 { to { transform: translate(-160px, -80px) scale(1.2); } }
+  .grid { position: absolute; inset: -40px; background-image: radial-gradient(rgba(255,255,255,.12) 1.2px, transparent 1.2px);
+          background-size: 34px 34px; animation: gridmove 10s linear infinite; mask-image: radial-gradient(circle at center, #000 30%, transparent 75%); }
+  @keyframes gridmove { to { transform: translate(34px, 34px); } }
+  .stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+
+  /* logo */
+  .logo { width: 132px; height: 132px; filter: drop-shadow(0 20px 50px rgba(37,99,235,.55)); animation: pop .9s cubic-bezier(.2,1.4,.4,1) both; }
+  .logo path { stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw 1.1s .5s ease-out forwards; }
+  .logo circle { transform-origin: center; transform-box: fill-box; transform: scale(0); animation: dot .5s ease-out forwards; }
+  .logo circle.c1 { animation-delay: .45s; } .logo circle.c2 { animation-delay: 1.45s; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes dot { to { transform: scale(1); } }
+  @keyframes pop { from { transform: scale(.3) rotate(-25deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+
+  .title { margin-top: 34px; font-size: 108px; font-weight: 800; letter-spacing: -0.045em; line-height: 1; }
+  .title span { display: inline-block; opacity: 0; transform: translateY(60px) rotate(4deg); animation: rise .8s cubic-bezier(.2,.9,.3,1.2) forwards; }
+  .grad { background: linear-gradient(90deg, #60a5fa, #2dd4bf, #60a5fa); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+          animation: rise .8s cubic-bezier(.2,.9,.3,1.2) forwards, shimmer 3s linear infinite !important; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  .sub { margin-top: 26px; font-size: 34px; font-weight: 500; color: #cbd5e1; opacity: 0; animation: fadeup .8s forwards; }
+  @keyframes fadeup { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  .chips { margin-top: 38px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .chip { padding: 12px 22px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22);
+          font-size: 24px; font-weight: 600; backdrop-filter: blur(6px); opacity: 0; transform: scale(.6); animation: chip .55s cubic-bezier(.2,1.5,.4,1) forwards; }
+  @keyframes chip { to { opacity: 1; transform: scale(1); } }
+  .url { margin-top: 44px; font-size: 40px; font-weight: 700; color: #fff; position: relative; opacity: 0; animation: fadeup .7s forwards; }
+  .url::after { content: ''; position: absolute; left: 0; right: 0; bottom: -8px; height: 4px; border-radius: 4px;
+                background: linear-gradient(90deg, #2563eb, #14b8a6); transform: scaleX(0); transform-origin: left; animation: line .9s .2s forwards; }
+  .url, .url::after { animation-delay: inherit; }
+  @keyframes line { to { transform: scaleX(1); } }
+  .small { margin-top: 26px; font-size: 22px; color: #94a3b8; opacity: 0; animation: fadeup .7s forwards; }
+
+  /* mid card */
+  .icon { width: 120px; height: 120px; border-radius: 30px; background: linear-gradient(135deg, #2563eb, #14b8a6);
+          display: grid; place-items: center; box-shadow: 0 25px 60px rgba(20,184,166,.35); animation: pop .8s cubic-bezier(.2,1.4,.4,1) both, bob 1.6s 1s ease-in-out infinite alternate; }
+  @keyframes bob { to { transform: translateY(-14px) rotate(-3deg); } }
+  .badge { position: absolute; top: -12px; right: -12px; width: 44px; height: 44px; border-radius: 50%; background: #ef4444; color: #fff;
+           font-weight: 800; font-size: 24px; display: grid; place-items: center; border: 4px solid #06122b; transform: scale(0); animation: dot .45s 1s cubic-bezier(.2,1.6,.4,1) forwards; }
+  .typed { margin-top: 40px; font-size: 64px; font-weight: 800; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden;
+           border-right: 6px solid #2dd4bf; width: 0; animation: typing 1.4s .4s steps(31) forwards, caret .7s step-end infinite; }
+  @keyframes typing { to { width: 31ch; } }
+  @keyframes caret { 50% { border-color: transparent; } }
+
+  .confetti { position: absolute; width: 12px; height: 18px; border-radius: 3px; top: -30px; opacity: .9; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(980px) rotate(720deg); } }
+</style>
+</head>
+<body>
+  <div class="bg"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="grid"></div>
+  <div class="stage" id="stage"></div>
+<script>
+const scene = new URLSearchParams(location.search).get('scene') || 'intro'
+const logo = `<svg class="logo" viewBox="0 0 32 32"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#0d9488"/></linearGradient></defs>
+  <rect width="32" height="32" rx="8" fill="url(#g)"/><path d="M9 21c3 0 4-10 7-10s4 10 7 10" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+  <circle class="c1" cx="9" cy="21" r="2" fill="#fff"/><circle class="c2" cx="23" cy="21" r="2" fill="#fff"/></svg>`
+const words = (txt, start, cls='') => txt.split(' ').map((w, i) => `<span class="${cls}" style="animation-delay:${start + i*0.12}s">${w}</span>`).join(' ')
+const S = document.getElementById('stage')
+if (scene === 'intro') {
+  S.innerHTML = `${logo}
+    <h1 class="title">${words('CareRoute', 0.9)} <span class="grad" style="animation-delay:1.05s">AI</span></h1>
+    <p class="sub" style="animation-delay:1.7s">Clinic requests, minus the chaos.</p>
+    <div class="chips">${['Patients request in minutes','AI sorts the inbox','Humans approve'].map((c,i)=>`<span class="chip" style="animation-delay:${2.3+i*0.22}s">${c}</span>`).join('')}</div>`
+} else if (scene === 'mid') {
+  S.innerHTML = `<div style="position:relative"><div class="icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13.5 6 5.5A2 2 0 0 1 7.9 4h8.2A2 2 0 0 1 18 5.5l2.5 8"/><path d="M3.5 13.5V18a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-4.5H15a3 3 0 0 1-6 0H3.5Z"/></svg></div><div class="badge">1</div></div>
+    <h2 class="typed">Meanwhile, at the front desk…</h2>
+    <p class="sub" style="animation-delay:1.9s">A new request just landed.</p>`
+} else {
+  S.innerHTML = `${logo}
+    <h1 class="title" style="font-size:84px;margin-top:28px">${words('AI assists.', 0.6)} <span class="grad" style="animation-delay:1.0s">Humans</span> ${words('decide.', 1.15)}</h1>
+    <div class="chips">${['No medical advice','Nothing confirmed without a human','Private by default'].map((c,i)=>`<span class="chip" style="animation-delay:${1.8+i*0.22}s">${c}</span>`).join('')}</div>
+    <div class="url" style="animation-delay:2.7s">careroute-ai.vercel.app</div>
+    <p class="small" style="animation-delay:3.2s">React · Supabase · OpenAI · Brevo · Vercel</p>`
+  const colors = ['#60a5fa','#2dd4bf','#fbbf24','#f472b6','#a78bfa','#ffffff']
+  for (let i = 0; i < 70; i++) {
+    const c = document.createElement('div'); c.className = 'confetti'
+    c.style.left = Math.random()*100 + '%'; c.style.background = colors[i % colors.length]
+    c.style.animationDuration = (2.2 + Math.random()*2) + 's'; c.style.animationDelay = (1.9 + Math.random()*1.6) + 's'
+    document.body.appendChild(c)
+  }
+}
+</script>
+</body>
+</html>
