@@ -1,7 +1,7 @@
 import type { PreferredTime, RequestStatus } from './api'
 
 /** Clinic shown throughout the app. */
-export const CLINIC_NAME = 'Riverside Community Clinic'
+export const CLINIC_NAME = 'CareRoute Clinic'
 
 export function formatDate(iso: string | null): string {
   if (!iso) return 'No preference'

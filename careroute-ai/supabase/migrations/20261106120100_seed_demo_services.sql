@@ -1,4 +1,4 @@
--- Fictional demo services for "Riverside Community Clinic" (synthetic data for the hackathon prototype).
+-- Starter clinic services for CareRoute Clinic.
 insert into public.services (slug, name, description, kind, sort_order) values
   ('general-appointment',  'General appointment',      'Book a routine visit with one of the clinic''s practitioners.',                          'appointment',    10),
   ('follow-up',            'Follow-up appointment',    'Schedule a follow-up after a previous visit at the clinic.',                            'appointment',    20),

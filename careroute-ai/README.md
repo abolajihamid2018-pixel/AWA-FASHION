@@ -1,10 +1,10 @@
 # CareRoute AI
 
-AI-powered patient navigation and clinic coordination prototype, built for **DSH Hacks V2**.
+AI-powered patient navigation and clinic coordination platform.
 Patients find clinic services, submit administrative/appointment requests and track their status;
 clinic staff review and manage incoming requests.
 
-> Prototype using fictional data only ("Riverside Community Clinic" is fictional).
+> CareRoute AI is a product showcase: requests submitted on the live site are not sent to a real clinic.
 > CareRoute AI does **not** diagnose, assess symptoms, recommend treatments or make clinical decisions.
 > A request is never a confirmed booking until clinic staff approve it.
 
@@ -91,7 +91,7 @@ Migrations are applied to the Supabase project via the Supabase connector; the S
 ## Notifications (Edge Function `supabase/functions/send-notification`)
 
 - **Patient:** "request received" email after submitting, and an email after every staff status change
-  (in review / approved / declined / cancelled). Sent via [Resend](https://resend.com).
+  (in review / approved / declined / cancelled). Sent via [Brevo](https://www.brevo.com) (or Resend as a fallback).
 - Each email is tied to a `request_events` row (`notified_at`, `notify_error`), sent at most once, and can be retried
   by staff from the request history. Failures never affect the request.
 - **Staff:** dashboard highlights requests that arrived since their last visit and shows the count in the tab title.

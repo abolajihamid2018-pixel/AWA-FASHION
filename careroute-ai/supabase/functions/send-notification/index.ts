@@ -1,19 +1,25 @@
 // CareRoute AI — send-notification Edge Function (milestone 4)
 //
-// Emails the patient (via Resend) about their request. Never affects the saved request.
+// Emails the patient about their request (Brevo, or Resend as a fallback). Never affects the saved request.
 //   - Patient browser right after submitting: { status_token } -> "request received" email (once)
 //   - Signed-in staff after a status change:  { request_id }   -> email for the latest status change (once)
 //
-// Secrets: RESEND_API_KEY (or resend_api_key), optional EMAIL_FROM, optional PUBLIC_APP_URL
-// (defaults to the Vercel deployment; used for the private status link in the "received" email).
+// Secrets (email provider, first one configured wins):
+//   Brevo:  BREVO_API_KEY + BREVO_SENDER_EMAIL (a sender verified in Brevo); optional EMAIL_SENDER_NAME
+//   Resend: RESEND_API_KEY; optional EMAIL_FROM
+// Optional PUBLIC_APP_URL (defaults to the Vercel deployment) for the private status link.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
-const RESEND_API_KEY = (Deno.env.get('RESEND_API_KEY') ?? Deno.env.get('resend_api_key'))?.trim()
-const EMAIL_FROM = Deno.env.get('EMAIL_FROM') || 'CareRoute AI <onboarding@resend.dev>'
+const secret = (...names: string[]) => names.map((n) => Deno.env.get(n)?.trim()).find(Boolean)
+const BREVO_API_KEY = secret('BREVO_API_KEY', 'brevo_api_key')
+const BREVO_SENDER_EMAIL = secret('BREVO_SENDER_EMAIL', 'brevo_sender_email')
+const SENDER_NAME = secret('EMAIL_SENDER_NAME') || 'CareRoute AI'
+const RESEND_API_KEY = secret('RESEND_API_KEY', 'resend_api_key')
+const EMAIL_FROM = secret('EMAIL_FROM') || 'CareRoute AI <onboarding@resend.dev>'
 // Public site address used for the status link (override with the PUBLIC_APP_URL secret).
 const APP_URL = (Deno.env.get('PUBLIC_APP_URL')?.trim() || 'https://careroute-ai.vercel.app').replace(/\/+$/, '')
-const CLINIC_NAME = 'Riverside Community Clinic'
+const CLINIC_NAME = 'CareRoute Clinic'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -72,21 +78,42 @@ function layout(title: string, paragraphs: string[], cta?: { href: string; label
       <h1 style="margin:0 0 16px;font-size:20px;color:#0f172a">${esc(title)}</h1>${body}${button}
     </div>
     <p style="margin:18px 0 0;font-size:12px;line-height:1.5;color:#64748b">
-      Sent by CareRoute AI on behalf of ${CLINIC_NAME}. Administrative messages only — not medical advice.
-      In an emergency, call 911 or your local emergency number.
+      Sent by CareRoute AI. Administrative messages only — not medical advice.
+      In an emergency, call 911 or your local emergency number.<br>
+      CareRoute AI is a product showcase — requests made there are not sent to a real clinic.
     </p>
   </div></body></html>`
 }
 
 async function sendEmail(to: string, subject: string, html: string, text: string) {
-  if (!RESEND_API_KEY) throw new Error('Email is not configured (RESEND_API_KEY secret is missing)')
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: EMAIL_FROM, to: [to], subject, html, text }),
-    signal: AbortSignal.timeout(15_000),
-  })
-  if (!res.ok) throw new Error(`Resend HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`)
+  if (BREVO_API_KEY) {
+    if (!BREVO_SENDER_EMAIL) throw new Error('Email is not configured (BREVO_SENDER_EMAIL secret is missing)')
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': BREVO_API_KEY, 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        sender: { name: SENDER_NAME, email: BREVO_SENDER_EMAIL },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+        textContent: text,
+      }),
+      signal: AbortSignal.timeout(15_000),
+    })
+    if (!res.ok) throw new Error(`Brevo HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`)
+    return
+  }
+  if (RESEND_API_KEY) {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: EMAIL_FROM, to: [to], subject, html, text }),
+      signal: AbortSignal.timeout(15_000),
+    })
+    if (!res.ok) throw new Error(`Resend HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`)
+    return
+  }
+  throw new Error('Email is not configured (no BREVO_API_KEY or RESEND_API_KEY secret)')
 }
 
 Deno.serve(async (req) => {

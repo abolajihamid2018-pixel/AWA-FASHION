@@ -28,15 +28,15 @@ sorting them instead of helping people.
 - **Resilient:** if AI or email fails, the request is still saved and staff can retry.
 
 **Tech stack.** React · TypeScript · Vite · Tailwind CSS · Supabase (PostgreSQL, Auth, Row-Level Security,
-Edge Functions) · OpenAI · Resend · Vercel.
+Edge Functions) · OpenAI · Brevo · Vercel.
 
 ---
 
 ## Demo script (≈3 minutes)
 
 > Before you start: open two browser windows — one normal (patient), one private/incognito signed in as staff.
-> Use **evoltaing@gmail.com** as the patient email so the emails arrive (Resend's free plan only delivers to that
-> address), and have that inbox open on your phone.
+> Use an email inbox you can open on your phone as the patient email, and check the spam folder if an email
+> doesn't appear within a minute.
 
 **1. The problem (20 s)**
 "Patients don't know what a clinic offers or how to follow up, and front desks drown in unstructured requests.
@@ -44,7 +44,7 @@ CareRoute AI fixes both sides."
 
 **2. Patient flow (60 s)** — patient window
 1. Landing page → **Browse clinic services**.
-2. Pick **General appointment**. Fill in name, `evoltaing@gmail.com`, a date, and this note:
+2. Pick **General appointment**. Fill in a name, your email, a date, and this note:
    *"I'm moving abroad next month and need my records transferred to my new clinic."*
 3. Point out the checkbox: *it's a request, not a confirmed appointment*. Submit.
 4. Show the **reference code** and **private status link** → open it: "Request received — not confirmed yet."
