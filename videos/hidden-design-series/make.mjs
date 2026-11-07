@@ -28,12 +28,15 @@ scenes.forEach((scene, i) => {
   const out = scene({d, cues: rel});
   // clamp any key/visibility beyond the shot (keeps validation strict without hand-tuning every number)
   const clampTree = (ls) => ls.forEach(l => {
-    if (l.keys) { l.keys = l.keys.filter(k => k.t <= d - 0.001); if (!l.keys.length) delete l.keys; }
+    if (l.keys) { l.keys = l.keys.filter(k => k.t <= d - 0.001).reduce((acc, k) => { if (acc.length && k.t <= acc.at(-1).t) acc[acc.length - 1] = {...acc.at(-1), ...k, t: acc.at(-1).t}; else acc.push(k); return acc; }, []); if (!l.keys.length) delete l.keys; }
     if (l.from !== undefined && l.from > d) l.from = d - 0.01;
     if (l.to !== undefined && l.to > d) l.to = d;
     if (l.children) clampTree(l.children);
   });
   clampTree(out.layers);
+  if (ep >= 5) out.layers.push(  // mask anything drawn outside the stage panel, then redraw its edge
+    {type: 'rect', x: 0, y: 150, w: 70, h: 1330, radius: 0, fill: '#111316'}, {type: 'rect', x: 1210, y: 150, w: 70, h: 1330, radius: 0, fill: '#111316'},
+    {type: 'rect', x: 70, y: 170, w: 1140, h: 1290, radius: 26, fill: 'none', stroke: '#262c33', lineWidth: 3});
   shots.push({start, end, layers: out.layers});
   for (const e of out.sfx || []) if (e.time < d) sfx.push({...e, time: +(start + e.time).toFixed(3)});
 });

@@ -147,3 +147,112 @@ export function endCard(ep, icons) {
     ...icons.map((f, i) => grp([f()], {x: 0, y: 0, alpha: 0, keys: [{t: 0.25 + i * 0.3, alpha: 0, y: 40}, {t: 0.5 + i * 0.3, alpha: 1, y: 0}]})),
   ];
 }
+
+// =====================================================================
+// v2 additions (EP.05+): jointed actor with IK arms, speech bubbles, reaction marks, detail helpers
+// =====================================================================
+export const INK = '#0b0d0f';
+const L1 = 92, L2 = 96;
+function ik(sx, sy, tx, ty, side) {
+  let dx = tx - sx, dy = ty - sy, d = Math.hypot(dx, dy);
+  d = Math.min(Math.max(d, Math.abs(L1 - L2) + 2), L1 + L2 - 0.5);
+  const a = Math.atan2(dy, dx), A = Math.acos((L1 * L1 + d * d - L2 * L2) / (2 * L1 * d));
+  const cands = [a + A, a - A].map(b => [sx + L1 * Math.cos(b), sy + L1 * Math.sin(b)]);
+  const [ex, ey] = cands.sort((p, q) => side * (q[0] - p[0]))[0];        // elbow bends outward
+  const th = Math.atan2(-(ex - sx), ey - sy);
+  const ph = Math.atan2(-(tx - ex), ty - ey);
+  let rel = ph - th; while (rel > Math.PI) rel -= 2 * Math.PI; while (rel < -Math.PI) rel += 2 * Math.PI;
+  return [th, rel];
+}
+const unwrap = (v, prev) => { if (prev === undefined) return v; while (v - prev > Math.PI) v -= 2 * Math.PI; while (v - prev < -Math.PI) v += 2 * Math.PI; return v; };
+// Named hand targets in actor-local space (head centre ≈ 73,55; shoulders 26,160 / 120,160)
+export const HAND = {
+  down: s => [s < 0 ? 4 : 142, 340], hips: s => [s < 0 ? -40 : 186, 270], up: s => [s < 0 ? -60 : 206, -60],
+  head: s => [s < 0 ? 22 : 124, 30], face: s => [s < 0 ? 52 : 94, 70], chin: s => [s < 0 ? 60 : 86, 112],
+  shrug: s => [s < 0 ? -70 : 216, 150], wave: s => [s < 0 ? -80 : 226, 0], chest: s => [s < 0 ? 60 : 86, 210],
+};
+function armKeys(spec, side, sx, sy) {
+  // spec: [{t, at: 'name' | [x,y]}] → shoulder & elbow keys
+  const sh = [], el = []; let p1, p2;
+  for (const k of spec) {
+    const [tx, ty] = typeof k.at === 'string' ? HAND[k.at](side) : k.at;
+    let [a, b] = ik(sx, sy, tx, ty, side); a = unwrap(a, p1); b = unwrap(b, p2); p1 = a; p2 = b;
+    sh.push({t: k.t, angle: +a.toFixed(4)}); el.push({t: k.t, angle: +b.toFixed(4)});
+  }
+  return [sh, el];
+}
+// Jointed front-view actor. o.L / o.R: arm keyframes [{t, at}], o.hat: 'cowboy'|'cap'|'miner', o.tone, o.keys (whole body), o.headKeys
+export function actor(x, y, s = 1, o = {}) {
+  const tone = o.tone ?? C.white, back = o.back ?? C.soft;
+  const arm = (side) => {
+    const sx = side < 0 ? 26 : 120, sy = 160;
+    const spec = (side < 0 ? o.L : o.R) ?? [{t: 0, at: 'down'}];
+    const [sh, el] = armKeys(spec, side, sx, sy);
+    const col = side < 0 ? tone : back;
+    return grp([
+      rect(0, 0, 36, L1 + 18, col, {r: 18, stroke: INK, lineWidth: 3}),
+      grp([rect(0, 0, 34, L2 + 4, col, {r: 17, stroke: INK, lineWidth: 3}), ell(-3, L2 - 14, 40, 40, col, {stroke: INK, lineWidth: 3}), ...(side < 0 ? o.holdL ?? [] : o.holdR ?? [])],
+        {x: 1, y: L1, pivotX: 17, pivotY: 0, angle: el[0].angle, keys: el.length > 1 ? el : undefined}),
+    ], {x: sx - 18, y: sy - 4, pivotX: 18, pivotY: 4, angle: sh[0].angle, keys: sh.length > 1 ? sh : undefined});
+  };
+  const hat = o.hat === 'cowboy' ? [grp([pathL([['M', -10, 22], ['Q', 73, 46, 156, 22], ['Q', 150, 40, 73, 44], ['Q', -4, 40, -10, 22], ['Z']], {fill: '#8a6a48', stroke: INK, lineWidth: 3}), pathL([['M', 30, 26], ['L', 38, -22], ['Q', 73, -36, 108, -22], ['L', 116, 26], ['Z']], {fill: '#9c7a55', stroke: INK, lineWidth: 3}), rect(32, 10, 82, 12, '#5d4630')], {y: 12})]
+    : o.hat === 'cap' ? [pathL([['M', 18, 40], ['Q', 18, -6, 73, -6], ['Q', 128, -6, 128, 40], ['Z']], {fill: o.hatColor ?? C.red, stroke: INK, lineWidth: 3}), rect(100, 30, 70, 14, o.hatColor ?? C.red, {r: 7, stroke: INK, lineWidth: 3})]
+    : o.hat === 'miner' ? [pathL([['M', 14, 44], ['Q', 14, -8, 73, -8], ['Q', 132, -8, 132, 44], ['Z']], {fill: C.amber, stroke: INK, lineWidth: 3}), ell(58, 6, 30, 22, '#fff6c8', {stroke: INK, lineWidth: 2})] : [];
+  return grp([
+    ell(-10, 572, 170, 26, 'rgba(0,0,0,0.35)'),
+    grp([rect(0, 0, 42, 226, o.legs ?? back, {r: 21, stroke: INK, lineWidth: 3})], {x: 30, y: 356, pivotX: 21, pivotY: 14, keys: o.legL}),
+    grp([rect(0, 0, 42, 226, o.legs ?? tone, {r: 21, stroke: INK, lineWidth: 3})], {x: 76, y: 356, pivotX: 21, pivotY: 14, keys: o.legR}),
+    arm(1),
+    rect(56, 96, 34, 50, back, {r: 12, stroke: INK, lineWidth: 3}),
+    rect(14, 138, 118, 244, tone, {r: 48, stroke: INK, lineWidth: 3}),
+    ...(o.torso || []),
+    grp([ell(18, 0, 110, 110, tone, {stroke: INK, lineWidth: 3}), ...hat], {pivotX: 73, pivotY: 110, keys: o.headKeys}),
+    arm(-1),
+    ...(o.extra || []),
+  ], {x, y, scaleX: s, scaleY: s, pivotX: 73, pivotY: 582, keys: o.keys, from: o.from, to: o.to});
+}
+// Speech label (rounded bubble + tail) centred at cx; text auto-sized
+export function bubble(str, cx, y, t = 0, o = {}) {
+  const size = o.size ?? 44, w = measure(str, size) + 56, h = size + 40, tx = o.tail ?? 0;
+  return grp([
+    rect(0, 0, w, h, o.fill ?? '#f4f5f5', {r: 22, stroke: INK, lineWidth: 4}),
+    pathL([['M', w / 2 - 20 + tx, h - 2], ['L', w / 2 + tx + (o.tailDx ?? -10), h + 34], ['L', w / 2 + 18 + tx, h - 2], ['Z']], {fill: o.fill ?? '#f4f5f5'}),
+    text(str, 28, 20, size, {color: o.color ?? '#15181b'}),
+  ], {x: Math.round(cx - w / 2), y, pivotX: w / 2, pivotY: h, keys: [{t: 0, alpha: 0, scaleX: 0.5, scaleY: 0.5}, {t, alpha: 0, scaleX: 0.5, scaleY: 0.5}, {t: t + 0.18, alpha: 1, scaleX: 1.05, scaleY: 1.05}, {t: t + 0.28, alpha: 1, scaleX: 1, scaleY: 1}, ...(o.until ? [{t: o.until, alpha: 1}, {t: o.until + 0.2, alpha: 0}] : [])]});
+}
+// Big stamped word ("FAKE!") — pops in rotated
+export function stamp(str, cx, cy, t, o = {}) {
+  const size = o.size ?? 110, w = measure(str, size) + 70, h = size + 50, col = o.color ?? C.red;
+  return grp([rect(0, 0, w, h, o.bg ?? 'rgba(17,19,22,0.85)', {r: 20, stroke: col, lineWidth: 10}), text(str, 35, 22, size, {color: col})],
+    {x: Math.round(cx - w / 2), y: Math.round(cy - h / 2), angle: o.angle ?? -0.1, pivotX: w / 2, pivotY: h / 2,
+      keys: [{t: 0, alpha: 0, scaleX: 2, scaleY: 2}, {t, alpha: 0, scaleX: 2, scaleY: 2}, {t: t + 0.18, alpha: 1, scaleX: 0.94, scaleY: 0.94}, {t: t + 0.3, alpha: 1, scaleX: 1, scaleY: 1}]});
+}
+export const sweat = (x, y, t) => drop(x, y, 0.22, C.air, {keys: [{t: 0, alpha: 0}, {t, alpha: 0, y}, {t: t + 0.15, alpha: 1}, {t: t + 0.9, y: y + 60, alpha: 0}]});
+export const marks = (str, x, y, t, col = C.amber, size = 96) => text(str, x, y, size, {color: col, keys: [{t: 0, alpha: 0}, {t, alpha: 0, y: y + 20}, {t: t + 0.15, alpha: 1, y}]});
+// little "shake" lines around a point
+export const shakeLines = (cx, cy, r, t) => [0, 1, 2, 3, 4, 5].map(i => { const a = i * Math.PI / 3 + 0.3; return line([[cx + Math.cos(a) * r, cy + Math.sin(a) * r], [cx + Math.cos(a) * (r + 40), cy + Math.sin(a) * (r + 40)]], {color: C.amber, lineWidth: 8, alpha: 0, keys: [{t: 0, alpha: 0}, {t, alpha: 0}, {t: t + 0.1, alpha: 1}, {t: t + 0.5, alpha: 1}, {t: t + 0.7, alpha: 0}]}); });
+export const floor = (y, col = '#1c2228') => rect(72, y, 1136, 1458 - y, col, {r: 0});
+export const shadow = (cx, y, w) => ell(cx - w / 2, y - 14, w, 28, 'rgba(0,0,0,0.38)');
+// keyframes: bounce (jump), jitter (tantrum)
+export const hop = (t, y0, hgt = 60, n = 2, gap = 0.3) => { const k = []; for (let i = 0; i < n; i++) { k.push({t: t + i * gap, y: y0}, {t: t + i * gap + gap / 2, y: y0 - hgt}); } k.push({t: t + n * gap, y: y0}); return k; };
+export const jitter = (t, x0, amp = 10, n = 8, gap = 0.07) => [...Array.from({length: n}, (_, i) => ({t: +(t + i * gap).toFixed(3), x: x0 + (i % 2 ? amp : -amp)})), {t: +(t + n * gap).toFixed(3), x: x0}];
+// 5-slot end card for EP.05+ (icons are fns returning a layer drawn into a 200×200 box at given origin)
+export function endCard2(ep, icons, teaser) {
+  const xs = [100, 320, 540, 760, 980];
+  return [...chrome(ep, 'FOLLOW FOR MORE', 0.1),
+    ctext('HIDDEN DESIGN', 300, 70, {keys: fadeIn(0.15)}),
+    ctext(teaser ?? 'NEW EPISODES EVERY WEEK', 400, 36, {color: C.mid, keys: fadeIn(0.4)}),
+    ...icons.map((f, i) => grp([rect(0, 0, 200, 200, C.inset, {r: 26, stroke: i + 5 === ep ? C.amber : C.edge, lineWidth: i + 5 === ep ? 6 : 3}), f()], {x: xs[i], y: 640, keys: [{t: 0, alpha: 0}, {t: 0.2 + i * 0.16, alpha: 0, y: 690}, {t: 0.45 + i * 0.16, alpha: 1, y: 640}]})),
+    ...['EP.05', 'EP.06', 'EP.07', 'EP.08', 'EP.09'].map((s, i) => ctext(s, 870, 30, {cx: xs[i] + 100, color: i + 5 === ep ? C.amber : C.dim, keys: fadeIn(0.5 + i * 0.16)})),
+  ];
+}
+// ---------- EP.05–09 icons (each fills a 200×200 tile) ----------
+export const icon5 = () => grp([rect(40, 30, 120, 140, '#3a4048', {r: 18, stroke: INK, lineWidth: 3}), ell(65, 60, 70, 70, C.light, {stroke: INK, lineWidth: 3}),
+  pathL([['M', 78, 80], ['L', 98, 95], ['L', 78, 110], ['Z']], {fill: C.dark}), pathL([['M', 122, 80], ['L', 102, 95], ['L', 122, 110], ['Z']], {fill: C.dark}), line([[60, 60], [140, 140]], {color: C.red, lineWidth: 8})]);
+export const icon6 = () => grp([rect(40, 70, 120, 80, '#c9ced3', {r: 14, stroke: INK, lineWidth: 3}), rect(56, 82, 88, 26, C.dark, {r: 6}), rect(92, 40, 14, 40, C.light, {r: 4}), rect(92, 32, 14, 10, C.amber, {r: 3}),
+  ...[0, 1, 2].map(i => pathL([['M', 98 + i * 6, 28], ['Q', 108 + i * 6, 14, 98 + i * 6, 2]], {fill: 'none', stroke: C.mid, lineWidth: 3}))]);
+export const icon7 = () => grp([rect(45, 30, 110, 140, '#2f5d8a', {r: 16, stroke: INK, lineWidth: 3}), ...[[60, 45, '#e0a24a'], [100, 60, '#6fcf8e'], [70, 95, '#e0533d'], [115, 110, '#e0a24a'], [62, 135, '#6fcf8e'], [110, 145, '#e0533d'], [88, 80, '#d5d8db']].map(([x, y, c]) => rect(x, y, 22, 14, c, {r: 4}))]);
+export const icon8 = () => grp([pathL([['M', 30, 40], ['L', 170, 40], ['L', 165, 170], ['L', 35, 170], ['Z']], {fill: '#3c5f8f', stroke: INK, lineWidth: 3}), pathL([['M', 40, 40], ['Q', 70, 110, 120, 40]], {fill: 'none', stroke: '#e0a24a', lineWidth: 5}),
+  rect(95, 55, 50, 50, '#34547f', {r: 6, stroke: '#e0a24a', lineWidth: 3}), ell(110, 62, 22, 22, C.light)]);
+export const icon9 = () => grp([rect(20, 80, 160, 60, '#b9c3cc', {r: 10, stroke: INK, lineWidth: 3}), pathL([['M', 20, 80], ['L', 180, 80], ['L', 170, 70], ['L', 30, 70], ['Z']], {fill: '#9aa6b0'}), ell(26, 92, 20, 36, C.amber), rect(30, 140, 140, 30, '#dfe5ea', {r: 4})]);
+export const ICONS = [icon5, icon6, icon7, icon8, icon9];

@@ -5,7 +5,7 @@ k=Kokoro(M+'/kokoro-v1.0.onnx', M+'/voices-v1.0.bin')
 script=json.load(open('script.json'))
 sr=24000; parts=[]; sents=[]; t=0.0
 for i,s in enumerate(script):
-    a,sr=k.create(s['tts'], voice=voice, speed=1.0, lang='en-us')
+    a,sr=k.create(s['tts'], voice=s.get('voice',voice), speed=1.0, lang='en-us')
     a=np.asarray(a,dtype=np.float32)
     # trim leading/trailing near-silence to 40ms margin
     env=np.abs(a); thr=0.01; idx=np.where(env>thr)[0]
