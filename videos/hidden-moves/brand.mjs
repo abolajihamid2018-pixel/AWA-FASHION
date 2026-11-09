@@ -79,7 +79,7 @@ await banner(1500, 500, 1100, 400, 'x-header-1500x500.png');
 // 4 · YouTube watermark 150×150 (transparent)
 {
   const c = createCanvas(300, 300), x = c.getContext('2d');
-  ref(x, 150, 140, 2.1, 0.4, {});
+  ref(x, 128, 150, 1.85, 0.4, {});
   await save(c, 'youtube-watermark.png');
 }
 
