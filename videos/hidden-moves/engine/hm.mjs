@@ -302,7 +302,7 @@ export function sparkle(ctx, x, y, r, k, col = P.coin) {
 // ---------------------------------------------------------------- captions & brand
 export function caption(ctx, str, k, {y = 1515, hidden = false} = {}) {
   if (!str || k <= 0) return;
-  const size = 58, up = str.toUpperCase(), w = measure(ctx, up, size) + 64;
+  const up = str.toUpperCase(); let size = 58; const mw = measure(ctx, up, size); if (mw > 960) size = Math.floor(size * 960 / mw); const w = measure(ctx, up, size) + 64;
   withT(ctx, W / 2, y + (1 - E.outCubic(k)) * 18, 1, 0, () => {
     rr(ctx, -w / 2, -48, w, 96, 24); fillStroke(ctx, hidden ? P.cyan : P.ink, null, 0);
     text(ctx, up, 0, 3, {size, col: hidden ? P.navy : P.card});

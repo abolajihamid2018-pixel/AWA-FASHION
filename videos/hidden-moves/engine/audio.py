@@ -119,7 +119,8 @@ def main(ep):
     venv = np.sqrt(lp(voice ** 2, 0.0008)); venv /= venv.max() + 1e-9
     gain = 1 - 0.6 * np.clip(venv * 3, 0, 1)
     tt = np.arange(n) / SR
-    for a, b in [(T['idea'] - 0.05, T['pipmove'] - 0.1), (C['stuck'][0] - 0.05, C['stuck'][0] + 0.7), (C['law'][0] + 0.6, C['law'][0] + 1.2)]:
+    silences = meta.get('silences') or [(T['idea'] - 0.05, T['pipmove'] - 0.1), (C['stuck'][0] - 0.05, C['stuck'][0] + 0.7), (C['law'][0] + 0.6, C['law'][0] + 1.2)]
+    for a, b in silences:
         gain *= np.where((tt > a) & (tt < b), 0.05, 1)
     gain = lp(gain, 0.002)
     fade = np.minimum(1, tt / 0.4) * np.minimum(1, (D - tt) / 0.6)

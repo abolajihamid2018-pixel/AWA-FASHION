@@ -1,0 +1,14 @@
+[
+ {"id":"hook", "tts":"Why does everyone end up standing at concerts?", "caps":["Why does everyone","end up standing at concerts?"]},
+ {"id":"nobody", "tts":"Nobody planned it. Nobody wants it. It just happens.", "caps":["Nobody planned it.","Nobody wants it.","It just happens."]},
+ {"id":"play", "tts":"Let's play the game.", "caps":["Let's play the game."]},
+ {"id":"seated", "tts":"A crowd, all sitting. Everyone can see the stage.", "caps":["A crowd, all sitting.","Everyone can see the stage."]},
+ {"id":"stand", "tts":"Then one person near the front stands up. They see better, and the person behind them sees nothing.", "caps":["Then one person near the front","stands up.","They see better,","and the person behind them","sees nothing."]},
+ {"id":"down", "tts":"Hey! Down in front!", "voice":"am_puck", "caps":["Hey! Down in front!"]},
+ {"id":"ripple", "tts":"So they stand too. Then the row behind them. Row by row, it ripples back.", "caps":["So they stand too.","Then the row behind them.","Row by row,","it ripples back."]},
+ {"id":"cruel", "tts":"Until everyone is standing, and nobody sees any better than when they were all sitting. They're just more tired.", "caps":["Until everyone is standing,","and nobody sees any better","than when they were all sitting.","They're just more tired."]},
+ {"id":"name", "tts":"Each move makes sense on its own. Together, they cancel out. Economists call this an arms race.", "caps":["Each move makes sense","on its own.","Together, they cancel out.","Economists call this","an arms race."]},
+ {"id":"world", "tts":"You see it when everyone talks louder in a noisy restaurant, or rivals keep outspending each other on ads.", "caps":["You see it when everyone","talks louder","in a noisy restaurant,","or rivals keep outspending","each other on ads."]},
+ {"id":"fix", "tts":"The way out is a shared rule, like everyone agreeing to stay seated.", "caps":["The way out is a shared rule,","like everyone agreeing","to stay seated."]},
+ {"id":"end", "tts":"Everything is a game. These are the hidden moves.", "caps":["Everything is a game.","These are the hidden moves."]}
+]

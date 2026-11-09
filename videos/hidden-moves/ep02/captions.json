@@ -1,0 +1,172 @@
+[
+ {
+  "start": 0.15,
+  "end": 1.57,
+  "text": "You just won the auction."
+ },
+ {
+  "start": 1.57,
+  "end": 2.81,
+  "text": "Congratulations."
+ },
+ {
+  "start": 2.81,
+  "end": 4.34,
+  "text": "You probably overpaid."
+ },
+ {
+  "start": 4.36,
+  "end": 5.684,
+  "text": "Let's play the game."
+ },
+ {
+  "start": 5.704,
+  "end": 7.314,
+  "text": "A jar full of coins."
+ },
+ {
+  "start": 7.314,
+  "end": 8.414,
+  "text": "Nobody knows exactly"
+ },
+ {
+  "start": 8.414,
+  "end": 9.996,
+  "text": "how much is inside."
+ },
+ {
+  "start": 10.016,
+  "end": 11.836,
+  "text": "Ten bidders each make a guess."
+ },
+ {
+  "start": 11.836,
+  "end": 12.196,
+  "text": "Some too low,"
+ },
+ {
+  "start": 12.196,
+  "end": 13.546,
+  "text": "some too high."
+ },
+ {
+  "start": 13.546,
+  "end": 15.102,
+  "text": "Say they're right on average."
+ },
+ {
+  "start": 15.122,
+  "end": 15.922,
+  "text": "But who wins?"
+ },
+ {
+  "start": 15.922,
+  "end": 17.272,
+  "text": "Not the average guess."
+ },
+ {
+  "start": 17.272,
+  "end": 18.265,
+  "text": "The highest one."
+ },
+ {
+  "start": 18.285,
+  "end": 19.516,
+  "text": "Mine! Mine! Mine!"
+ },
+ {
+  "start": 19.536,
+  "end": 20.886,
+  "text": "The winner is the person"
+ },
+ {
+  "start": 20.886,
+  "end": 22.622,
+  "text": "who overestimated the most."
+ },
+ {
+  "start": 22.642,
+  "end": 23.352,
+  "text": "Economists call this"
+ },
+ {
+  "start": 23.352,
+  "end": 24.829,
+  "text": "the winner's curse."
+ },
+ {
+  "start": 24.849,
+  "end": 27.049,
+  "text": "In a classic 1983 experiment,"
+ },
+ {
+  "start": 27.049,
+  "end": 29.899,
+  "text": "students bid on jars of coins."
+ },
+ {
+  "start": 29.899,
+  "end": 31.169,
+  "text": "The winners lost money"
+ },
+ {
+  "start": 31.169,
+  "end": 32.464,
+  "text": "on average."
+ },
+ {
+  "start": 32.484,
+  "end": 33.714,
+  "text": "It was first spotted"
+ },
+ {
+  "start": 33.714,
+  "end": 34.264,
+  "text": "in auctions"
+ },
+ {
+  "start": 34.264,
+  "end": 35.604,
+  "text": "for oil drilling rights,"
+ },
+ {
+  "start": 35.604,
+  "end": 36.244,
+  "text": "and it shows up"
+ },
+ {
+  "start": 36.244,
+  "end": 37.905,
+  "text": "in bidding wars everywhere."
+ },
+ {
+  "start": 37.925,
+  "end": 38.595,
+  "text": "The fix?"
+ },
+ {
+  "start": 38.595,
+  "end": 39.855,
+  "text": "Assume that if you win,"
+ },
+ {
+  "start": 39.855,
+  "end": 41.385,
+  "text": "you probably guessed too high."
+ },
+ {
+  "start": 41.385,
+  "end": 42.892,
+  "text": "So bid below your guess."
+ },
+ {
+  "start": 42.912,
+  "end": 44.252,
+  "text": "Everything is a game."
+ },
+ {
+  "start": 44.252,
+  "end": 45.558,
+  "text": "These are the hidden moves."
+ }
+]

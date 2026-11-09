@@ -1,6 +1,20 @@
-# Hidden Moves — EP.01 "Why do rival gas stations end up next to each other?"
+# Hidden Moves
 
-**Watch:** `ep01/hidden-moves-ep01.mp4`. It is 1080×1920 at 30 fps, 60.6 s long, H.264 with AAC audio at about −15 LUFS, and has burned-in captions.
+Animated 9:16 explainers about everyday game theory. All episodes are 1080×1920 at 30 fps, H.264 with AAC audio at about −15 LUFS, with burned-in captions.
+
+| EP | File | Length | Idea | Sources |
+|---|---|---|---|---|
+| 01 | `ep01/hidden-moves-ep01.mp4` | 60.6 s | Why rival gas stations cluster (Hotelling's Law) | Hotelling, "Stability in Competition", 1929 |
+| 02 | `ep02/hidden-moves-ep02.mp4` | 46.3 s | The winner's curse | Bazerman & Samuelson 1983 jar experiment; first noticed in oil-lease auctions. On-screen dollar figures are an illustrative example |
+| 03 | `ep03/hidden-moves-ep03.mp4` | 48.8 s | Why everyone stands at concerts (arms race) | Conceptual model, no statistics |
+| 04 | `ep04/hidden-moves-ep04.mp4` | 50.9 s | The decoy effect | Ariely, *Predictably Irrational*: Economist offer, 16/0/84 → 68/32 |
+
+The channel setup (profile pictures, YouTube banner, watermark, covers, Instagram highlights, bios and upload copy) is in `channel/`; start with `channel/CHANNEL.md`.
+Build any episode with `bash build.sh ep02`. Regenerate the channel art with `node brand.mjs channel`.
+
+---
+
+## EP.01 in detail
 
 Hidden Moves is an animated Shorts brand about everyday game theory. The research and brand bible are in `brand/hidden-moves-bible.html`.
 This episode explains Hotelling's Law (H. Hotelling, "Stability in Competition", 1929) using the simple road model: drivers spread evenly along a road and each fills up at the nearest station.

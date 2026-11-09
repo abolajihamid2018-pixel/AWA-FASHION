@@ -1,4 +1,5 @@
 node_modules/
-ep01/picture.mp4
-ep01/mix.wav
-ep01/stills.png
+ep*/picture.mp4
+ep*/mix.wav
+ep*/stills.png
+ep*/build.log

@@ -1,0 +1,13 @@
+[
+ {"id":"hook", "tts":"Why do companies sell an option that nobody buys?", "caps":["Why do companies sell","an option that nobody buys?"]},
+ {"id":"decoy", "tts":"It's not a mistake. It's a decoy.", "caps":["It's not a mistake.","It's a decoy."]},
+ {"id":"offer", "tts":"The Economist once offered this. Web only, fifty nine dollars. Print only, one hundred and twenty five. Print and web, also one hundred and twenty five.", "caps":["The Economist once offered this.","Web only: $59.","Print only: $125.","Print and web:","also $125."]},
+ {"id":"pointless", "tts":"Print only is pointless. Who would pick it?", "caps":["Print only is pointless.","Who would pick it?"]},
+ {"id":"me", "tts":"Not me.", "voice":"am_puck", "caps":["Not me."]},
+ {"id":"test", "tts":"Behavioural economist Dan Ariely tested the offer on students. With all three options, 84 percent chose print and web.", "caps":["Behavioural economist Dan Ariely","tested the offer on students.","With all three options,","84% chose print and web."]},
+ {"id":"remove", "tts":"Then he removed the useless option. Now most chose web only, and print and web fell to 32 percent.", "caps":["Then he removed","the useless option.","Now most chose web only,","and print and web","fell to 32%."]},
+ {"id":"same", "tts":"Same products. Same prices. An option nobody wanted changed what everyone chose.", "caps":["Same products.","Same prices.","An option nobody wanted","changed what everyone chose."]},
+ {"id":"why", "tts":"Next to the decoy, the bundle looks like a free upgrade.", "caps":["Next to the decoy,","the bundle looks","like a free upgrade."]},
+ {"id":"spot", "tts":"So when one option makes another look like a steal, ask who it's really there for.", "caps":["So when one option","makes another look like a steal,","ask who it's really there for."]},
+ {"id":"end", "tts":"Everything is a game. These are the hidden moves.", "caps":["Everything is a game.","These are the hidden moves."]}
+]

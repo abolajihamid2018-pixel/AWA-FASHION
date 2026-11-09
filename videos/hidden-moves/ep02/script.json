@@ -1,0 +1,109 @@
+[
+ {
+  "id": "hook",
+  "tts": "You just won the auction. Congratulations. You probably overpaid.",
+  "caps": [
+   "You just won the auction.",
+   "Congratulations.",
+   "You probably overpaid."
+  ]
+ },
+ {
+  "id": "play",
+  "tts": "Let's play the game.",
+  "caps": [
+   "Let's play the game."
+  ]
+ },
+ {
+  "id": "jar",
+  "tts": "A jar full of coins. Nobody knows exactly how much is inside.",
+  "caps": [
+   "A jar full of coins.",
+   "Nobody knows exactly",
+   "how much is inside."
+  ]
+ },
+ {
+  "id": "guess",
+  "tts": "Ten bidders each make a guess. Some too low, some too high. Say they're right on average.",
+  "caps": [
+   "Ten bidders each make a guess.",
+   "Some too low,",
+   "some too high.",
+   "Say they're right on average."
+  ]
+ },
+ {
+  "id": "who",
+  "tts": "But who wins? Not the average guess. The highest one.",
+  "caps": [
+   "But who wins?",
+   "Not the average guess.",
+   "The highest one."
+  ]
+ },
+ {
+  "id": "mine",
+  "tts": "Mine! Mine! Mine!",
+  "voice": "am_puck",
+  "caps": [
+   "Mine! Mine! Mine!"
+  ]
+ },
+ {
+  "id": "wrong",
+  "tts": "The winner is the person who overestimated the most.",
+  "caps": [
+   "The winner is the person",
+   "who overestimated the most."
+  ]
+ },
+ {
+  "id": "name",
+  "tts": "Economists call this the winner's curse.",
+  "caps": [
+   "Economists call this",
+   "the winner's curse."
+  ]
+ },
+ {
+  "id": "proof",
+  "tts": "In a classic 1983 experiment, students bid on jars of coins. The winners lost money on average.",
+  "caps": [
+   "In a classic 1983 experiment,",
+   "students bid on jars of coins.",
+   "The winners lost money",
+   "on average."
+  ]
+ },
+ {
+  "id": "world",
+  "tts": "It was first spotted in auctions for oil drilling rights, and it shows up in bidding wars everywhere.",
+  "caps": [
+   "It was first spotted",
+   "in auctions",
+   "for oil drilling rights,",
+   "and it shows up",
+   "in bidding wars everywhere."
+  ]
+ },
+ {
+  "id": "fix",
+  "tts": "The fix? Assume that if you win, you probably guessed too high. So bid below your guess.",
+  "caps": [
+   "The fix?",
+   "Assume that if you win,",
+   "you probably guessed too high.",
+   "So bid below your guess."
+  ]
+ },
+ {
+  "id": "end",
+  "tts": "Everything is a game. These are the hidden moves.",
+  "caps": [
+   "Everything is a game.",
+   "These are the hidden moves."
+  ]
+ }
+]
