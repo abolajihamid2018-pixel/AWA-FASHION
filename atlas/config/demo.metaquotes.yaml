@@ -72,7 +72,7 @@ paths:                     # relative paths resolve against the atlas/ folder
   log_dir: logs
 
 mt5:
-  terminal_path: null              # e.g. "C:/Program Files/MetaTrader 5/terminal64.exe"
+  terminal_path: "C:/Program Files/MetaTrader 5/terminal64.exe"   # found by inspect_windows.ps1
   # Observed 2026-11-09: server clock 13:51 at ~11:51 UTC -> +2 (winter).
   # Expect +3 in summer. ATLAS refuses to run if this is clearly wrong.
   server_utc_offset_hours: 2
