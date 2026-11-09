@@ -32,7 +32,8 @@ def make_source(settings: Settings, module: Optional[object] = None) -> AccountS
             commission_per_lot_round_turn=first_cost.commission_per_lot_round_turn,
         )
     from .sources.mt5_readonly import MT5ReadOnlySource
-    return MT5ReadOnlySource(settings.mt5, settings.environment, module=module)
+    return MT5ReadOnlySource(settings.mt5, settings.environment, module=module,
+                             probe_symbol=settings.instruments[0])
 
 
 def ingest(source: AccountSource, repo: Repository, lookback_days: int = 3650,

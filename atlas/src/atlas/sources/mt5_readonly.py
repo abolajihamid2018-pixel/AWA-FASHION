@@ -25,8 +25,9 @@ log = logging.getLogger("atlas.mt5")
 ALLOWED_CALLS = frozenset({
     "initialize", "shutdown", "last_error", "version", "terminal_info",
     "account_info", "positions_get", "history_deals_get", "symbol_info",
-    "copy_rates_range",
+    "copy_rates_range", "symbol_info_tick",
 })
+FRESH_TICK_MINUTES = 15
 _CREDENTIAL_KWARGS = {"login", "password", "server"}
 
 _TRADE_MODE = {0: "demo", 1: "contest", 2: "real"}
@@ -60,7 +61,8 @@ class ReadOnlyMT5:
 class MT5ReadOnlySource:
     name = "mt5"
 
-    def __init__(self, settings: MT5Settings, environment: str, module: Optional[Any] = None) -> None:
+    def __init__(self, settings: MT5Settings, environment: str, module: Optional[Any] = None,
+                 probe_symbol: Optional[str] = None) -> None:
         if settings.server_utc_offset_hours is None:
             raise SourceError(
                 "mt5.server_utc_offset_hours is not set. Broker server time must be "
@@ -79,6 +81,7 @@ class MT5ReadOnlySource:
         self._environment = environment
         self._offset = timedelta(hours=settings.server_utc_offset_hours)
         self._connected = False
+        self._probe_symbol = probe_symbol
 
     # -- connection ------------------------------------------------------
     def connect(self) -> None:
@@ -108,6 +111,36 @@ class MT5ReadOnlySource:
         if self._environment == "demo" and mode != "demo":
             self.close()
             raise EnvironmentMismatch(f"Environment is 'demo' but account trade mode is '{mode}'.")
+        self._check_offset()
+
+    def _check_offset(self) -> None:
+        """Sanity-check the configured server UTC offset against the latest tick.
+
+        A tick that appears to come from the future proves the offset is too
+        small, so ATLAS refuses to continue. A stale tick is normal when the
+        market is closed, so it only produces a warning.
+        """
+        if not self._probe_symbol:
+            return
+        tick = self._mt5.symbol_info_tick(self._probe_symbol)
+        if tick is None or not getattr(tick, "time", 0):
+            log.warning("No tick for %s; cannot verify server UTC offset.", self._probe_symbol)
+            return
+        now = datetime.now(timezone.utc)
+        server_clock = datetime.fromtimestamp(tick.time, tz=timezone.utc)
+        age_min = (now - (server_clock - self._offset)).total_seconds() / 60
+        suggested = round((server_clock - now).total_seconds() / 3600)
+        if age_min < -5:
+            self.close()
+            raise SourceError(
+                f"Configured server_utc_offset_hours={self._offset.total_seconds() / 3600:g} makes the latest "
+                f"{self._probe_symbol} tick appear {-age_min:.0f} min in the future. "
+                f"Likely offset: {suggested:+d}. Update the config (brokers often change it for summer time)."
+            )
+        if age_min > FRESH_TICK_MINUTES:
+            log.warning("Latest %s tick is %.0f min old (market closed?) - offset not verified; "
+                        "if the market is open, the offset may be wrong (suggested %+d).",
+                        self._probe_symbol, age_min, suggested)
 
     def close(self) -> None:
         if self._connected:

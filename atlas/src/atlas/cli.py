@@ -103,14 +103,20 @@ def cmd_kill(args, settings) -> int:
 
 def cmd_dashboard(args, settings) -> int:
     """Start Streamlit bound to localhost with the ATLAS config, whatever the cwd."""
+    import os
     import subprocess
+    from pathlib import Path
     from .settings import ATLAS_ROOT
     dash = ATLAS_ROOT / "dashboard"
+    env = dict(os.environ)
+    if args.config:  # the dashboard must show the same environment as the CLI
+        env["ATLAS_CONFIG"] = str(Path(args.config).resolve())
     return subprocess.call(
         [sys.executable, "-m", "streamlit", "run", str(dash / "app.py"),
          "--server.address", "127.0.0.1", "--server.port", str(args.port),
          "--browser.gatherUsageStats", "false", "--client.toolbarMode", "viewer"],
         cwd=dash,  # so dashboard/.streamlit/config.toml (dark theme) is used
+        env=env,
     )
 
 

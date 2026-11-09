@@ -52,3 +52,10 @@ def test_mock_and_demo_never_mix(write_cfg):
 def test_every_instrument_needs_costs(write_cfg):
     with pytest.raises(ConfigError, match="No cost assumptions"):
         load_settings(write_cfg({"instruments": ["EURUSD", "XAUUSD"]}))
+
+
+def test_metaquotes_demo_config_loads():
+    from pathlib import Path
+    s = load_settings(Path(__file__).resolve().parents[1] / "config" / "demo.metaquotes.yaml")
+    assert (s.environment, s.data_source, s.mt5.server_utc_offset_hours) == ("demo", "mt5", 2)
+    assert s.live_trading_enabled is False and s.paths.db_path.endswith("atlas_demo.db")

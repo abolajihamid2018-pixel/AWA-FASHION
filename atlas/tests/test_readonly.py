@@ -16,11 +16,13 @@ TRADE_FUNCS = {"order_send", "order_check", "order_calc_margin", "order_calc_pro
 
 Acct = namedtuple("Acct", "login server currency balance equity margin margin_free leverage trade_mode margin_mode")
 Pos = namedtuple("Pos", "ticket symbol type volume price_open price_current sl tp profit swap magic time")
+Tick = namedtuple("Tick", "time")
 DealT = namedtuple("DealT", "ticket position_id time symbol type entry volume price profit commission swap fee magic comment")
 
 
 class FakeMT5:
-    def __init__(self, trade_mode=0, margin_mode=2, fail_init=0, logged_in=True):
+    def __init__(self, trade_mode=0, margin_mode=2, fail_init=0, logged_in=True, tick_time=None):
+        self.tick_time = tick_time
         self.trade_mode, self.margin_mode = trade_mode, margin_mode
         self.fail_init, self.logged_in = fail_init, logged_in
         self.init_kwargs, self.deal_bounds, self.shut = None, None, False
@@ -46,6 +48,9 @@ class FakeMT5:
         return [DealT(1, 0, 1_700_000_000, "", 2, 0, 0, 0, 1000.0, 0, 0, 0, 0, "dep"),
                 DealT(2, 9, 1_700_003_600, "EURUSD", 0, 0, 0.1, 1.1, 0.0, -0.35, 0, 0, 1101, ""),
                 DealT(3, 9, 1_700_007_200, "EURUSD", 1, 1, 0.1, 1.101, 10.0, -0.35, 0, 0, 1101, "")]
+    def symbol_info_tick(self, symbol):
+        return None if self.tick_time is None else Tick(self.tick_time)
+
     def order_send(self, *a, **k):
         self.order_send_called = True
 
@@ -125,3 +130,24 @@ def test_retry_exhausted(monkeypatch):
 def test_utc_offset_must_be_explicit():
     with pytest.raises(SourceError, match="server_utc_offset_hours"):
         MT5ReadOnlySource(MT5Settings(), "demo", module=FakeMT5())
+
+
+def _server_now(offset_h, minutes_ago=0):
+    return int((datetime.now(timezone.utc) + timedelta(hours=offset_h, minutes=-minutes_ago)).timestamp())
+
+
+def test_offset_check_passes_with_fresh_tick():
+    MT5ReadOnlySource(CFG, "demo", module=FakeMT5(tick_time=_server_now(2, 1)), probe_symbol="EURUSD").connect()
+
+
+def test_offset_too_small_is_refused():
+    fake = FakeMT5(tick_time=_server_now(3))  # broker on +3, config says +2
+    with pytest.raises(SourceError, match="Likely offset: \\+3"):
+        MT5ReadOnlySource(CFG, "demo", module=fake, probe_symbol="EURUSD").connect()
+    assert fake.shut
+
+
+def test_stale_tick_only_warns(caplog):
+    fake = FakeMT5(tick_time=_server_now(2, minutes_ago=600))  # market closed
+    MT5ReadOnlySource(CFG, "demo", module=fake, probe_symbol="EURUSD").connect()
+    assert "not verified" in caplog.text

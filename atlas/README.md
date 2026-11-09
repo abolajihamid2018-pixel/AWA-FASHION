@@ -41,8 +41,19 @@ only, because no broker or MT5 account has been selected yet.
    python -m atlas dashboard
    ```
 
-   `MetaTrader5` is **not** installed in mock mode. It is added later with
-   `pip install -e ".[mt5]"` once a demo account exists.
+   `MetaTrader5` is **not** needed in mock mode.
+
+3. Reading your MT5 demo account (MetaQuotes-Demo, read-only). Keep MT5 open
+   and logged in to the **demo** account; leave **Algo Trading off**.
+
+   ```powershell
+   pip install -e ".[mt5]"
+   python -m atlas --config config/demo.metaquotes.yaml ingest
+   python -m atlas --config config/demo.metaquotes.yaml report
+   python -m atlas --config config/demo.metaquotes.yaml dashboard
+   ```
+
+   Demo data goes to `db/atlas_demo.db`, separate from mock data.
 
 ## Safety properties (each covered by tests in `tests/`)
 

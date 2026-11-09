@@ -12,11 +12,22 @@
 | 6 | Windows / Python | Do not assume versions; inspect first; avoid heavy deps | `tools/inspect_windows.ps1` + `atlas env-report`; code supports Python 3.10+; core deps: numpy, pandas, pydantic, PyYAML |
 | 7 | Access | No credentials, no account; mock data only | Mock source; credential keys rejected; ATLAS never passes login/password to MT5 |
 
+## 2026-11-09 — MT5 demo account available
+
+* Owner installed MT5 and is logged in to **MetaQuotes-Demo**, a **demo**
+  account with **hedging**. Algo Trading is off.
+* Server clock observed 2 h ahead of UTC → `server_utc_offset_hours: 2`
+  (expected +3 in summer). On connect ATLAS checks this against the latest tick
+  and refuses to run if the offset is clearly too small.
+* MetaQuotes-Demo showed zero spread on EURUSD/GBPUSD. That is not
+  representative of real costs, so the conservative estimates stay.
+* The account number is not stored in config; it only appears in the local,
+  git-ignored database.
+
 ## Open items / blockers
 
 * **Windows environment not yet inspected.** This build session had no access
   to the owner's PC. Waiting on the output of `tools/inspect_windows.ps1`.
-* **No historical market data yet.** With no MT5 terminal, the Phase 2 research
-  engine needs another source of EURUSD/GBPUSD H4/D1 history (e.g. an MT5
-  demo from any broker, used read-only for data only, or CSV files the owner
-  supplies). To decide before Phase 2.
+* **Historical data source for Phase 2:** the MetaQuotes-Demo terminal can
+  supply EURUSD/GBPUSD H4/D1 history read-only. Its history is a test-server
+  feed, not a broker's, so results will be labelled with that source.

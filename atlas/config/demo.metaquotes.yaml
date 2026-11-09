@@ -1,0 +1,85 @@
+# ATLAS 2.0 — DEMO configuration for the MetaQuotes-Demo server (read-only).
+#
+# Use with:  python -m atlas --config config/demo.metaquotes.yaml ingest
+#
+# MetaQuotes-Demo is MetaQuotes' own test server, not a broker. Its quotes
+# often show near-zero spreads, which are NOT representative of real trading
+# costs, so the conservative cost estimates below are kept on purpose.
+# No login number or password is stored here: ATLAS reads from the terminal
+# you are already logged in to.
+#
+# This file must NEVER contain credentials. The loader rejects any key that
+# looks like a password/secret/token. ATLAS never logs in to MT5 itself: it
+# attaches to a terminal you have already logged in to by hand.
+
+# mock = synthetic data only (current default, no broker selected yet)
+# demo = read-only attach to an MT5 terminal logged in to a DEMO account
+# "live" is not accepted by this build.
+environment: demo
+data_source: mt5           # read-only attach to the running MT5 terminal
+
+live_trading_enabled: false   # fixed to false; any other value is rejected
+
+instruments: [EURUSD, GBPUSD]   # XAUUSD to be added after framework validation
+timeframes: [H4, D1]
+
+# Demo testing limits. NOT permission for live trading.
+risk:
+  risk_per_trade_pct: 0.25
+  max_daily_loss_pct: 2.0
+  max_drawdown_pct: 10.0
+
+# ---------------------------------------------------------------------------
+# TRANSACTION COST ASSUMPTIONS — NO BROKER SELECTED.
+# These are conservative placeholder estimates for preliminary research only.
+# Replace with real broker values once an account exists. Every research
+# report carries these "is_assumption: true" flags forward.
+# Units: pips (1 pip = pip_size), commission in account currency per 1.0 lot
+# round turn, swap in pips per 1.0 lot per night (negative = cost).
+# Swaps are assumed to cost money in BOTH directions (pessimistic).
+# ---------------------------------------------------------------------------
+costs:
+  EURUSD:
+    pip_size: 0.0001
+    spread_pips: 1.5
+    commission_per_lot_round_turn: 7.0
+    slippage_pips_per_side: 0.5
+    swap_long_pips_per_night: -1.0
+    swap_short_pips_per_night: -1.0
+    is_assumption: true
+    note: "Conservative estimate; no broker selected"
+  GBPUSD:
+    pip_size: 0.0001
+    spread_pips: 2.0
+    commission_per_lot_round_turn: 7.0
+    slippage_pips_per_side: 0.7
+    swap_long_pips_per_night: -1.0
+    swap_short_pips_per_night: -1.0
+    is_assumption: true
+    note: "Conservative estimate; no broker selected"
+
+# Maps EA magic numbers to strategy/timeframe for performance breakdowns.
+# Mock data uses these numbers too.
+magic_map:
+  1101: {strategy: donchian, timeframe: H4}
+  1102: {strategy: donchian, timeframe: D1}
+  1201: {strategy: ma_trend, timeframe: H4}
+  1202: {strategy: ma_trend, timeframe: D1}
+
+paths:                     # relative paths resolve against the atlas/ folder
+  db_path: db/atlas_demo.db       # demo data kept apart from mock data
+  kill_switch_dir: runtime
+  log_dir: logs
+
+mt5:
+  terminal_path: null              # e.g. "C:/Program Files/MetaTrader 5/terminal64.exe"
+  # Observed 2026-11-09: server clock 13:51 at ~11:51 UTC -> +2 (winter).
+  # Expect +3 in summer. ATLAS refuses to run if this is clearly wrong.
+  server_utc_offset_hours: 2
+  connect_retries: 3
+  connect_timeout_ms: 10000
+
+mock:
+  seed: 42
+  days: 365
+  starting_balance: 10000.0
