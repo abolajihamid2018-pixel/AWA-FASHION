@@ -1,0 +1,16 @@
+# ATLAS local-only artefacts: never commit
+db/
+data/
+logs/
+runtime/
+*.db
+*.db-wal
+*.db-shm
+.env
+config/live.yaml
+config/local.yaml
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/

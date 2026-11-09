@@ -1,0 +1,17 @@
+[server]
+address = "127.0.0.1"     # local machine only; never exposed to the network
+headless = true
+port = 8501
+
+[client]
+toolbarMode = "viewer"   # hides the "Deploy" button: ATLAS is never deployed
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "dark"
+primaryColor = "#4C9AFF"
+backgroundColor = "#0E1117"
+secondaryBackgroundColor = "#161B22"
+textColor = "#E6EDF3"
