@@ -148,7 +148,7 @@ export function RequestPage() {
           </div>
 
           <Field label="Phone" htmlFor="phone" optional>
-            <input id="phone" type="tel" maxLength={30} pattern="[0-9+()\-. ]{6,30}" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} />
+            <input id="phone" type="tel" placeholder="e.g. 0803 123 4567" maxLength={30} pattern="[0-9+()\-. ]{6,30}" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className={inputCls} />
           </Field>
 
           <div className="grid gap-6 sm:grid-cols-2">

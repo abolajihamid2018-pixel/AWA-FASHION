@@ -79,7 +79,7 @@ function layout(title: string, paragraphs: string[], cta?: { href: string; label
     </div>
     <p style="margin:18px 0 0;font-size:12px;line-height:1.5;color:#64748b">
       Sent by CareRoute AI. Administrative messages only — not medical advice.
-      In an emergency, call 911 or your local emergency number.<br>
+      In an emergency, call 112 or go to the nearest hospital.<br>
       CareRoute AI is a product showcase — requests made there are not sent to a real clinic.
     </p>
   </div></body></html>`

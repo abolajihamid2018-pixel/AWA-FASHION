@@ -31,7 +31,7 @@ export function Layout() {
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
             <strong className="font-semibold">Important:</strong> CareRoute AI handles administrative requests for{' '}
             {CLINIC_NAME} only. It does not provide medical advice, diagnosis or treatment, so please don't include
-            medical details in your request. In an emergency, call 911 or your local emergency number.
+            medical details in your request. In an emergency, call 112 or go to the nearest hospital.
             <span className="mt-2 block text-amber-800/80">
               CareRoute AI is a product showcase — requests made here are not sent to a real clinic.
             </span>

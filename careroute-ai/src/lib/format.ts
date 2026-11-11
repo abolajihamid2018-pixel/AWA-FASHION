@@ -1,5 +1,8 @@
 import type { PreferredTime, RequestStatus } from './api'
 
+/** Dates and times are shown in Nigerian English format (e.g. Fri, 13 Nov 2026). */
+export const LOCALE = 'en-NG'
+
 /** Clinic shown throughout the app. */
 export const CLINIC_NAME = 'CareRoute Clinic'
 
@@ -7,18 +10,18 @@ export function formatDate(iso: string | null): string {
   if (!iso) return 'No preference'
   // Date-only strings are parsed as local dates to avoid timezone shifts.
   const d = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? new Date(`${iso}T00:00:00`) : new Date(iso)
-  return d.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
+  return d.toLocaleDateString(LOCALE, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 export function formatDateTime(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+  return new Date(iso).toLocaleString(LOCALE, { dateStyle: 'medium', timeStyle: 'short' })
 }
 
 /** "14:30" -> "2:30 PM" in the viewer's locale (clock time, no timezone shift). */
 export function formatClock(hhmm: string | null): string | null {
   if (!hhmm) return null
   const [h, m] = hhmm.split(':').map(Number)
-  return new Date(2000, 0, 1, h, m).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+  return new Date(2000, 0, 1, h, m).toLocaleTimeString(LOCALE, { hour: 'numeric', minute: '2-digit' })
 }
 
 export const TIME_LABELS: Record<PreferredTime, string> = {

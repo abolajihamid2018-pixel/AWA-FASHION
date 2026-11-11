@@ -40,7 +40,7 @@ function Hero() {
         <div>
           <span className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-800">
             <span className="h-1.5 w-1.5 rounded-full bg-teal-500" />
-            AI-assisted clinic coordination
+            Built for Nigerian clinics
           </span>
 
           <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
