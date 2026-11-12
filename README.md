@@ -1,45 +1,42 @@
-[README.md](https://github.com/user-attachments/files/25682625/README.md)
-# AWA Fashion — Africa Grace. Global Style.
+# AWA Fashion · Africa Grace. Global Style.
 
-A fully featured fashion e-commerce website built with HTML, CSS & JavaScript.
+The AWA Fashion website. Plain HTML, CSS and vanilla JavaScript: one `index.html` plus `assets/`, with no build step. Hosted on Vercel at https://awa-fashion.vercel.app (every push to `main` goes live).
 
-## Features
-- 🛍️ Product shop with category filters
-- 👌 Signature Dress showcase (your flagship, most-requested piece)
-- 🎨 Designs / Lookbook gallery for custom-order enquiries
-- 👗 Size selector with size guide
-- 🛒 Shopping cart sidebar
-- 💬 WhatsApp order integration
-- 💳 Paystack payment integration (Cards, Bank Transfer, USSD)
-- 📦 Track Your Order — customers look up their order status by reference
-- 📱 Mobile responsive
-- ✨ Scroll animations
+## What is on the site
 
-## Setup
+- **Hero** and **The Edit**: a scroll-linked lookbook of real pieces. Phones get a swipe gallery.
+- **The Signature**: one featured piece (set `SIGNATURE` in the script).
+- **Collection**: every real piece, filterable. Each piece has its own page at `#/piece/<slug>` with sizes, quantity, a size guide, Add to bag and Order on WhatsApp.
+- **Bag and checkout**: the bag is saved in the visitor's browser. Checkout takes card, transfer or USSD through Paystack, or sends the order on WhatsApp.
+- **Make it yours**: a custom-order request that opens WhatsApp with the details written out.
+- **Track your order**: customers enter their reference and see Processing, Confirmed, In Production, Shipped or Completed, read from Firebase.
+- Floating WhatsApp button (bottom-left), Instagram and TikTok @fashionwithawa.
 
-### 1. Update WhatsApp Number
-In `index.html`, find this line and replace with your number:
-```js
-const WHATSAPP_NUMBER = '2348000000000'; // e.g. 2348012345678
-```
+## Settings (top of the script in `index.html`)
 
-### 2. Update Paystack Key
-Replace with your public key from [dashboard.paystack.com](https://dashboard.paystack.com):
-```js
-const PAYSTACK_KEY = 'pk_test_xxxxxxxx...'; // Your Paystack public key
-```
+| Setting | What it does |
+|---|---|
+| `WHATSAPP_NUMBER` | Number every WhatsApp link goes to |
+| `pieces` | The catalogue: each piece has `price` (naira, or `null` for "Price on request"), `gender` (men, women, accessories), `sizes`, `unavail`, `tag` and `imgs` (empty shows a "Photo coming soon" tile) |
+| `SIZES` | Sizes offered on every piece |
+| `SIGNATURE` | Slug of the featured piece |
+| `PAYSTACK_KEY` | Paystack **public** key (`pk_test_...` or `pk_live_...`). Empty turns card payment off |
+| `FIREBASE` | Firebase web config for order tracking |
 
-### 3. Order Tracking (Firebase)
-The "Track Your Order" section lets customers check their order status by reference. It's powered by [Firebase](https://console.firebase.google.com) Firestore, and `index.html` already ships wired to the `awa-fashion` Firebase project's config — if you ever need to point it at a different project, replace the `firebaseConfig` object in `index.html`:
-```js
-const firebaseConfig = {
-  apiKey: "...", authDomain: "...", projectId: "...",
-  storageBucket: "...", messagingSenderId: "...", appId: "..."
-};
-```
-(If `firebaseConfig` is ever left with placeholder values, tracking gracefully degrades to a "not connected" message — payments and WhatsApp ordering are unaffected either way.)
+Never put the Paystack secret key (`sk_...`) in this file. The public key is safe to publish.
 
-**⚠️ Required one-time step — publish Firestore security rules.** Until this is done, order creation and lookup will fail. Go to your project's **Firestore Database → Rules** tab, paste the rules below, and click **Publish**. This lets the site create an order and let a customer look up *one* order by its exact reference, but never list or browse all orders, and never edit/delete from the client:
+## Paystack
+
+1. dashboard.paystack.com, then Settings, then API Keys & Webhooks.
+2. Copy the public key into `PAYSTACK_KEY`. Use the test key first and pay with Paystack's test cards.
+3. When the business is verified, swap in the live key (`pk_live_...`).
+
+After a successful payment the customer sees their reference (`AWA_` plus a number), the order is saved to Firebase with status `Processing`, and they can send a confirmation on WhatsApp.
+
+## Firebase order tracking
+
+**One-time step: publish the Firestore rules.** In console.firebase.google.com, open the project, then Firestore Database, then Rules, paste this and click Publish:
+
 ```
 rules_version = '2';
 service cloud.firestore {
@@ -53,17 +50,20 @@ service cloud.firestore {
 }
 ```
 
-**How it works:** every time a customer completes a Paystack payment, an order document is automatically created in Firestore (document ID = the Paystack payment reference, e.g. `AWA_1737000000000`) with status `Processing`. Give this reference to the customer (it's already included in the WhatsApp confirmation message sent after payment) so they can track it.
+These let the site create an order and let a customer read only the one order whose exact reference they type. Nobody can list, edit or delete orders from the site.
 
-**Updating order status:** as the order moves along, open the document in the Firebase Console (**Firestore Database → orders → [reference]**) and edit its `status` field to one of: `Processing`, `Confirmed`, `In Production`, `Shipped`, `Completed`. The tracker page updates instantly to reflect it.
+**Updating an order:** in the Firebase Console open Firestore Database, then `orders`, then the reference, and change `status` to `Processing`, `Confirmed`, `In Production`, `Shipped` or `Completed`.
 
-**For WhatsApp-only orders** (no card payment), you can manually create a matching document in the Firebase Console — set the document ID to whatever reference you give the customer, and add `status`, `total`, and `items` fields — so they can track it the same way.
+**WhatsApp orders:** add a document in `orders` yourself. Use the reference you give the customer as the document ID and add `status`, `total` (number) and `items` fields. They can then track it the same way.
 
-## Deploy to Vercel
+To move tracking to another Firebase project (for example your brother's), replace the `FIREBASE` object with that project's web config and publish the same rules there.
 
-1. Push this repo to GitHub
-2. Go to [vercel.com](https://vercel.com) → New Project
-3. Import your GitHub repo
-4. Click **Deploy** — no build settings needed!
+## Images
 
-Your site will be live at `https://your-project.vercel.app`
+The images in `assets/img/` are interim crops from Instagram. Replace them with full-size originals using the same file names. See `docs/visual-direction.md`.
+
+## Preview locally
+
+```
+npx http-server -p 8080
+```

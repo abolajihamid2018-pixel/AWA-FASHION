@@ -3,995 +3,1324 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AWA Fashion — Africa Grace. Global Style.</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://js.paystack.co/v1/inline.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<title>AWA Fashion · Africa Grace. Global Style.</title>
+<meta name="description" content="AWA Fashion: kaftans, embroidered sets and everyday pieces. See the collection, then make a piece yours on WhatsApp.">
+<meta name="theme-color" content="#0f2440">
+<meta property="og:title" content="AWA Fashion · Africa Grace. Global Style.">
+<meta property="og:description" content="Kaftans, embroidered sets and everyday pieces. Make one yours.">
+<!-- DEPLOY STEP: set og:image and og:url to absolute live URLs once the domain is known -->
+<meta property="og:image" content="assets/img/teal-kaftan-front.webp">
+<meta property="og:url" content="">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23eceff3'/%3E%3Cpath d='M8 46 20 18h7L15 46z' fill='%230f2440'/%3E%3Cpath d='M22 46 34 18h5L27 46z' fill='%2386acd6'/%3E%3Cpath d='M34 18h7l15 28h-7l-8-15-4 8-3-6z' fill='%230f2440'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/img/teal-kaftan-front.webp" fetchpriority="high">
 <style>
-  :root {
-    --navy: #0d2240; --navy-mid: #1a3a6b; --navy-light: #2a5298;
-    --sky: #b8d4f0; --white: #f8f9fc; --gold: #c9a84c;
-    --green: #25D366; --text: #0d2240; --muted: #6b7a99;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--text); overflow-x: hidden; }
+:root{
+  /* Palette sampled from the AWA studio and brand posts */
+  --canvas:#eceff3;       /* the studio wall, cool white, never pure */
+  --panel:#f6f7f9;
+  --panel-2:#e2e7ee;
+  --ink:#0f2440;          /* logo navy */
+  --ink-2:#46546a;
+  --line:#c3cbd6;
+  --line-strong:#7d8aa0;
+  --sky:#86acd6;          /* the logo's light stroke */
+  --glow:#f0c24a;         /* the LED wave, rare */
+  --glow-soft:rgba(240,194,74,.38);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+  --f-display:"Bodoni Moda",Georgia,serif;
+  --f-body:"Figtree",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --gutter:clamp(16px,4vw,56px);
+  --nav-h:72px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden;overflow-x:clip;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{overflow-x:hidden;overflow-x:clip;background:var(--canvas);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;animation:pageIn .9s var(--ease-out) both}
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--glow);outline-offset:3px;border-radius:4px}
+[hidden]{display:none !important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:fixed;left:16px;top:-60px;z-index:200;background:var(--ink);color:var(--canvas);padding:10px 16px;border-radius:8px;text-decoration:none;transition:top .3s var(--ease-out)}
+.skip:focus{top:12px}
+main:focus{outline:none}
 
-  /* NAV */
-  nav { position: fixed; top: 0; width: 100%; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 4rem; background: rgba(248,249,252,0.94); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(13,34,64,0.08); }
-  .nav-logo { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; }
-  .nav-logo svg { width: 36px; height: 36px; }
-  .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--navy); letter-spacing: 2px; }
-  .logo-sub { font-size: 0.6rem; color: var(--muted); letter-spacing: 3px; text-transform: uppercase; margin-top: -4px; }
-  .nav-links { display: flex; gap: 1.8rem; list-style: none; }
-  .nav-links a { text-decoration: none; font-size: 0.78rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--navy); position: relative; transition: color 0.2s; }
-  .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1.5px; background: var(--gold); transition: width 0.3s; }
-  .nav-links a:hover::after { width: 100%; }
-  .nav-cart { display: flex; align-items: center; gap: 0.8rem; }
-  .cart-btn { background: var(--navy); color: var(--white); border: none; cursor: pointer; padding: 0.6rem 1.4rem; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; transition: background 0.25s; }
-  .cart-btn:hover { background: var(--navy-light); }
-  .whatsapp-nav-btn { background: var(--green); color: white; border: none; cursor: pointer; padding: 0.6rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; transition: background 0.25s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
-  .whatsapp-nav-btn:hover { background: #1da851; }
+/* ── The environment layer: soft light drifting on the wall ── */
+.env{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.env::before,.env::after{content:"";position:absolute;width:70vmax;height:70vmax;border-radius:50%;filter:blur(60px);opacity:.55;animation:drift 80s linear infinite}
+.env::before{background:radial-gradient(circle,rgba(255,255,255,.9),transparent 60%);left:-20vmax;top:-25vmax}
+.env::after{background:radial-gradient(circle,rgba(134,172,214,.28),transparent 62%);right:-25vmax;bottom:-30vmax;animation-delay:-40s}
+@keyframes drift{0%{transform:translate(0,0)}50%{transform:translate(8vmax,6vmax)}100%{transform:translate(0,0)}}
 
-  /* HERO */
-  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 80px; overflow: hidden; }
-  .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 6rem 4rem 6rem 5rem; }
-  .hero-eyebrow { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 1.2rem; animation: fadeUp 0.8s ease both; }
-  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 6vw, 5.5rem); font-weight: 300; line-height: 1.05; color: var(--navy); margin-bottom: 1.8rem; animation: fadeUp 0.9s ease both 0.1s; }
-  .hero-title em { font-style: italic; color: var(--navy-light); }
-  .hero-desc { font-size: 1rem; line-height: 1.75; color: var(--muted); max-width: 380px; margin-bottom: 2.5rem; animation: fadeUp 1s ease both 0.2s; }
-  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 1s ease both 0.3s; }
-  .btn-primary { background: var(--navy); color: var(--white); text-decoration: none; padding: 1rem 2.4rem; font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 500; transition: all 0.25s; display: inline-block; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-  .btn-primary:hover { background: var(--navy-light); transform: translateY(-2px); }
-  .btn-outline { background: transparent; color: var(--navy); text-decoration: none; padding: 1rem 2.4rem; font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 500; border: 1.5px solid var(--navy); transition: all 0.25s; display: inline-block; }
-  .btn-outline:hover { background: var(--navy); color: var(--white); }
-  .btn-whatsapp { background: var(--green); color: white; text-decoration: none; padding: 1rem 2rem; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; transition: all 0.25s; display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
-  .btn-whatsapp:hover { background: #1da851; transform: translateY(-2px); }
-  .hero-right { background: linear-gradient(145deg, var(--navy) 0%, var(--navy-mid) 60%, var(--navy-light) 100%); display: flex; align-items: flex-end; padding: 3rem; position: relative; overflow: hidden; animation: fadeIn 1.2s ease both; }
-  .hero-right::before { content: 'AWA'; position: absolute; top: -20px; right: -20px; font-family: 'Bebas Neue', sans-serif; font-size: 22vw; color: rgba(255,255,255,0.04); line-height: 1; pointer-events: none; }
-  .hero-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 1.5rem 2rem; color: white; max-width: 280px; }
-  .hero-badge .badge-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; line-height: 1; color: var(--gold); }
-  .hero-badge .badge-text { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; margin-top: 0.3rem; }
+/* ── Type ── */
+.kicker{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.display{font-family:var(--f-display);font-weight:400;letter-spacing:-.01em;line-height:1.02}
+.h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;letter-spacing:-.015em;max-width:16ch}
+.h2 em{font-style:italic}
+.lede{color:var(--ink-2);font-size:1.06rem;max-width:46ch}
 
-  /* TICKER */
-  .ticker { background: var(--navy); color: var(--sky); padding: 0.8rem 0; overflow: hidden; white-space: nowrap; }
-  .ticker-inner { display: inline-flex; animation: ticker 22s linear infinite; }
-  .ticker-inner span { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; margin-right: 4rem; font-weight: 500; }
-  .ticker-inner .dot { color: var(--gold); margin-right: 4rem; }
-  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:48px;padding:0 1.5em;border-radius:999px;text-decoration:none;font-weight:500;font-size:.95rem;letter-spacing:.01em;border:1px solid var(--ink);cursor:pointer;transition:background-color .4s var(--ease-out),color .4s var(--ease-out),transform .4s var(--ease-out),box-shadow .4s var(--ease-out)}
+.btn-solid{background:var(--ink);color:var(--canvas)}
+.btn-solid:hover{background:#1b3760;box-shadow:0 10px 30px -12px rgba(15,36,64,.55);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:var(--canvas)}
+.btn-wa{background:#1f7a4d;border-color:#1f7a4d;color:#fff}
+.btn-wa:hover{background:#17623d;transform:translateY(-1px)}
+.btn svg{width:18px;height:18px;flex:none}
 
-  /* SECTION */
-  section { padding: 6rem 5rem; }
-  .section-label { font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 0.8rem; }
-  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 300; color: var(--navy); line-height: 1.15; margin-bottom: 1rem; }
+/* ── The signature: the lit wave line ── */
+.wave{position:absolute;left:0;width:100%;height:auto;pointer-events:none;overflow:visible}
+.wave path{fill:none;stroke-linecap:round}
+.wave .w-glow{stroke:var(--glow-soft);stroke-width:14;filter:blur(8px)}
+.wave .w-core{stroke:var(--glow);stroke-width:2.2}
+.wave .w-shadow{stroke:rgba(15,36,64,.08);stroke-width:2;transform:translateY(10px)}
+.wave.draw path{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.6s var(--ease-io)}
+.wave.draw.in path{stroke-dashoffset:0}
+.wave.draw .w-glow{transition-delay:.25s}
 
-  /* SHOP */
-  #shop { background: var(--white); }
-  .shop-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem; }
-  .shop-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-  .filter-btn { border: 1.5px solid var(--navy); background: transparent; padding: 0.5rem 1.2rem; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; color: var(--navy); font-family: 'DM Sans', sans-serif; }
-  .filter-btn.active, .filter-btn:hover { background: var(--navy); color: var(--white); }
-  .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-  .product-card { cursor: pointer; }
-  .product-img { aspect-ratio: 3/4; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); overflow: hidden; position: relative; margin-bottom: 1rem; }
-  .product-img-inner { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 6rem; color: rgba(13,34,64,0.08); transition: transform 0.5s ease; }
-  .product-card:hover .product-img-inner { transform: scale(1.05); }
-  .product-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-  .product-card:hover .product-photo { transform: scale(1.05); }
-  .product-overlay { position: absolute; inset: 0; background: rgba(13,34,64,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; opacity: 0; transition: opacity 0.3s; padding: 1.5rem; }
-  .product-card:hover .product-overlay { opacity: 1; }
-  .quick-view-btn { background: white; color: var(--navy); border: none; cursor: pointer; padding: 0.7rem 1.8rem; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; width: 100%; }
-  .quick-view-btn:hover { background: var(--gold); color: white; }
-  .product-tag { position: absolute; top: 1rem; left: 1rem; background: var(--gold); color: white; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.25rem 0.7rem; font-weight: 500; }
-  .product-info { padding: 0 0.2rem; }
-  .product-name { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; color: var(--navy); margin-bottom: 0.3rem; }
-  .product-sub { font-size: 0.72rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .product-price { font-size: 0.95rem; font-weight: 500; color: var(--navy-light); }
+/* ── Nav ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 var(--gutter);transition:background-color .5s var(--ease-out),box-shadow .5s var(--ease-out)}
+.nav.scrolled{background:rgba(236,239,243,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(15,36,64,.08)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand svg{width:40px;height:26px;flex:none}
+.brand-name{font-family:var(--f-body);font-weight:600;letter-spacing:.14em;font-size:.92rem;line-height:1.1}
+.brand-tag{display:block;font-family:var(--f-mono);font-size:.62rem;letter-spacing:.08em;color:var(--ink-2);font-weight:400}
+.nav-links{display:flex;gap:clamp(16px,2.4vw,36px);list-style:none}
+.nav-links a{text-decoration:none;font-size:.9rem;position:relative;padding:6px 0}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease-out)}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav .btn{min-height:42px;font-size:.88rem}
+.menu-btn{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;cursor:pointer;align-items:center;justify-content:center}
+.menu-btn span,.menu-btn span::before{display:block;width:16px;height:1.5px;background:var(--ink);position:relative;transition:transform .4s var(--ease-out)}
+.menu-btn span::before{content:"";position:absolute;top:5px}
+@media (max-width:880px){
+  .nav-links{position:fixed;inset:var(--nav-h) 0 auto 0;flex-direction:column;gap:0;background:var(--panel);padding:8px var(--gutter) 20px;box-shadow:0 20px 40px -20px rgba(15,36,64,.3);opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity .4s var(--ease-out),transform .4s var(--ease-out)}
+  .nav-links.open{opacity:1;transform:none;pointer-events:auto}
+  .nav-links a{display:block;padding:14px 0;font-size:1.05rem;border-bottom:1px solid var(--line)}
+  .menu-btn{display:inline-flex}
+  .nav .btn span.lbl{display:none}
+  .nav .btn{padding:0 14px}
+}
+@media (max-width:480px){.brand-tag{display:none}}
 
-  /* PRODUCT MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); padding: 1rem; }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: white; width: 100%; max-width: 820px; max-height: 90vh; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; position: relative; animation: modalIn 0.35s cubic-bezier(0.4,0,0.2,1); }
-  @keyframes modalIn { from { transform: scale(0.92) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-  .modal-img { background: linear-gradient(160deg, var(--sky) 0%, #c5ddf5 100%); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 9rem; color: rgba(13,34,64,0.1); min-height: 400px; position: relative; overflow: hidden; }
-  .modal-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .modal-badge { position: absolute; top: 1.2rem; left: 1.2rem; background: var(--gold); color: white; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.3rem 0.8rem; }
-  .modal-body { padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
-  .modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--navy); color: white; border: none; cursor: pointer; width: 34px; height: 34px; font-size: 1rem; z-index: 10; display: flex; align-items: center; justify-content: center; }
-  .modal-cat { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
-  .modal-name { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 400; color: var(--navy); line-height: 1.2; }
-  .modal-price { font-size: 1.3rem; font-weight: 600; color: var(--navy-light); }
-  .modal-desc { font-size: 0.88rem; line-height: 1.7; color: var(--muted); }
-  .modal-divider { height: 1px; background: rgba(13,34,64,0.1); }
+/* ── Hero ── */
+.hero{position:relative;min-height:100svh;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:clamp(24px,5vw,80px);padding:calc(var(--nav-h) + 32px) var(--gutter) 64px}
+.hero .wave{top:18%;z-index:0}
+.hero-copy{position:relative;z-index:2}
+.hero h1{font-size:clamp(3.2rem,9vw,8.6rem);margin:22px 0 26px}
+.hero h1 .l{display:block;overflow:hidden;padding:.06em .04em .14em;margin:-.06em -.04em -.14em}
+.hero h1 .l span{display:block;transform:translateY(105%);animation:rise 1.3s var(--ease-out) forwards}
+.hero h1 .l:nth-child(2) span{animation-delay:.14s;font-style:italic}
+@keyframes rise{to{transform:none}}
+.hero .lede{opacity:0;animation:fadeUp 1s var(--ease-out) .5s forwards}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;opacity:0;animation:fadeUp 1s var(--ease-out) .7s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-figure{position:relative;z-index:1;justify-self:center;width:min(100%,400px)}
+.arch{position:relative;border-radius:200px 200px 18px 18px;overflow:hidden;background:var(--panel-2);box-shadow:0 40px 80px -40px rgba(15,36,64,.45);aspect-ratio:330/397;opacity:0;animation:archIn 1.6s var(--ease-out) .2s forwards}
+@keyframes archIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:none}}
+.arch img{width:100%;height:100%;object-fit:cover}
+.arch::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.hero-cap{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.hero-cap a{text-decoration:none;border-bottom:1px solid var(--line-strong)}
+.scroll-cue{position:absolute;left:var(--gutter);bottom:26px;display:flex;align-items:center;gap:12px;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.scroll-cue i{display:block;width:44px;height:1px;background:var(--line-strong);position:relative;overflow:hidden}
+.scroll-cue i::after{content:"";position:absolute;inset:0;background:var(--ink);transform:translateX(-100%);animation:cue 3.2s var(--ease-io) infinite;animation-delay:-1s}
+@keyframes cue{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+@media (max-width:880px){
+  .hero{grid-template-columns:1fr;padding-top:calc(var(--nav-h) + 16px);gap:28px;min-height:auto}
+  .hero-figure{order:-1;width:min(78vw,340px)}
+  .hero .wave{top:30%}
+  .scroll-cue{display:none}
+}
+@media (max-height:560px){.scroll-cue{display:none}}
 
-  /* SIZE SELECTOR */
-  .size-label { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--navy); font-weight: 600; display: block; margin-bottom: 0.7rem; }
-  .size-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-  .size-btn { width: 44px; height: 44px; border: 1.5px solid rgba(13,34,64,0.2); background: transparent; cursor: pointer; font-size: 0.78rem; font-weight: 500; color: var(--navy); font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
-  .size-btn:hover:not(:disabled) { border-color: var(--navy); }
-  .size-btn.selected { background: var(--navy); color: white; border-color: var(--navy); }
-  .size-btn:disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
-  .size-guide-link { font-size: 0.7rem; color: var(--navy-light); text-decoration: underline; cursor: pointer; margin-top: 0.5rem; display: inline-block; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+/* ── Sections ── */
+section{position:relative}
+.sec{padding:clamp(80px,12vw,160px) var(--gutter)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
+.sec-head .kicker{margin-bottom:16px}
+.divider{position:relative;height:120px;margin:0}
+.divider .wave{top:10px}
 
-  /* QUANTITY */
-  .qty-label { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--navy); font-weight: 600; display: block; margin-bottom: 0.7rem; }
-  .qty-control { display: flex; align-items: center; border: 1.5px solid rgba(13,34,64,0.2); width: fit-content; }
-  .qty-btn { width: 38px; height: 38px; border: none; background: transparent; cursor: pointer; font-size: 1.2rem; color: var(--navy); font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
-  .qty-btn:hover { background: var(--sky); }
-  .qty-num { width: 50px; text-align: center; font-size: 0.95rem; font-weight: 500; color: var(--navy); border: none; outline: none; background: transparent; }
+/* ── Reveal choreography ── */
+.rv{opacity:0;transform:translateY(22px);transition:opacity 1s var(--ease-out),transform 1s var(--ease-out)}
+.rv.in{opacity:1;transform:none}
+.stagger .rv:nth-child(2){transition-delay:.09s}
+.stagger .rv:nth-child(3){transition-delay:.18s}
+.stagger .rv:nth-child(4){transition-delay:.27s}
+.stagger .rv:nth-child(5){transition-delay:.36s}
+.stagger .rv:nth-child(6){transition-delay:.45s}
+.stagger .rv:nth-child(7){transition-delay:.54s}
+.stagger .rv.done:nth-child(n){transition-delay:0s}
 
-  /* MODAL ACTIONS */
-  .modal-actions { display: flex; flex-direction: column; gap: 0.7rem; }
-  .btn-pay { background: var(--navy); color: white; border: none; cursor: pointer; padding: 0.95rem; font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-  .btn-pay:hover { background: var(--navy-light); }
-  .btn-wa { background: var(--green); color: white; border: none; cursor: pointer; padding: 0.95rem; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; }
-  .btn-wa:hover { background: #1da851; }
-  .btn-add-cart-modal { background: transparent; color: var(--navy); border: 1.5px solid var(--navy); cursor: pointer; padding: 0.8rem; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.25s; }
-  .btn-add-cart-modal:hover { background: var(--navy); color: white; }
+/* ── The Edit: scroll lookbook ── */
+.edit{position:relative;height:calc(var(--n,5) * 130vh + 100vh)}
+.edit-stage{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr minmax(240px,360px) 1fr;align-items:center;gap:clamp(20px,4vw,64px);padding:var(--nav-h) var(--gutter) 40px;overflow:hidden}
+.edit-intro{align-self:center}
+.edit-intro .h2{font-size:clamp(2rem,4vw,3.4rem)}
+.edit-intro .lede{margin-top:18px;max-width:30ch}
+.edit-frame{position:relative;aspect-ratio:330/397;border-radius:14px;overflow:hidden;background:var(--panel-2);box-shadow:0 40px 90px -45px rgba(15,36,64,.55)}
+.edit-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);will-change:opacity,transform}
+.edit-caps{position:relative;min-height:220px}
+.edit-cap{position:absolute;inset:0 auto auto 0;opacity:0;will-change:opacity,transform}
+.edit-cap .num{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.14em;color:var(--ink-2)}
+.edit-cap h3{font-family:var(--f-display);font-weight:400;font-size:clamp(1.8rem,3.2vw,2.8rem);line-height:1.08;margin:10px 0 12px;max-width:12ch}
+.edit-cap p{color:var(--ink-2);max-width:30ch}
+.edit-cap a{display:inline-block;margin-top:16px;font-size:.9rem;font-weight:500;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px}
+.edit-ticks{position:absolute;right:var(--gutter);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px}
+.edit-ticks i{display:block;width:18px;height:2px;background:var(--line);transform-origin:right;transition:background-color .5s var(--ease-out),transform .5s var(--ease-out)}
+.edit-ticks i.on{background:var(--ink);transform:scaleX(1.8)}
+/* Static edit: phones, portrait tablets, coarse portrait, landscape phones, reduced motion */
+.edit-list{display:none}
+@media (max-width:720px),(orientation:portrait) and (max-width:1024px),(orientation:portrait) and (pointer:coarse),(orientation:landscape) and (pointer:coarse) and (max-height:560px),(prefers-reduced-motion:reduce){
+  .edit{height:auto;padding:clamp(72px,12vw,120px) 0}
+  .edit-stage{display:none}
+  .edit-list{display:block}
+  .edit-list .edit-intro{padding:0 var(--gutter);margin-bottom:28px}
+  .edit-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 var(--gutter) 12px;scrollbar-width:none}
+  .edit-track::-webkit-scrollbar{display:none}
+  .edit-card{flex:0 0 min(72vw,300px);scroll-snap-align:start;text-decoration:none}
+  .edit-card .ph{aspect-ratio:330/397;border-radius:12px;overflow:hidden;background:var(--panel-2)}
+  .edit-card .ph img{width:100%;height:100%;object-fit:cover}
+  .edit-card h3{font-family:var(--f-display);font-weight:400;font-size:1.4rem;margin-top:12px}
+  .edit-card p{color:var(--ink-2);font-size:.92rem}
+}
 
-  /* SIGNATURE DRESS */
-  #signature { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 100%); overflow: hidden; }
-  .signature-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-  .signature-visual { aspect-ratio: 3/4; background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-  .signature-visual::after { content: ''; position: absolute; inset: 1.2rem; border: 1px solid rgba(255,255,255,0.12); z-index: 1; }
-  .signature-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 10rem; color: rgba(255,255,255,0.1); }
-  .signature-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .signature-tag { position: absolute; top: 1.5rem; left: 1.5rem; background: var(--gold); color: white; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.35rem 0.9rem; font-weight: 500; }
-  #signature .section-label { color: var(--gold); }
-  #signature .section-title { color: white; }
-  #signature .section-title em { color: var(--sky); font-style: italic; }
-  .signature-desc { font-size: 0.95rem; line-height: 1.85; color: rgba(255,255,255,0.7); margin: 1.2rem 0 1.6rem; max-width: 440px; }
-  .signature-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--gold); margin-bottom: 1.8rem; }
-  .signature-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .signature-actions .btn-primary { background: var(--gold); }
-  .signature-actions .btn-primary:hover { background: #dbb85c; }
+/* ── Collection ── */
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:.88rem;transition:background-color .4s var(--ease-out),color .4s var(--ease-out),border-color .4s var(--ease-out)}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:clamp(18px,2.4vw,32px) clamp(14px,2vw,28px)}
+.card{display:block;text-decoration:none;cursor:pointer;background:none;border:0;text-align:left;width:100%}
+.card .ph{position:relative;aspect-ratio:330/397;border-radius:12px;overflow:hidden;background:var(--panel-2)}
+.card .ph img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out),opacity .6s var(--ease-out)}
+.card .ph img.alt{position:absolute;inset:0;opacity:0}
+.card:hover .ph img{transform:scale(1.035)}
+.card:hover .ph img.alt{opacity:1}
+.card .meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px}
+.card h3{font-family:var(--f-display);font-weight:400;font-size:1.32rem;line-height:1.2}
+.card .tone{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);white-space:nowrap}
+.card .price{font-size:.88rem;color:var(--ink-2);margin-top:2px}
+.card[hidden]{display:none}
+.note{margin-top:40px;font-size:.92rem;color:var(--ink-2);max-width:60ch}
 
-  /* DESIGNS / LOOKBOOK */
-  #designs { background: #edf2f8; }
-  .designs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
-  .design-card { background: white; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
-  .design-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(13,34,64,0.12); }
-  .design-visual { aspect-ratio: 4/3; background: linear-gradient(160deg, var(--sky) 0%, #d0e4f7 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-  .design-visual span { font-family: 'Bebas Neue', sans-serif; font-size: 4.5rem; color: rgba(13,34,64,0.1); }
-  .design-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .design-info { padding: 1.6rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-  .design-tag { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-weight: 500; }
-  .design-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--navy); }
-  .design-desc { font-size: 0.85rem; line-height: 1.65; color: var(--muted); flex: 1; }
-  .design-link { font-size: 0.72rem; letter-spacing: 1px; color: var(--navy-light); text-decoration: none; font-weight: 600; margin-top: 0.4rem; }
-  .design-link:hover { color: var(--gold); }
+/* ── Details band ── */
+.details{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,6vw,96px);align-items:center;background:var(--ink);color:var(--canvas);overflow:hidden}
+.details .kicker{color:#a9b6c9}
+.details .lede{color:#c6d0dd}
+.details .ph{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:330/339;max-width:440px;justify-self:end;width:100%}
+.details .ph img{width:100%;height:100%;object-fit:cover}
+.details .ph::before{content:"";position:absolute;inset:-30%;background:radial-gradient(circle at 70% 20%,rgba(240,194,74,.25),transparent 55%);z-index:1;pointer-events:none;opacity:.6}
+.details .ph.live::before{animation:pulse 7s ease-in-out infinite;animation-delay:-2s}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:.8}}
+.details ul{list-style:none;margin-top:28px;display:grid;gap:14px;max-width:40ch}
+.details li{display:flex;gap:14px;align-items:baseline;border-top:1px solid rgba(198,208,221,.22);padding-top:14px;color:#dfe5ee}
+.details li b{font-family:var(--f-mono);font-weight:400;font-size:.72rem;letter-spacing:.12em;color:var(--glow)}
+@media (max-width:880px){.details{grid-template-columns:1fr}.details .ph{justify-self:start}}
 
-  /* TRACK ORDER */
-  #track { background: var(--white); }
-  .track-box { display: flex; gap: 0.8rem; max-width: 520px; margin-top: 2rem; flex-wrap: wrap; }
-  .track-box input { flex: 1; min-width: 220px; border: 1.5px solid rgba(13,34,64,0.15); padding: 0.9rem 1.1rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--navy); outline: none; transition: border-color 0.2s; }
-  .track-box input:focus { border-color: var(--navy-light); }
-  .track-box button { background: var(--navy); color: white; border: none; cursor: pointer; padding: 0.9rem 2rem; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; }
-  .track-box button:hover { background: var(--navy-light); }
-  #trackResult { margin-top: 2rem; max-width: 620px; }
-  .track-empty { font-size: 0.88rem; color: var(--muted); background: #edf2f8; padding: 1.2rem 1.5rem; line-height: 1.6; }
-  .track-card { background: #edf2f8; padding: 2rem; }
-  .track-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--navy); font-weight: 600; margin-bottom: 1.5rem; }
-  .track-status-badge { background: var(--navy); color: white; font-size: 0.65rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.35rem 0.9rem; }
-  .track-stages { display: flex; justify-content: space-between; position: relative; }
-  .track-stages::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; height: 2px; background: rgba(13,34,64,0.12); z-index: 0; }
-  .track-stage { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; position: relative; z-index: 1; flex: 1; }
-  .track-dot { width: 18px; height: 18px; border-radius: 50%; background: white; border: 2px solid rgba(13,34,64,0.2); transition: all 0.2s; }
-  .track-stage.done .track-dot { background: var(--gold); border-color: var(--gold); }
-  .track-stage-label { font-size: 0.62rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); text-align: center; }
-  .track-stage.done .track-stage-label { color: var(--navy); font-weight: 600; }
+/* ── Make it yours ── */
+.make{display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(28px,5vw,72px);align-items:start}
+.make-form{display:grid;gap:30px}
+.step{border:0;display:grid;gap:12px}
+.step legend,.step .lg{display:flex;align-items:baseline;gap:12px;font-family:var(--f-display);font-size:1.45rem;margin-bottom:6px}
+.step legend b,.step .lg b{font-family:var(--f-mono);font-weight:400;font-size:.72rem;letter-spacing:.12em;color:var(--ink-2)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt span{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-strong);cursor:pointer;font-size:.92rem;transition:background-color .35s var(--ease-out),color .35s var(--ease-out),border-color .35s var(--ease-out)}
+.opt span:hover{border-color:var(--ink)}
+.opt input:checked + span{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+.opt input:focus-visible + span{outline:2px solid var(--glow);outline-offset:3px}
+.sw{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(15,36,64,.2)}
+.field{display:grid;gap:6px}
+.field label{font-size:.88rem;color:var(--ink-2)}
+.field input,.field select,.field textarea{min-height:48px;padding:12px 14px;border-radius:10px;border:1px solid var(--line-strong);background:var(--panel);transition:border-color .3s var(--ease-out),box-shadow .3s var(--ease-out)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(240,194,74,.35)}
+.field textarea{min-height:96px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+.ticket{position:sticky;top:calc(var(--nav-h) + 20px);background:var(--panel);border-radius:18px;padding:28px;box-shadow:0 30px 70px -40px rgba(15,36,64,.45);overflow:hidden}
+.ticket .wave{position:relative;display:block;margin:4px 0 18px;height:46px}
+.ticket .wave .w-core,.ticket .wave .w-glow{stroke-dasharray:1;stroke-dashoffset:var(--fill,1);transition:stroke-dashoffset 1s var(--ease-out)}
+.ticket h3{font-family:var(--f-display);font-weight:400;font-size:1.6rem}
+.ticket dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:18px 0 22px;font-size:.92rem}
+.ticket dt{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding-top:3px}
+.ticket dd{color:var(--ink)}
+.ticket dd.empty{color:var(--line-strong)}
+.ticket .btn{width:100%}
+.ticket small{display:block;margin-top:14px;color:var(--ink-2);font-size:.84rem;line-height:1.5}
+@media (max-width:880px){.make{grid-template-columns:1fr}.ticket{position:relative;top:0}}
 
-  /* FASHION NUGGETS */
-  #nuggets { background: var(--navy); color: var(--white); }
-  #nuggets .section-title { color: var(--white); }
-  .nuggets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
-  .nugget-card { border: 1px solid rgba(255,255,255,0.1); padding: 2rem; position: relative; transition: border-color 0.3s, transform 0.3s; }
-  .nugget-card:hover { border-color: var(--gold); transform: translateY(-4px); }
-  .nugget-num { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: rgba(255,255,255,0.06); position: absolute; top: 1rem; right: 1.5rem; line-height: 1; }
-  .nugget-icon { font-size: 1.5rem; margin-bottom: 1rem; }
-  .nugget-title { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; color: var(--gold); margin-bottom: 0.7rem; }
-  .nugget-text { font-size: 0.85rem; line-height: 1.7; color: rgba(255,255,255,0.7); }
+/* ── The House ── */
+.house{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(14px,2vw,28px);align-items:end}
+.house .copy{grid-column:1 / span 5;align-self:center}
+.house .copy p{margin-top:18px;color:var(--ink-2);max-width:42ch}
+.house .p1{grid-column:7 / span 3}
+.house .p2{grid-column:10 / span 3;transform:translateY(-14%)}
+.house .ph{border-radius:12px;overflow:hidden;aspect-ratio:330/397;background:var(--panel-2)}
+.house .ph img{width:100%;height:100%;object-fit:cover}
+.house figcaption{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-top:10px}
+@media (max-width:880px){.house{grid-template-columns:1fr 1fr}.house .copy{grid-column:1 / -1}.house .p1{grid-column:1}.house .p2{grid-column:2;transform:none}}
 
-  /* ABOUT */
-  #about { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; background: var(--white); padding: 6rem 5rem; }
-  .about-visual { background: linear-gradient(145deg, var(--navy) 0%, var(--navy-mid) 100%); height: 500px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  .about-visual::after { content: ''; position: absolute; inset: 1.5rem; border: 1px solid rgba(255,255,255,0.15); }
-  .about-visual-text { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; color: rgba(255,255,255,0.08); text-align: center; line-height: 1.1; }
-  .about-stat-row { display: flex; gap: 2rem; margin: 2.5rem 0; }
-  .about-stat { flex: 1; }
-  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--navy); line-height: 1; }
-  .stat-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 0.3rem; }
-  .about-text { font-size: 0.95rem; line-height: 1.8; color: var(--muted); margin-bottom: 1.5rem; }
+/* ── Contact ── */
+.contact{text-align:center;display:grid;justify-items:center;gap:22px}
+.contact .h2{max-width:14ch;margin:0 auto}
+.contact .lede{margin:0 auto}
+.handles{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:8px}
+.handle{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 20px;border-radius:999px;border:1px solid var(--line-strong);text-decoration:none;font-size:.92rem;transition:border-color .4s var(--ease-out),background-color .4s var(--ease-out)}
+.handle:hover{border-color:var(--ink);background:var(--panel)}
+.handle svg{width:18px;height:18px}
 
-  /* CONTACT */
-  #contact { background: #edf2f8; padding: 6rem 5rem; }
-  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
-  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .form-field { display: flex; flex-direction: column; gap: 0.4rem; }
-  .form-field label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
-  .form-field input, .form-field textarea { border: 1.5px solid rgba(13,34,64,0.15); background: white; padding: 0.85rem 1rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--navy); outline: none; transition: border-color 0.2s; }
-  .form-field input:focus, .form-field textarea:focus { border-color: var(--navy-light); }
-  .form-field textarea { resize: vertical; min-height: 120px; }
-  .contact-block { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid rgba(13,34,64,0.1); }
-  .contact-block:last-child { border-bottom: none; }
-  .contact-block h4 { font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 0.6rem; }
-  .contact-block p { font-size: 0.9rem; color: var(--navy); line-height: 1.6; }
-  .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
-  .social-link { width: 40px; height: 40px; border: 1.5px solid var(--navy); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--navy); font-size: 0.75rem; font-weight: 600; transition: all 0.2s; }
-  .social-link:hover { background: var(--navy); color: white; }
-  .wa-cta-block { background: var(--green); padding: 1.5rem; display: flex; align-items: center; gap: 1.2rem; margin-top: 0.5rem; }
-  .wa-cta-block .wa-icon { font-size: 2rem; }
-  .wa-cta-block .wa-text { flex: 1; }
-  .wa-cta-block .wa-text strong { display: block; color: white; font-size: 0.85rem; letter-spacing: 1px; }
-  .wa-cta-block .wa-text span { color: rgba(255,255,255,0.8); font-size: 0.75rem; }
-  .wa-cta-block .wa-btn { background: white; color: var(--green); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; padding: 0.6rem 1.2rem; text-decoration: none; font-weight: 600; white-space: nowrap; transition: all 0.2s; }
-  .wa-cta-block .wa-btn:hover { background: var(--navy); color: white; }
+footer{padding:40px var(--gutter);display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);font-size:.86rem;color:var(--ink-2)}
+footer .brand-name{color:var(--ink)}
+@media (max-width:880px){footer{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 
-  /* FLOATING WA */
-  .float-wa { position: fixed; bottom: 2rem; right: 2rem; z-index: 200; background: var(--green); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.7rem; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.2s; animation: pulse 2.5s infinite; }
-  .float-wa:hover { transform: scale(1.12); }
-  @keyframes pulse { 0%,100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); } 50% { box-shadow: 0 4px 30px rgba(37,211,102,0.7); } }
+/* ── Piece page (hash-routed) ── */
+.piece{position:fixed;inset:0;z-index:80;background:var(--canvas);overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .5s var(--ease-out),visibility 0s linear .5s}
+.piece.open{opacity:1;visibility:visible;transition:opacity .5s var(--ease-out),visibility 0s}
+.piece-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,5vw,80px);padding:calc(var(--nav-h) + 12px) var(--gutter) 64px;max-width:1360px;margin:0 auto;transform:translateY(16px);transition:transform .7s var(--ease-out)}
+.piece.open .piece-in{transform:none}
+.piece-top{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;height:var(--nav-h);padding:0 var(--gutter);background:rgba(236,239,243,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.piece-top button{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:.9rem}
+.piece-top button:hover{border-color:var(--ink)}
+.piece-gal{display:grid;gap:12px}
+.piece-main{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:330/397;background:var(--panel-2);max-width:440px}
+.piece-main img{width:100%;height:100%;object-fit:cover}
+.piece-thumbs{display:flex;gap:10px}
+.piece-thumbs button{width:72px;aspect-ratio:330/397;border-radius:8px;overflow:hidden;border:1px solid transparent;padding:0;cursor:pointer;background:var(--panel-2);opacity:.6;transition:opacity .3s var(--ease-out),border-color .3s var(--ease-out)}
+.piece-thumbs button[aria-current="true"]{opacity:1;border-color:var(--ink)}
+.piece-thumbs img{width:100%;height:100%;object-fit:cover}
+.piece-info h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2.2rem,4.4vw,3.6rem);line-height:1.04;margin:14px 0 8px}
+.piece-info .price{color:var(--ink-2)}
+.piece-info .desc{margin:24px 0;max-width:44ch}
+.piece-info h4{font-family:var(--f-mono);font-weight:400;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:26px 0 10px}
+.piece-info ul{list-style:none;display:grid;gap:8px}
+.piece-info li{padding-left:18px;position:relative}
+.piece-info li::before{content:"";position:absolute;left:0;top:.75em;width:8px;height:1px;background:var(--ink)}
+.piece-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+@media (max-width:880px){.piece-in{grid-template-columns:1fr}}
 
-  /* SIZE GUIDE MODAL */
-  .sg-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-  .sg-overlay.open { opacity: 1; pointer-events: all; }
-  .sg-box { background: white; padding: 2rem; max-width: 500px; width: 90%; position: relative; }
-  .sg-box h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--navy); margin-bottom: 1.2rem; }
-  .size-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-  .size-table th { background: var(--navy); color: white; padding: 0.6rem 1rem; text-align: left; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; }
-  .size-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(13,34,64,0.08); color: var(--navy); }
-  .size-table tr:nth-child(even) td { background: #f0f4f9; }
-  .sg-close { position: absolute; top: 0.8rem; right: 1rem; background: none; border: none; cursor: pointer; font-size: 1.3rem; color: var(--navy); }
+/* Hidden tabs and off-screen loops rest */
+body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused !important}
+.idle::before,.idle::after{animation-play-state:paused !important}
 
-  /* PAYMENT MODAL */
-  .pay-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 400; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 1rem; }
-  .pay-overlay.open { opacity: 1; pointer-events: all; }
-  .pay-modal { background: white; width: 100%; max-width: 480px; padding: 2.5rem; position: relative; animation: modalIn 0.3s ease; max-height: 90vh; overflow-y: auto; }
-  .pay-modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: var(--navy); margin-bottom: 0.5rem; }
-  .pay-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.5rem; }
-  .pay-summary { background: #edf2f8; padding: 1.2rem; margin-bottom: 1.5rem; }
-  .pay-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--navy); padding: 0.3rem 0; }
-  .pay-row.total { font-weight: 600; font-size: 1rem; border-top: 1px solid rgba(13,34,64,0.15); margin-top: 0.5rem; padding-top: 0.8rem; }
-  .pay-form { display: flex; flex-direction: column; gap: 1rem; }
-  .pay-form label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); font-weight: 500; display: block; margin-bottom: 0.4rem; }
-  .pay-form input { border: 1.5px solid rgba(13,34,64,0.15); padding: 0.85rem 1rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; color: var(--navy); outline: none; width: 100%; transition: border-color 0.2s; }
-  .pay-form input:focus { border-color: var(--navy-light); }
-  .pay-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .pay-secure { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; }
-  .pay-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--navy); }
-  .paystack-badge { display: flex; align-items: center; gap: 0.4rem; font-size: 0.68rem; color: var(--muted); margin-top: 0.8rem; justify-content: center; }
+/* ── The Signature ── */
+.signature{background:var(--ink);color:var(--canvas);display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,6vw,96px);align-items:center;overflow:hidden}
+.signature .kicker{color:var(--glow)}
+.signature .h2{color:var(--canvas)}
+.signature .lede{color:#c6d0dd;margin-top:18px}
+.sig-ph{position:relative;width:min(100%,400px);justify-self:center}
+.sig-ph .arch{opacity:1;animation:none;box-shadow:0 40px 90px -40px rgba(0,0,0,.7),0 0 0 1px rgba(240,194,74,.25)}
+.sig-ph::after{content:"";position:absolute;left:-12%;right:-12%;bottom:-6%;height:30%;background:radial-gradient(ellipse at 50% 100%,rgba(240,194,74,.28),transparent 70%);pointer-events:none}
+.sig-price{font-family:var(--f-display);font-size:1.6rem;margin-top:24px;font-variant-numeric:tabular-nums}
+.sig-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.signature .btn-solid{background:var(--glow);border-color:var(--glow);color:var(--ink)}
+.signature .btn-solid:hover{background:#f6d277;box-shadow:0 10px 30px -12px rgba(240,194,74,.6)}
+.signature .btn-ghost{color:var(--canvas);border-color:rgba(236,239,243,.55)}
+.signature .btn-ghost:hover{background:var(--canvas);color:var(--ink)}
+@media (max-width:880px){.signature{grid-template-columns:1fr}.sig-ph{width:min(78vw,340px)}}
 
-  /* CART */
-  .cart-sidebar { position: fixed; top: 0; right: -440px; width: 440px; height: 100vh; background: white; z-index: 200; box-shadow: -10px 0 40px rgba(0,0,0,0.15); transition: right 0.4s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; padding: 2rem; }
-  .cart-sidebar.open { right: 0; }
-  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 199; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-  .cart-overlay.open { opacity: 1; pointer-events: all; }
-  .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(13,34,64,0.1); }
-  .cart-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--navy); }
-  .close-cart { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--navy); }
-  .cart-items { flex: 1; overflow-y: auto; }
-  .cart-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--muted); text-align: center; gap: 1rem; }
-  .cart-empty-icon { font-size: 3rem; }
-  .cart-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(13,34,64,0.07); }
-  .cart-item-img { width: 70px; height: 90px; background: var(--sky); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 2rem; color: rgba(13,34,64,0.2); position: relative; overflow: hidden; }
-  .cart-item-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .cart-item-info { flex: 1; }
-  .cart-item-name { font-size: 0.9rem; font-weight: 500; color: var(--navy); }
-  .cart-item-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; }
-  .cart-item-price { font-size: 0.85rem; color: var(--navy-light); margin-top: 0.3rem; }
-  .remove-item { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1rem; transition: color 0.2s; }
-  .remove-item:hover { color: #e53935; }
-  .cart-footer { padding-top: 1.5rem; border-top: 1px solid rgba(13,34,64,0.1); }
-  .cart-total { display: flex; justify-content: space-between; font-size: 1rem; font-weight: 500; color: var(--navy); margin-bottom: 1rem; }
-  .cart-actions { display: flex; flex-direction: column; gap: 0.7rem; }
-  .checkout-btn { width: 100%; background: var(--navy); color: white; border: none; cursor: pointer; padding: 1rem; font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; }
-  .checkout-btn:hover { background: var(--navy-light); }
-  .cart-wa-btn { width: 100%; background: var(--green); color: white; border: none; cursor: pointer; padding: 0.85rem; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Sans', sans-serif; font-weight: 500; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
-  .cart-wa-btn:hover { background: #1da851; }
+/* ── Track your order ── */
+.track-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,72px);align-items:start}
+.track-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.track-form input{flex:1 1 220px;min-width:0;min-height:52px;padding:0 18px;border-radius:999px;border:1px solid var(--line-strong);background:var(--panel);font-family:var(--f-mono);font-size:.92rem}
+.track-form input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(240,194,74,.35)}
+.track-card{background:var(--panel);border-radius:18px;padding:28px;box-shadow:0 30px 70px -40px rgba(15,36,64,.45);min-width:0}
+.track-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.track-head .ref-l{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.06em;word-break:break-all}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--ink);color:var(--canvas);font-size:.78rem;font-weight:500}
+.stages{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);margin:24px 0 18px}
+.stage{position:relative;display:grid;justify-items:center;gap:10px;text-align:center;font-size:.76rem;line-height:1.3;color:var(--ink-2);padding:0 2px}
+.stage::before{content:"";position:absolute;top:8px;left:-50%;right:50%;height:2px;background:var(--line)}
+.stage:first-child::before{display:none}
+.stage i{position:relative;z-index:1;width:18px;height:18px;border-radius:50%;background:var(--panel);border:2px solid var(--line-strong)}
+.stage.done{color:var(--ink)}
+.stage.done::before{background:var(--glow)}
+.stage.done i{background:var(--glow);border-color:var(--glow);box-shadow:0 0 0 5px var(--glow-soft)}
+.track-msg{color:var(--ink-2);font-size:.95rem}
+.lines{display:grid;gap:8px;font-size:.92rem;border-top:1px solid var(--line);padding-top:14px}
+.lines .row{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+.lines .row.tot{font-weight:600;border-top:1px solid var(--line);padding-top:10px}
+@media (max-width:880px){.track-wrap{grid-template-columns:1fr}}
+@media (max-width:480px){.stage{font-size:.64rem}.track-card{padding:22px 16px}}
 
-  /* TOAST */
-  .toast { position: fixed; bottom: 6rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--navy); color: white; padding: 0.8rem 2rem; font-size: 0.8rem; letter-spacing: 1px; opacity: 0; transition: all 0.4s; z-index: 600; pointer-events: none; white-space: nowrap; border-radius: 2px; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ── Bag, checkout, size guide, toast ── */
+.nav-right{display:flex;gap:10px;align-items:center}
+.icon-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;cursor:pointer;transition:border-color .4s var(--ease-out),background-color .4s var(--ease-out)}
+.icon-btn:hover{border-color:var(--ink);background:var(--panel)}
+.icon-btn svg{width:19px;height:19px}
+.count{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--glow);color:var(--ink);font-size:.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.count[data-n="0"]{display:none}
+.layer{position:fixed;inset:0;z-index:90;background:rgba(15,36,64,.4);opacity:0;visibility:hidden;transition:opacity .45s var(--ease-out),visibility 0s linear .45s}
+.layer.open{opacity:1;visibility:visible;transition:opacity .45s var(--ease-out),visibility 0s}
+.drawer{position:absolute;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--panel);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .6s var(--ease-out);box-shadow:-30px 0 60px -30px rgba(15,36,64,.4);padding-bottom:env(safe-area-inset-bottom,0px)}
+.layer.open .drawer{transform:none}
+.dialog{position:absolute;left:50%;top:50%;width:min(560px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;background:var(--panel);border-radius:18px;padding:clamp(20px,4vw,30px);transform:translate(-50%,-46%);transition:transform .6s var(--ease-out);box-shadow:0 40px 90px -40px rgba(15,36,64,.6)}
+.layer.open .dialog{transform:translate(-50%,-50%)}
+.layer-head{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.layer-head h2{font-family:var(--f-display);font-weight:400;font-size:1.7rem;line-height:1.1}
+.x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:1rem}
+.x:hover{border-color:var(--ink)}
+.drawer .layer-head{padding:18px 24px;border-bottom:1px solid var(--line)}
+.bag-items{flex:1;overflow:auto;padding:4px 24px}
+.bag-item{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:start;padding:16px 0;border-bottom:1px solid var(--line)}
+.bag-item h3{font-family:var(--f-display);font-weight:400;font-size:1.12rem;line-height:1.2}
+.bag-item .m{font-size:.86rem;color:var(--ink-2)}
+.bag-item .p{font-variant-numeric:tabular-nums;font-size:.92rem;white-space:nowrap}
+.rm{background:none;border:0;cursor:pointer;font-size:.84rem;color:var(--ink-2);text-decoration:underline;min-height:32px;padding:0}
+.bag-empty{padding:40px 0;color:var(--ink-2)}
+.bag-foot{padding:18px 24px 22px;border-top:1px solid var(--line);display:grid;gap:10px}
+.bag-foot .btn,.co-actions .btn{width:100%}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-variant-numeric:tabular-nums}
+.total b{font-family:var(--f-display);font-weight:500;font-size:1.45rem}
+.co-form{display:grid;gap:14px;margin-top:18px}
+.co-note{font-size:.86rem;color:var(--ink-2);background:var(--canvas);border-radius:10px;padding:12px 14px}
+.co-err{color:#a3261f;font-size:.88rem;min-height:1.2em}
+.co-actions{display:grid;gap:10px}
+.ref{font-family:var(--f-mono);font-size:1.02rem;background:var(--canvas);border-radius:10px;padding:12px 14px;user-select:all;word-break:break-all;margin:8px 0 6px}
+.done-copy{display:grid;gap:8px;margin:18px 0 22px}
+.done-copy h3{font-family:var(--f-display);font-weight:400;font-size:1.6rem}
+.done-copy small{color:var(--ink-2)}
+.sizes{display:flex;flex-wrap:wrap;gap:8px}
+.size{min-width:54px;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:.9rem;transition:background-color .3s var(--ease-out),color .3s var(--ease-out),border-color .3s var(--ease-out)}
+.size:hover{border-color:var(--ink)}
+.size[aria-pressed="true"]{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+.size:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+.ph-tile{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink);background:radial-gradient(ellipse 90% 50% at 50% 0%,rgba(240,194,74,.22),transparent 70%),linear-gradient(165deg,var(--panel-2),#d2dbe7)}
+.ph-tile svg{width:44px;height:28px;opacity:.5}
+.ph-ini{font-family:var(--f-display);font-style:italic;font-size:clamp(4rem,9vw,6.5rem);line-height:1;color:rgba(15,36,64,.2)}
+.ph-note{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.tag{position:absolute;top:12px;left:12px;z-index:2;padding:4px 10px;border-radius:999px;background:var(--ink);color:var(--canvas);font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
+.tag.gold{background:var(--glow);color:var(--ink)}
+.mini{position:relative;width:72px;aspect-ratio:330/397;border-radius:8px;overflow:hidden;background:var(--panel-2)}
+.mini img{width:100%;height:100%;object-fit:cover}
+.mini .ph-ini{font-size:2rem}.mini .ph-note,.mini .ph-tile svg{display:none}
+.linkish{background:none;border:0;padding:0;margin-top:12px;cursor:pointer;font-size:.88rem;color:var(--ink-2);text-decoration:underline;min-height:32px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:999px}
+.qty button{width:44px;height:44px;border:0;background:none;cursor:pointer;font-size:1.1rem;border-radius:50%}
+.qty output{min-width:28px;text-align:center;font-variant-numeric:tabular-nums}
+.piece-price{font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.piece-price.req{font-family:var(--f-body);font-size:1rem;color:var(--ink-2)}
+.size-table{width:100%;border-collapse:collapse;margin-top:18px;font-variant-numeric:tabular-nums;font-size:.92rem}
+.size-table th,.size-table td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line)}
+.size-table th{font-family:var(--f-mono);font-weight:400;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.float-wa{position:fixed;left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;width:56px;height:56px;border-radius:50%;background:#1f7a4d;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px -10px rgba(31,122,77,.65);transition:transform .4s var(--ease-out)}
+.float-wa:hover{transform:translateY(-2px) scale(1.05)}
+.float-wa svg{width:26px;height:26px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:120;max-width:calc(100% - 32px);transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--canvas);padding:12px 20px;border-radius:999px;font-size:.92rem;pointer-events:none;transition:opacity .4s var(--ease-out),transform .4s var(--ease-out)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 
-  /* FOOTER */
-  footer { background: var(--navy); color: rgba(255,255,255,0.6); padding: 3rem 5rem; display: flex; justify-content: space-between; align-items: center; }
-  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: white; letter-spacing: 3px; }
-  .footer-logo span { display: block; font-family: 'DM Sans', sans-serif; font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-weight: 400; margin-top: -4px; }
-  .footer-copy { font-size: 0.75rem; }
-  .footer-links { display: flex; gap: 1.5rem; list-style: none; }
-  .footer-links a { text-decoration: none; color: rgba(255,255,255,0.5); font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--gold); }
+@media (pointer:coarse){.btn,.chip,.handle{min-height:48px}}
 
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
-    .whatsapp-nav-btn span { display: none; }
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { min-height: 260px; }
-    .hero-left { padding: 4rem 1.5rem; }
-    section { padding: 4rem 1.5rem; }
-    .products-grid { grid-template-columns: repeat(2, 1fr); }
-    .signature-wrap { grid-template-columns: 1fr; gap: 2rem; }
-    .signature-visual span { font-size: 6rem; }
-    .designs-grid { grid-template-columns: 1fr; }
-    .track-box { flex-direction: column; }
-    .track-stage-label { font-size: 0.55rem; }
-    .nuggets-grid { grid-template-columns: 1fr; }
-    #about { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
-    .contact-grid { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
-    .cart-sidebar { width: 100%; right: -100%; }
-    .modal { grid-template-columns: 1fr; }
-    .modal-img { min-height: 180px; font-size: 5rem; }
-    .pay-form-row { grid-template-columns: 1fr; }
-  }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s !important;animation-delay:0s !important;animation-iteration-count:1 !important;transition-duration:.001s !important;transition-delay:0s !important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+  .wave.draw path{stroke-dashoffset:0}
+  .hero h1 .l span{transform:none}
+  .hero .lede,.hero-actions,.arch{opacity:1}
+  .house .p2{transform:translateY(-14%)}
+}
+@media (prefers-reduced-motion:reduce) and (max-width:880px){.house .p2{transform:none}}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="env" aria-hidden="true"></div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 64 40"><path d="M2 38 16 4h8L10 38z" fill="currentColor"/><path d="M18 38 32 4h6L24 38z" fill="#86acd6"/><path d="M32 4h8l22 34h-8L43 20l-6 10-4-7z" fill="currentColor"/></symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></symbol>
+  <symbol id="ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 3h-3v12.2a2.7 2.7 0 1 1-2.7-2.7c.3 0 .5 0 .8.1V9.5a5.8 5.8 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.4 1.4V7.4a4.4 4.4 0 0 1-4.4-4.4z"/></symbol>
+  <symbol id="bag" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9zM9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="wavepath" viewBox="0 0 1440 160"><path d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/></symbol>
+</svg>
 
-<!-- FLOATING WHATSAPP -->
-<a class="float-wa" href="https://wa.me/2349073757945?text=Hello%20AWA%20Fashion!%20I%27d%20like%20to%20enquire%20about%20your%20collection." target="_blank" title="Chat on WhatsApp">💬</a>
-
-<!-- CART OVERLAY -->
-<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-
-<!-- CART SIDEBAR -->
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header">
-    <h3>Your Wardrobe</h3>
-    <button class="close-cart" onclick="toggleCart()">✕</button>
-  </div>
-  <div class="cart-items" id="cartItems"></div>
-  <div class="cart-footer">
-    <div class="cart-total"><span>Total</span><span id="cartTotal">₦0</span></div>
-    <div class="cart-actions">
-      <button class="checkout-btn" onclick="openPayModalFromCart()">💳 Pay Securely with Paystack</button>
-      <button class="cart-wa-btn" onclick="orderViaWhatsApp()">💬 Order via WhatsApp</button>
-    </div>
-  </div>
-</div>
-
-<!-- PRODUCT MODAL -->
-<div class="modal-overlay" id="productModal" onclick="closeModalOnOverlay(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="closeProductModal()">✕</button>
-    <div class="modal-img" id="modalImg">
-      <span id="modalLetter"></span>
-      <img id="modalPhoto" class="modal-photo" alt="" style="display:none">
-      <div class="modal-badge" id="modalBadge" style="display:none"></div>
-    </div>
-    <div class="modal-body">
-      <div class="modal-cat" id="modalCat"></div>
-      <div class="modal-name" id="modalName"></div>
-      <div class="modal-price" id="modalPrice"></div>
-      <div class="modal-desc" id="modalDesc"></div>
-      <div class="modal-divider"></div>
-
-      <!-- SIZE SELECTOR -->
-      <div>
-        <span class="size-label">Select Size <span id="selectedSizeDisplay" style="color:var(--gold);font-weight:700"></span></span>
-        <div class="size-grid" id="sizeGrid"></div>
-        <button class="size-guide-link" onclick="document.getElementById('sgOverlay').classList.add('open')">📏 View Size Guide</button>
-      </div>
-
-      <!-- QUANTITY -->
-      <div>
-        <span class="qty-label">Quantity</span>
-        <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty(-1)">−</button>
-          <input class="qty-num" id="qtyNum" type="text" value="1" readonly>
-          <button class="qty-btn" onclick="changeQty(1)">+</button>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-pay" onclick="openPayModal()">💳 Buy Now — Pay Securely</button>
-        <a class="btn-wa" id="waOrderBtn" href="#" target="_blank">💬 Order via WhatsApp</a>
-        <button class="btn-add-cart-modal" onclick="addToCartFromModal()">🛒 Add to Cart</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SIZE GUIDE -->
-<div class="sg-overlay" id="sgOverlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="sg-box">
-    <button class="sg-close" onclick="document.getElementById('sgOverlay').classList.remove('open')">✕</button>
-    <h4>📏 AWA Fashion Size Guide</h4>
-    <table class="size-table">
-      <thead><tr><th>Size</th><th>Chest (cm)</th><th>Waist (cm)</th><th>Hip (cm)</th></tr></thead>
-      <tbody>
-        <tr><td>XS</td><td>82–86</td><td>66–70</td><td>88–92</td></tr>
-        <tr><td>S</td><td>87–91</td><td>71–75</td><td>93–97</td></tr>
-        <tr><td>M</td><td>92–97</td><td>76–81</td><td>98–103</td></tr>
-        <tr><td>L</td><td>98–104</td><td>82–88</td><td>104–110</td></tr>
-        <tr><td>XL</td><td>105–112</td><td>89–96</td><td>111–118</td></tr>
-        <tr><td>XXL</td><td>113–121</td><td>97–105</td><td>119–127</td></tr>
-      </tbody>
-    </table>
-    <p style="font-size:0.75rem;color:var(--muted);margin-top:1rem;">If between sizes, size up for a relaxed fit or size down for a tailored look.</p>
-  </div>
-</div>
-
-<!-- PAYMENT MODAL -->
-<div class="pay-overlay" id="payOverlay" onclick="if(event.target===this)closePayModal()">
-  <div class="pay-modal">
-    <button class="pay-close" onclick="closePayModal()">✕</button>
-    <h3>Secure Checkout</h3>
-    <p class="pay-sub">Payment processed securely via Paystack · Cards, Bank Transfer, USSD</p>
-    <div class="pay-summary" id="paySummary"></div>
-    <div class="pay-form">
-      <div class="pay-form-row">
-        <div><label>First Name</label><input type="text" id="payFirst" placeholder="Amara"></div>
-        <div><label>Last Name</label><input type="text" id="payLast" placeholder="Obi"></div>
-      </div>
-      <div><label>Email Address</label><input type="email" id="payEmail" placeholder="amara@example.com"></div>
-      <div><label>Phone Number</label><input type="tel" id="payPhone" placeholder="+234 800 000 0000"></div>
-      <div><label>Delivery Address</label><input type="text" id="payAddr" placeholder="12 Marina Street, Lagos Island"></div>
-      <button class="btn-pay" style="margin-top:0.5rem" onclick="initiatePaystack()">🔒 Pay Now with Paystack</button>
-      <div class="pay-secure">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        256-bit SSL Encrypted · Your data is safe
-      </div>
-      <div class="paystack-badge">Powered by <strong style="color:var(--navy);margin-left:4px">Paystack</strong></div>
-    </div>
-  </div>
-</div>
-
-<!-- NAV -->
-<nav>
-  <a href="#" class="nav-logo">
-    <svg viewBox="0 0 40 40" fill="none">
-      <path d="M20 4L36 36H4L20 4Z" stroke="#0d2240" stroke-width="2.5" fill="none"/>
-      <path d="M12 36L20 18L28 36" stroke="#0d2240" stroke-width="2.5"/>
-      <path d="M14 26H26" stroke="#0d2240" stroke-width="2"/>
-    </svg>
-    <div>
-      <div class="logo-text">AWA Fashion</div>
-      <div class="logo-sub">Africa Grace. Global Style.</div>
-    </div>
+<header class="nav" id="nav">
+  <a href="#top" class="brand" aria-label="AWA Fashion, back to top">
+    <svg aria-hidden="true"><use href="#mark"/></svg>
+    <span class="brand-name">AWA FASHION<span class="brand-tag">Africa Grace. Global Style.</span></span>
   </a>
-  <ul class="nav-links">
-    <li><a href="#shop">Shop</a></li>
-    <li><a href="#designs">Designs</a></li>
-    <li><a href="#track">Track Order</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-  <div class="nav-cart">
-    <a class="whatsapp-nav-btn" href="https://wa.me/2349073757945?text=Hi%20AWA%20Fashion!%20I%27d%20love%20to%20shop." target="_blank">💬 <span>WhatsApp</span></a>
-    <button class="cart-btn" onclick="toggleCart()">🛒 (<span id="cartCount">0</span>)</button>
+  <nav aria-label="Main">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#edit">The Edit</a></li>
+      <li><a href="#collection">Collection</a></li>
+      <li><a href="#make">Make it yours</a></li>
+      <li><a href="#track">Track order</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="nav-right">
+    <a class="btn btn-solid" data-wa="Hello AWA Fashion, I would like to ask about a piece." href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg><span class="lbl">WhatsApp</span><span class="sr-only"> (opens WhatsApp)</span></a>
+    <button class="icon-btn" id="bagBtn" type="button" aria-label="Open your bag"><svg aria-hidden="true"><use href="#bag"/></svg><span class="count" id="bagCount" data-n="0">0</span></button>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Menu"><span></span></button>
   </div>
-</nav>
+</header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-left">
-    <p class="hero-eyebrow">New Collection — 2026</p>
-    <h1 class="hero-title">Where <em>Africa's Grace</em><br>Meets Global Style</h1>
-    <p class="hero-desc">Curated menswear and womenswear that celebrates African elegance with a contemporary global edge. Dress with purpose. Dress with power.</p>
+<main id="main" tabindex="-1">
+
+<section class="hero" id="top" aria-labelledby="heroTitle">
+  <svg class="wave draw" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+    <path class="w-shadow" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
+    <path class="w-glow" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
+    <path class="w-core" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
+  </svg>
+  <div class="hero-copy">
+    <p class="kicker">AWA Fashion · Kaftans &amp; embroidered sets</p>
+    <h1 class="display" id="heroTitle"><span class="l"><span>Africa Grace.</span></span><span class="l"><span>Global Style.</span></span></h1>
+    <p class="lede">Long kaftans and embroidered sets, made to stand tall and sit easy. See the pieces, then make one yours.</p>
     <div class="hero-actions">
-      <a href="#shop" class="btn-primary">Shop Now</a>
-      <a href="#about" class="btn-outline">Our Story</a>
-      <a class="btn-whatsapp" href="https://wa.me/2349073757945?text=Hi!%20I%27d%20like%20to%20explore%20the%20AWA%20Fashion%20collection." target="_blank">💬 Chat with Us</a>
+      <a class="btn btn-solid" href="#collection">See the collection</a>
+      <a class="btn btn-ghost" href="#make">Make it yours</a>
     </div>
   </div>
-  <div class="hero-right">
-    <div class="hero-badge">
-      <div class="badge-num">500+</div>
-      <div class="badge-text">Premium Styles Available</div>
+  <figure class="hero-figure">
+    <div class="arch"><img src="assets/img/teal-kaftan-front.webp" width="330" height="397" alt="A man in a floor-length teal kaftan with tonal chest embroidery, standing in front of the lit AWA Fashion wall" fetchpriority="high"></div>
+    <figcaption class="hero-cap"><span>Teal long kaftan</span><a href="#/piece/teal-kaftan">View piece</a></figcaption>
+  </figure>
+  <div class="scroll-cue" aria-hidden="true"><i></i>Scroll</div>
+</section>
+
+<section id="edit" class="edit" aria-labelledby="editTitle" style="--n:5">
+  <div class="edit-stage" id="editStage">
+    <div class="edit-intro">
+      <p class="kicker">The Edit</p>
+      <h2 class="h2" id="editTitle">Five pieces. <em>One wall of light.</em></h2>
+      <p class="lede">Every look here was shot in the AWA studio. Scroll slowly.</p>
     </div>
+    <div class="edit-frame" aria-hidden="true" id="editFrame"></div>
+    <div class="edit-caps" id="editCaps"></div>
+    <div class="edit-ticks" id="editTicks" aria-hidden="true"></div>
+  </div>
+  <div class="edit-list">
+    <div class="edit-intro">
+      <p class="kicker">The Edit</p>
+      <h2 class="h2">Five pieces. <em>One wall of light.</em></h2>
+      <p class="lede">Every look here was shot in the AWA studio. Swipe through.</p>
+    </div>
+    <div class="edit-track" id="editTrack"></div>
   </div>
 </section>
 
-<!-- TICKER -->
-<div class="ticker">
-  <div class="ticker-inner">
-    <span>New Arrivals</span><span class="dot">✦</span><span>Free Delivery in Lagos</span><span class="dot">✦</span><span>Pay via Card · Transfer · USSD</span><span class="dot">✦</span><span>Order on WhatsApp</span><span class="dot">✦</span><span>Africa Grace. Global Style.</span><span class="dot">✦</span>
-    <span>New Arrivals</span><span class="dot">✦</span><span>Free Delivery in Lagos</span><span class="dot">✦</span><span>Pay via Card · Transfer · USSD</span><span class="dot">✦</span><span>Order on WhatsApp</span><span class="dot">✦</span><span>Africa Grace. Global Style.</span><span class="dot">✦</span>
-  </div>
+<div class="divider" aria-hidden="true">
+  <svg class="wave draw" viewBox="0 0 1440 160" preserveAspectRatio="none">
+    <path class="w-glow" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
+    <path class="w-core" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
+  </svg>
 </div>
 
-<!-- SHOP -->
-<section id="shop">
-  <div class="shop-header">
-    <div><p class="section-label">The Collection</p><h2 class="section-title">Shop the Look</h2></div>
-    <div class="shop-filters">
-      <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
-      <button class="filter-btn" onclick="filterProducts('men',this)">Men</button>
-      <button class="filter-btn" onclick="filterProducts('women',this)">Women</button>
-      <button class="filter-btn" onclick="filterProducts('accessories',this)">Accessories</button>
-    </div>
-  </div>
-  <div class="products-grid" id="productsGrid"></div>
-</section>
-
-<!-- SIGNATURE DRESS -->
-<section id="signature">
-  <div class="signature-wrap">
-    <div class="signature-visual reveal">
-      <span id="sigLetter"></span>
-      <img id="sigPhoto" class="signature-photo" alt="" style="display:none">
-      <div class="signature-tag" id="sigTag">Signature</div>
-    </div>
-    <div class="reveal">
-      <p class="section-label">The Icon</p>
-      <h2 class="section-title" id="sigName">The <em>AWA Grace</em> Signature Dress</h2>
-      <p class="signature-desc" id="sigDesc"></p>
-      <div class="signature-price" id="sigPrice"></div>
-      <div class="signature-actions">
-        <button class="btn-primary" id="sigViewBtn">View & Order</button>
-        <a class="btn-whatsapp" id="sigWaBtn" href="#" target="_blank">💬 Enquire About This Piece</a>
-      </div>
+<section id="signature" class="signature sec" aria-labelledby="sigTitle">
+  <figure class="sig-ph rv"><div class="arch"><img id="sigImg" src="assets/img/teal-kaftan-front.webp" width="330" height="397" loading="lazy" decoding="async" alt="The teal long kaftan, AWA's signature piece"></div></figure>
+  <div>
+    <p class="kicker">The Signature</p>
+    <h2 class="h2" id="sigTitle">Teal Long Kaftan</h2>
+    <p class="lede" id="sigDesc">A floor-length kaftan in deep teal. The embroidery stays tone on tone, so the colour does the talking.</p>
+    <p class="sig-price" id="sigPrice">Price on request</p>
+    <div class="sig-actions">
+      <a class="btn btn-solid" id="sigView" href="#/piece/teal-kaftan">View &amp; order</a>
+      <a class="btn btn-ghost" id="sigWa" href="#contact" target="_blank" rel="noopener">Ask on WhatsApp</a>
     </div>
   </div>
 </section>
 
-<!-- DESIGNS / LOOKBOOK -->
-<section id="designs">
-  <p class="section-label">The Lookbook</p>
-  <h2 class="section-title">Our Designs</h2>
-  <div class="designs-grid" id="designsGrid"></div>
-</section>
-
-<!-- TRACK ORDER -->
-<section id="track">
-  <p class="section-label">Order Status</p>
-  <h2 class="section-title">Track Your Order</h2>
-  <p style="font-size:0.9rem;color:var(--muted);max-width:520px;margin-top:0.8rem;line-height:1.7">Enter the order reference you received after checkout (e.g. from your payment confirmation) to see its current status.</p>
-  <div class="track-box reveal">
-    <input type="text" id="trackRefInput" placeholder="e.g. AWA_1737000000000" onkeydown="if(event.key==='Enter')trackOrder()">
-    <button onclick="trackOrder()">Track Order</button>
-  </div>
-  <div id="trackResult"></div>
-</section>
-
-<!-- FASHION NUGGETS -->
-<section id="nuggets">
-  <p class="section-label">This Week's Wisdom</p>
-  <h2 class="section-title">Fashion Nuggets 💎</h2>
-  <div class="nuggets-grid">
-    <div class="nugget-card reveal"><div class="nugget-num">01</div><div class="nugget-icon">🎯</div><div class="nugget-title">Fit is Everything</div><p class="nugget-text">No matter how expensive the fabric, an ill-fitting garment will always look cheap. Invest in a good tailor — it's your most powerful style upgrade.</p></div>
-    <div class="nugget-card reveal"><div class="nugget-num">02</div><div class="nugget-icon">🎨</div><div class="nugget-title">Master the Neutral Base</div><p class="nugget-text">Build your wardrobe around navy, white, grey, and camel. These anchor colours let you mix boldly without clashing.</p></div>
-    <div class="nugget-card reveal"><div class="nugget-num">03</div><div class="nugget-icon">👟</div><div class="nugget-title">Shoes Make the Statement</div><p class="nugget-text">Your shoes are always the first thing noticed and the last thing forgotten. Choose footwear that tells the world who you are before you speak.</p></div>
-    <div class="nugget-card reveal"><div class="nugget-num">04</div><div class="nugget-icon">🌍</div><div class="nugget-title">Embrace Your Roots</div><p class="nugget-text">African prints and textures are global fashion currency. A single Ankara accent can elevate the most classic Western outfit.</p></div>
-    <div class="nugget-card reveal"><div class="nugget-num">05</div><div class="nugget-icon">🪡</div><div class="nugget-title">Quality Over Quantity</div><p class="nugget-text">Five exceptional pieces will always outperform twenty mediocre ones. Buy less, choose well, make each item earn its place.</p></div>
-    <div class="nugget-card reveal"><div class="nugget-num">06</div><div class="nugget-icon">✨</div><div class="nugget-title">Dress Your Confidence</div><p class="nugget-text">The best outfit you can wear is confidence. When you look good, you feel powerful — and the world responds differently to you.</p></div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<div id="about">
-  <div class="about-visual reveal"><div class="about-visual-text">AFRICA<br>GRACE<br>GLOBAL<br>STYLE</div></div>
-  <div class="reveal">
-    <p class="section-label">Our Story</p>
-    <h2 class="section-title">Dressed in Purpose,<br>Born in Africa</h2>
-    <p class="about-text">AWA Fashion was born from a simple belief: that African style is not a trend — it's a legacy. We blend the rich textile traditions of the continent with contemporary global silhouettes to create clothing that speaks before you do.</p>
-    <p class="about-text">Every piece is thoughtfully curated to give you the confidence to walk into any room and own it — from boardrooms in Lagos to runways in Paris.</p>
-    <div class="about-stat-row">
-      <div class="about-stat"><div class="stat-num">500+</div><div class="stat-label">Styles Available</div></div>
-      <div class="about-stat"><div class="stat-num">12K+</div><div class="stat-label">Happy Customers</div></div>
-      <div class="about-stat"><div class="stat-num">5★</div><div class="stat-label">Average Rating</div></div>
+<section id="collection" class="sec" aria-labelledby="colTitle">
+  <div class="sec-head">
+    <div>
+      <p class="kicker">The Collection</p>
+      <h2 class="h2" id="colTitle">Shop the <em>collection.</em></h2>
     </div>
-    <a href="#contact" class="btn-primary">Get In Touch</a>
-  </div>
-</div>
-
-<!-- CONTACT -->
-<section id="contact">
-  <p class="section-label">Reach Us</p>
-  <h2 class="section-title">Let's Connect</h2>
-  <div class="contact-grid">
-    <div class="contact-form reveal">
-      <div class="form-row">
-        <div class="form-field"><label>First Name</label><input type="text" placeholder="Amara"></div>
-        <div class="form-field"><label>Last Name</label><input type="text" placeholder="Obi"></div>
-      </div>
-      <div class="form-field"><label>Email</label><input type="email" placeholder="hello@awafashion.ng"></div>
-      <div class="form-field"><label>Message</label><textarea placeholder="Tell us about your style needs, custom orders, or just say hello..."></textarea></div>
-      <button class="btn-primary" onclick="showToast('✅ Message sent! We\'ll be in touch shortly.')">Send Message</button>
+    <div class="filters" role="group" aria-label="Filter the collection">
+      <button class="chip" aria-pressed="true" data-filter="all">All</button>
+      <button class="chip" aria-pressed="false" data-filter="men">Men</button>
+      <button class="chip" aria-pressed="false" data-filter="women">Women</button>
+      <button class="chip" aria-pressed="false" data-filter="accessories">Accessories</button>
     </div>
-    <div class="reveal">
-      <div class="contact-block"><h4>Visit Us</h4><p>AWA Fashion Flagship Store<br>Victoria Island, Lagos, Nigeria</p></div>
-      <div class="contact-block"><h4>Opening Hours</h4><p>Monday – Saturday: 9AM – 7PM<br>Sunday: 11AM – 5PM</p></div>
-      <div class="contact-block"><h4>Get In Touch</h4><p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5f373a3333301f3e283e393e2c37363031713138">[email&#160;protected]</a><br>+234 800 AWA STYLE</p></div>
-      <div class="contact-block">
-        <h4>Order Instantly on WhatsApp</h4>
-        <div class="wa-cta-block">
-          <div class="wa-icon">💬</div>
-          <div class="wa-text"><strong>Chat & Order on WhatsApp</strong><span>Fast replies · Mon–Sat 8AM–9PM</span></div>
-          <a class="wa-btn" href="https://wa.me/2349073757945?text=Hi%20AWA%20Fashion!%20I%27d%20like%20to%20place%20an%20order." target="_blank">Chat Now</a>
+  </div>
+  <div class="grid stagger" id="grid"></div>
+  <p class="note">Pieces marked Price on request are priced with you on WhatsApp, since fabric and finish change the cost. Studio photos for the newer pieces are on the way.</p>
+</section>
+
+<section class="details sec" aria-labelledby="detTitle">
+  <div>
+    <p class="kicker">In the details</p>
+    <h2 class="h2" id="detTitle">Look <em>closer.</em></h2>
+    <p class="lede" style="margin-top:18px">A woven pattern that catches the light. A clean placket. An embroidered pocket. The small things are where a piece earns its place.</p>
+    <ul>
+      <li><b>01</b>Embroidery placed on the placket and pocket</li>
+      <li><b>02</b>Fabrics with pattern you see up close</li>
+      <li><b>03</b>Cuts that hang straight when you stand still</li>
+    </ul>
+  </div>
+  <div class="ph rv" id="detailPh"><img src="assets/img/gold-jacquard-detail.webp" width="330" height="339" loading="lazy" decoding="async" alt="Close-up of a gold jacquard top with a woven floral pattern and an embroidered chest pocket"></div>
+</section>
+
+<section id="make" class="sec" aria-labelledby="makeTitle">
+  <div class="sec-head">
+    <div>
+      <p class="kicker">Make it yours</p>
+      <h2 class="h2" id="makeTitle">New month. New style. <em>Make it yours.</em></h2>
+    </div>
+    <p class="lede">Pick a starting piece and tell us how you want it. Your request goes to AWA on WhatsApp, and we talk it through with you there.</p>
+  </div>
+  <div class="make">
+    <form class="make-form" id="makeForm" novalidate>
+      <fieldset class="step">
+        <legend><b>01</b>Start from</legend>
+        <div class="opts" id="optPiece"></div>
+      </fieldset>
+      <fieldset class="step">
+        <legend><b>02</b>Colour</legend>
+        <div class="opts" id="optColour"></div>
+        <div class="field"><label for="colourOther">Another colour or fabric in mind?</label><input id="colourOther" name="colourOther" placeholder="For example, wine red or a fabric you saw"></div>
+      </fieldset>
+      <fieldset class="step">
+        <legend><b>03</b>Shape</legend>
+        <div class="opts" id="optLength"></div>
+        <div class="opts" id="optFit"></div>
+      </fieldset>
+      <fieldset class="step">
+        <legend><b>04</b>Embroidery</legend>
+        <div class="opts" id="optEmb"></div>
+      </fieldset>
+      <fieldset class="step">
+        <legend><b>05</b>About you</legend>
+        <div class="two">
+          <div class="field"><label for="fName">Your name</label><input id="fName" name="name" autocomplete="name" placeholder="Your name"></div>
+          <div class="field"><label for="fDate">Needed by (optional)</label><input id="fDate" name="date" type="date"></div>
         </div>
-      </div>
-      <div class="contact-block">
-        <h4>Follow Our Journey</h4>
-        <div class="social-links">
-          <a href="#" class="social-link" title="Instagram">IG</a>
-          <a href="#" class="social-link" title="Facebook">FB</a>
-          <a href="#" class="social-link" title="Twitter/X">𝕏</a>
-          <a href="#" class="social-link" title="TikTok">TK</a>
-          <a href="https://wa.me/2349073757945" class="social-link" style="background:var(--green);color:white;border-color:var(--green)" target="_blank">WA</a>
-        </div>
-      </div>
-    </div>
+        <div class="opts" id="optMeasure"></div>
+        <div class="field"><label for="fNotes">Anything else? (optional)</label><textarea id="fNotes" name="notes" placeholder="The occasion, a photo you will send, or a detail you love"></textarea></div>
+      </fieldset>
+    </form>
+    <aside class="ticket" aria-labelledby="ticketTitle">
+      <p class="kicker">Your request</p>
+      <svg class="wave" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true" id="ticketWave">
+        <path class="w-glow" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
+        <path class="w-core" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
+      </svg>
+      <h3 id="ticketTitle">A piece made yours</h3>
+      <dl id="ticketList"></dl>
+      <a class="btn btn-wa" id="sendBtn" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Send on WhatsApp</a>
+      <small>This opens WhatsApp with your request written out. Nothing is sent until you press send there. Custom pieces are priced and paid after AWA confirms them with you.</small>
+    </aside>
   </div>
 </section>
 
-<!-- FOOTER -->
+<section id="track" class="sec" aria-labelledby="trackTitle">
+  <div class="track-wrap">
+    <div>
+      <p class="kicker">Track your order</p>
+      <h2 class="h2" id="trackTitle">Where is <em>my piece?</em></h2>
+      <p class="lede" style="margin-top:18px">Enter the order reference from your payment confirmation, or the one AWA sent you on WhatsApp.</p>
+      <form class="track-form" id="trackForm" novalidate>
+        <label class="sr-only" for="trackRef">Order reference</label>
+        <input id="trackRef" name="ref" placeholder="For example AWA_1737000000000" autocomplete="off" spellcheck="false">
+        <button class="btn btn-solid" type="submit">Track order</button>
+      </form>
+    </div>
+    <div class="track-card" id="trackResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="house" class="sec" aria-labelledby="houseTitle">
+  <div class="house">
+    <div class="copy rv">
+      <p class="kicker">The House</p>
+      <h2 class="h2" id="houseTitle">Africa Grace. <em>Global Style.</em></h2>
+      <p>That line is the whole brief. AWA Fashion makes native wear for now: long kaftans, embroidered sets and easy everyday pieces, all shot against the lit wall of our own studio.</p>
+      <p>Follow the new pieces as they land on Instagram and TikTok at @fashionwithawa.</p>
+    </div>
+    <figure class="p1 rv"><div class="ph"><img src="assets/img/butter-set-seated.webp" width="330" height="397" loading="lazy" decoding="async" alt="A man in a butter yellow embroidered set seated on a cream sofa in the AWA studio"></div><figcaption>The studio</figcaption></figure>
+    <figure class="p2 rv"><div class="ph"><img src="assets/img/joggers-rack.webp" width="330" height="397" loading="lazy" decoding="async" alt="Grey, black and brown joggers hanging on wooden AWA Fashion hangers"></div><figcaption>On the rail</figcaption></figure>
+  </div>
+</section>
+
+<section id="contact" class="sec contact" aria-labelledby="contactTitle">
+  <p class="kicker">Contact</p>
+  <h2 class="h2" id="contactTitle">Talk to <em>AWA.</em></h2>
+  <p class="lede">The quickest way to order or ask about a piece is WhatsApp. We reply there.</p>
+  <a class="btn btn-wa" data-wa="Hello AWA Fashion, I would like to place an order." href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Chat on WhatsApp<span class="sr-only"> (opens WhatsApp)</span></a>
+  <div class="handles">
+    <a class="handle" href="https://www.instagram.com/fashionwithawa/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#ig"/></svg>@fashionwithawa</a>
+    <a class="handle" href="https://www.tiktok.com/@fashionwithawa" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#tt"/></svg>@fashionwithawa</a>
+    <a class="handle" href="tel:+2349073757945">+234 907 375 7945</a>
+  </div>
+</section>
+
+</main>
+
 <footer>
-  <div class="footer-logo">AWA Fashion<span>Africa Grace. Global Style.</span></div>
-  <p class="footer-copy">© 2026 AWA Fashion. All rights reserved.</p>
-  <ul class="footer-links">
-    <li><a href="#shop">Shop</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li>
-  </ul>
+  <span class="brand-name">AWA FASHION</span>
+  <span>Africa Grace. Global Style.</span>
+  <span>© <span id="yr">2026</span> AWA Fashion</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ── CONFIG ── Replace these with your real credentials ──────────────
+<a class="float-wa" data-wa="Hello AWA Fashion, I would like to ask about your collection." href="#contact" target="_blank" rel="noopener" aria-label="Chat with AWA on WhatsApp"><svg aria-hidden="true"><use href="#wa"/></svg></a>
+
+<div class="layer" id="bagLayer" hidden>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="bagTitle">
+    <div class="layer-head"><h2 id="bagTitle">Your bag</h2><button class="x" type="button" data-close aria-label="Close your bag">✕</button></div>
+    <div class="bag-items" id="bagItems"></div>
+    <div class="bag-foot" id="bagFoot">
+      <div class="total"><span>Total</span><b id="bagTotal">₦0</b></div>
+      <button class="btn btn-solid" type="button" id="bagCheckout">Checkout</button>
+      <a class="btn btn-wa" id="bagWa" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Order on WhatsApp</a>
+    </div>
+  </aside>
+</div>
+
+<div class="layer" id="coLayer" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="coTitle">
+    <div class="layer-head"><h2 id="coTitle">Checkout</h2><button class="x" type="button" data-close aria-label="Close checkout">✕</button></div>
+    <form class="co-form" id="coForm" novalidate>
+      <div class="lines" id="coSum"></div>
+      <div class="two">
+        <div class="field"><label for="coName">Full name</label><input id="coName" name="name" autocomplete="name"></div>
+        <div class="field"><label for="coPhone">Phone</label><input id="coPhone" name="phone" type="tel" autocomplete="tel" placeholder="+234"></div>
+      </div>
+      <div class="field"><label for="coEmail">Email (for your Paystack receipt)</label><input id="coEmail" name="email" type="email" autocomplete="email"></div>
+      <div class="field"><label for="coAddr">Delivery address</label><textarea id="coAddr" name="address" autocomplete="street-address"></textarea></div>
+      <p class="co-note" id="coNote"></p>
+      <p class="co-err" id="coErr" role="alert"></p>
+      <div class="co-actions">
+        <button class="btn btn-solid" type="submit" id="coPay">Pay with Paystack</button>
+        <a class="btn btn-wa" id="coWa" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Send order on WhatsApp</a>
+      </div>
+    </form>
+    <div id="coDone" hidden>
+      <div class="done-copy">
+        <p class="kicker">Payment received</p>
+        <h3>Thank you, <span id="coDoneName"></span>.</h3>
+        <p>Your order reference:</p>
+        <p class="ref" id="coRef"></p>
+        <small>Keep this reference. You can use it to track your order on this site.</small>
+      </div>
+      <div class="co-actions">
+        <a class="btn btn-wa" id="coConfirm" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Send confirmation on WhatsApp</a>
+        <a class="btn btn-ghost" id="coTrack" href="#track">Track this order</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="layer" id="sgLayer" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="sgTitle">
+    <div class="layer-head"><h2 id="sgTitle">Size guide</h2><button class="x" type="button" data-close aria-label="Close size guide">✕</button></div>
+    <p class="lede" style="margin-top:12px">A general guide in centimetres. AWA confirms your fit with you on WhatsApp.</p>
+    <div style="overflow-x:auto">
+      <table class="size-table">
+        <thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Hip</th></tr></thead>
+        <tbody>
+          <tr><td>XS</td><td>82–86</td><td>66–70</td><td>88–92</td></tr>
+          <tr><td>S</td><td>87–91</td><td>71–75</td><td>93–97</td></tr>
+          <tr><td>M</td><td>92–97</td><td>76–81</td><td>98–103</td></tr>
+          <tr><td>L</td><td>98–104</td><td>82–88</td><td>104–110</td></tr>
+          <tr><td>XL</td><td>105–112</td><td>89–96</td><td>111–118</td></tr>
+          <tr><td>XXL</td><td>113–121</td><td>97–105</td><td>119–127</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="track-msg" style="margin-top:16px">Between sizes? Size up for a relaxed fit, or choose Custom and send your measurements.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="piece" id="piece" role="dialog" aria-modal="true" aria-labelledby="pieceName" hidden>
+  <div class="piece-top">
+    <a href="#top" class="brand" aria-label="AWA Fashion home"><svg aria-hidden="true"><use href="#mark"/></svg><span class="brand-name">AWA FASHION</span></a>
+    <button type="button" id="pieceClose">Close</button>
+  </div>
+  <div class="piece-in">
+    <div class="piece-gal">
+      <div class="piece-main"><img id="pieceImg" src="" alt="" width="330" height="397"><div id="pieceTile"></div></div>
+      <div class="piece-thumbs" id="pieceThumbs"></div>
+    </div>
+    <div class="piece-info">
+      <p class="kicker" id="pieceCat"></p>
+      <h2 id="pieceName"></h2>
+      <p class="piece-price" id="piecePrice">Price on request</p>
+      <p class="desc" id="pieceDesc"></p>
+      <h4>What you can see</h4>
+      <ul id="pieceDetails"></ul>
+      <h4 id="sizeLbl">Size</h4>
+      <div class="sizes" id="pieceSizes" role="group" aria-labelledby="sizeLbl"></div>
+      <button type="button" class="linkish" id="sgOpen">Size guide</button>
+      <h4 id="qtyLbl">Quantity</h4>
+      <div class="qty" role="group" aria-labelledby="qtyLbl"><button type="button" id="qMinus" aria-label="One less">−</button><output id="qNum">1</output><button type="button" id="qPlus" aria-label="One more">+</button></div>
+      <div class="piece-actions">
+        <button class="btn btn-solid" type="button" id="pieceAdd">Add to bag</button>
+        <a class="btn btn-wa" id="pieceAsk" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Order on WhatsApp</a>
+        <a class="btn btn-ghost" id="pieceMake" href="#make">Make it yours</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+// ── Config ─────────────────────────────────────────────────────────
+// Number from AWA's own brand posts. Change here and every WhatsApp link updates.
 const WHATSAPP_NUMBER = '2349073757945';
-const PAYSTACK_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'; // Your Paystack public key
+const waLink = msg => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
-// Firebase project config (powers "Track Your Order"). Make sure Firestore
-// rules are published per README.md before relying on this in production.
-const firebaseConfig = {
-  apiKey: "AIzaSyCCmoLThJ2g0EPCPyPchX-lUs5Rj6hAzvM",
-  authDomain: "awa-fashion.firebaseapp.com",
-  projectId: "awa-fashion",
-  storageBucket: "awa-fashion.firebasestorage.app",
-  messagingSenderId: "162922929354",
-  appId: "1:162922929354:web:6abd4688b4c3378605a833"
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'Custom'];   // default sizes when a piece lists none
+const SIGNATURE = 'teal-kaftan';            // the piece featured in The Signature
+
+// Paystack public key from dashboard.paystack.com (Settings, API Keys). Starts with pk_test_ or pk_live_.
+// Never put the secret key (sk_) here. Empty keeps card payment off and checkout goes to WhatsApp.
+const PAYSTACK_KEY = '';
+
+// Firebase project that stores orders for "Track your order". Publish the Firestore rules in README.md first.
+const FIREBASE = {
+  apiKey: 'AIzaSyCCmoLThJ2g0EPCPyPchX-lUs5Rj6hAzvM',
+  authDomain: 'awa-fashion.firebaseapp.com',
+  projectId: 'awa-fashion',
+  storageBucket: 'awa-fashion.firebasestorage.app',
+  messagingSenderId: '162922929354',
+  appId: '1:162922929354:web:6abd4688b4c3378605a833'
 };
-let db = null;
-try {
-  if (firebaseConfig.apiKey && firebaseConfig.apiKey !== 'YOUR_API_KEY' && window.firebase) {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-  }
-} catch (e) { console.warn('Firebase not configured:', e); }
 
-// ── PRODUCTS ─────────────────────────────────────────────────────────
-// Add an "img" field to any product to show a real photo instead of the
-// placeholder letter block, e.g. img: "images/executive-blazer.jpg" (a file
-// you add to the repo) or a full https:// URL. Omit it to keep the fallback.
-// A broken/missing image also falls back to the letter block automatically.
-const products = [
-  { id:1, name:"The Executive Blazer",   sub:"Men's Tailoring",    price:85000,  tag:"New",        category:"men",         desc:"A power statement cut from premium wool blend fabric. Slim lapels, structured shoulders — made to own any boardroom.",    sizes:["S","M","L","XL","XXL"],        unavail:[] },
-  { id:2, name:"Lagos Power Suit",        sub:"Men's Collection",   price:145000, tag:"Bestseller", category:"men",         desc:"Our signature two-piece suit — traditional African craftsmanship meets a sharp modern cut. A true investment piece.",      sizes:["S","M","L","XL","XXL"],        unavail:["S"] },
-  { id:3, name:"Grace Wrap Dress",        sub:"Women's Collection", price:62000,  tag:"New",        category:"women",       desc:"Flowing, elegant, effortlessly flattering. This wrap dress in our signature Ankara-trim fabric turns every entrance into an occasion.", sizes:["XS","S","M","L","XL"],  unavail:[] },
-  { id:4, name:"Ankara Accent Shirt",     sub:"Men's Collection",   price:38000,  tag:"",           category:"men",         desc:"Classic white Oxford shirt with bold Ankara cuff and collar accents — the perfect bridge between heritage and contemporary style.", sizes:["S","M","L","XL","XXL"], unavail:["XXL"] },
-  { id:5, name:"Statement Kick Set",      sub:"Accessories",        price:55000,  tag:"Limited",    category:"accessories", desc:"Limited edition hand-crafted sneakers with woven Kente-inspired detailing. Only 50 pairs available worldwide.",             sizes:["40","41","42","43","44","45"], unavail:["40"] },
-  { id:6, name:"Eko Linen Trousers",      sub:"Women's Collection", price:42000,  tag:"",           category:"women",       desc:"Breathable, wide-leg linen trousers in earth tones. Relaxed tailoring meets Lagos coastal vibes — ideal for any occasion.", sizes:["XS","S","M","L","XL","XXL"],   unavail:[] },
-  { id:7, name:"AWA Grace Signature Gown", sub:"Signature Collection", price:195000, tag:"Signature", category:"women",     desc:"Our most requested piece — a hand-beaded, floor-length gown cut from premium Ankara-silk blend. Every stitch is done in-house by our master tailors. This is the dress people remember you in.", sizes:["XS","S","M","L","XL"], unavail:[], isSignature:true },
+// ── Pieces ─────────────────────────────────────────────────────────
+// price: naira, or null for "Price on request" (no Add to bag; ordered on WhatsApp).
+// gender: men | women | accessories (the collection filters). imgs: [] shows a styled placeholder.
+// sizes / unavail: sizes offered and sizes out of stock. tag: small label on the card.
+const IMG = 'assets/img/';
+const pieces = [
+  { slug:'teal-kaftan', price:null, gender:'men', name:'Teal Long Kaftan', tone:'Deep teal', cat:'kaftan', catLabel:'Kaftan',
+    imgs:[['teal-kaftan-front','Front view of the floor-length teal kaftan'],['teal-kaftan-side','Side view of the teal kaftan showing its full length']],
+    line:'Floor length, deep teal, with tonal embroidery down the chest.',
+    desc:'A floor-length kaftan in deep teal. The embroidery stays tone on tone, so the colour does the talking.',
+    details:['Floor-length cut','Tonal embroidery on the chest','Long sleeves'] },
+  { slug:'butter-set', price:null, gender:'men', name:'Butter Embroidered Set', tone:'Butter yellow', cat:'set', catLabel:'Two-piece set',
+    imgs:[['butter-set-front','Front view of the butter yellow embroidered top and trousers'],['butter-set-seated','The butter yellow set worn seated on a sofa']],
+    line:'Soft butter yellow with geometric embroidery on the placket and pocket.',
+    desc:'A top and trousers in soft butter yellow. Dark geometric embroidery runs down the placket and frames the chest pocket.',
+    details:['Top and matching trousers','Geometric embroidery on the placket','Embroidered chest pocket'] },
+  { slug:'pinstripe-set', price:null, gender:'men', name:'Black Pinstripe Set', tone:'Black pinstripe', cat:'set', catLabel:'Two-piece set',
+    imgs:[['pinstripe-set-front','Front view of the black pinstripe set with white embroidered placket'],['pinstripe-set-stride','The black pinstripe set in a relaxed stance']],
+    line:'Fine pinstripe with a white embroidered placket and outlined pocket.',
+    desc:'Black with a fine white pinstripe. A white embroidered placket and an outlined chest pocket keep it sharp.',
+    details:['Pinstripe fabric','White embroidery down the placket','Outlined chest pocket'] },
+  { slug:'olive-set', price:null, gender:'men', name:'Olive Embroidered Set', tone:'Deep olive', cat:'set', catLabel:'Two-piece set',
+    imgs:[['olive-set','Front view of the deep olive set with white embroidery']],
+    line:'Deep olive with white embroidery on the placket, pocket and hem.',
+    desc:'A deep olive top with white embroidery placed on the placket, the chest pocket and both front hem panels.',
+    details:['Embroidered placket','Embroidered chest pocket','Embroidered hem panels'] },
+  { slug:'sky-kaftan', price:null, gender:'men', name:'Sky Blue Kaftan', tone:'Sky blue', cat:'kaftan', catLabel:'Kaftan',
+    imgs:[['sky-kaftan','Front view of the long sky blue kaftan with stitched lines across the chest']],
+    line:'Clear sky blue with fine stitched lines across the chest.',
+    desc:'A long kaftan in clear sky blue. Fine stitched lines cross the chest, and nothing else gets in the way.',
+    details:['Long cut','Stitched lines across the chest','Long sleeves'] },
+  { slug:'black-kaftan', price:null, gender:'men', name:'Black Kaftan', tone:'Black', cat:'kaftan', catLabel:'Kaftan',
+    imgs:[['black-kaftan','Front view of the long plain black kaftan']],
+    line:'Plain black, long, and quiet on purpose.',
+    desc:'A long black kaftan with a fine stitched placket. Plain on purpose, easy to wear anywhere.',
+    details:['Long cut','Stitched placket','Long sleeves'] },
+  { slug:'joggers', price:null, gender:'men', name:'Everyday Joggers', tone:'Grey · Black · Brown', cat:'everyday', catLabel:'Everyday',
+    imgs:[['joggers-rack','Grey, black and brown joggers on AWA hangers']],
+    line:'Relaxed joggers in grey, black and brown.',
+    desc:'Relaxed joggers with a drawstring waist, shown here in grey, black and brown.',
+    details:['Drawstring waist','Relaxed leg','Three colours shown'] },
+  // From the AWA store catalogue (studio photos to come)
+  { slug:'grace-gown', price:195000, gender:'women', tag:'Signature', name:'AWA Grace Signature Gown', tone:'Ankara silk', catLabel:'Signature Collection', imgs:[],
+    sizes:['XS','S','M','L','XL'], unavail:[],
+    line:'Hand-beaded, floor length, cut from an Ankara-silk blend.',
+    desc:'Our most requested piece. A hand-beaded, floor-length gown cut from a premium Ankara-silk blend, with every stitch done in-house by our tailors. This is the dress people remember you in.',
+    details:['Hand-beaded','Floor-length cut','Ankara-silk blend'] },
+  { slug:'executive-blazer', price:85000, gender:'men', tag:'New', name:'The Executive Blazer', tone:'Wool blend', catLabel:"Men's Tailoring", imgs:[],
+    sizes:['S','M','L','XL','XXL'], unavail:[],
+    line:'Slim lapels and structured shoulders in a premium wool blend.',
+    desc:'A power statement cut from premium wool blend fabric. Slim lapels and structured shoulders, made to own any boardroom.',
+    details:['Premium wool blend','Slim lapels','Structured shoulders'] },
+  { slug:'lagos-power-suit', price:145000, gender:'men', tag:'Bestseller', name:'Lagos Power Suit', tone:'Two-piece', catLabel:"Men's Collection", imgs:[],
+    sizes:['S','M','L','XL','XXL'], unavail:['S'],
+    line:'Our signature two-piece: African craftsmanship, a sharp modern cut.',
+    desc:'Our signature two-piece suit. Traditional African craftsmanship meets a sharp modern cut, a true investment piece.',
+    details:['Two-piece suit','Sharp modern cut','Made by AWA tailors'] },
+  { slug:'grace-wrap-dress', price:62000, gender:'women', tag:'New', name:'Grace Wrap Dress', tone:'Ankara trim', catLabel:"Women's Collection", imgs:[],
+    sizes:['XS','S','M','L','XL'], unavail:[],
+    line:'A flowing wrap dress with our signature Ankara trim.',
+    desc:'Flowing, elegant and easy to wear. This wrap dress in our signature Ankara-trim fabric turns every entrance into an occasion.',
+    details:['Wrap silhouette','Signature Ankara trim','Flowing fit'] },
+  { slug:'ankara-accent-shirt', price:38000, gender:'men', name:'Ankara Accent Shirt', tone:'White Oxford', catLabel:"Men's Collection", imgs:[],
+    sizes:['S','M','L','XL','XXL'], unavail:['XXL'],
+    line:'A white Oxford shirt with bold Ankara cuffs and collar.',
+    desc:'A classic white Oxford shirt with bold Ankara cuff and collar accents. The bridge between heritage and everyday style.',
+    details:['White Oxford cotton','Ankara collar','Ankara cuffs'] },
+  { slug:'statement-kick-set', price:55000, gender:'accessories', tag:'Limited', name:'Statement Kick Set', tone:'Sneakers', catLabel:'Accessories', imgs:[],
+    sizes:['40','41','42','43','44','45'], unavail:['40'],
+    line:'Hand-crafted sneakers with woven Kente-inspired detail.',
+    desc:'Limited edition hand-crafted sneakers with woven Kente-inspired detailing. Only 50 pairs available worldwide.',
+    details:['Hand-crafted','Kente-inspired woven detail','Limited edition'] },
+  { slug:'eko-linen-trousers', price:42000, gender:'women', name:'Eko Linen Trousers', tone:'Earth tones', catLabel:"Women's Collection", imgs:[],
+    sizes:['XS','S','M','L','XL','XXL'], unavail:[],
+    line:'Breathable wide-leg linen in earth tones.',
+    desc:'Breathable, wide-leg linen trousers in earth tones. Relaxed tailoring with Lagos coastal ease, right for most occasions.',
+    details:['Breathable linen','Wide leg','Earth tones'] },
 ];
+const EDIT = ['teal-kaftan','butter-set','pinstripe-set','olive-set','sky-kaftan'];
+const bySlug = Object.fromEntries(pieces.map(p => [p.slug, p]));
+const src = n => IMG + n + '.webp';
 
-// ── DESIGNS / LOOKBOOK (editorial showcase, custom-order enquiries) ───
-// Same optional "img" field as products — add a photo path/URL per design,
-// or omit it to keep the placeholder letter block.
-const designs = [
-  { name:"Sunset Ankara Gown",  tag:"Evening Wear",     desc:"A dramatic silhouette in sunset-toned Ankara with a hand-beaded bodice — built for red carpets and traditional ceremonies alike." },
-  { name:"Midnight Tuxedo",     tag:"Men's Formal",     desc:"Satin-lapel tuxedo reimagined with a subtle Kente trim along the inner collar — quiet luxury with heritage roots." },
-  { name:"Coastal Breeze Set",  tag:"Resort Wear",      desc:"An airy linen co-ord in soft indigo tones, designed for Lagos afternoons and island getaways." },
-  { name:"Heritage Agbada",     tag:"Ceremonial",       desc:"A hand-embroidered full Agbada set for the modern king — traditional grandeur, tailored for today." },
-  { name:"Urban Wrap",          tag:"Everyday Luxury",  desc:"A versatile wrap silhouette that moves from desk to dinner, cut from breathable premium cotton." },
-  { name:"Golden Hour Kaftan",  tag:"Statement Piece",  desc:"A flowing kaftan in gold-threaded fabric — for the woman who wants to be remembered in every room she enters." },
-];
-
-let cart = [];
-let activeProd = null;
-let activeSize = null;
-let activeQty  = 1;
-let payCtx     = 'modal'; // 'modal' | 'cart'
-
+// ── Shared helpers ─────────────────────────────────────────────────
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const smooth = (p, e0, e1) => { const t = clamp((p - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+const reduceQ = matchMedia('(prefers-reduced-motion: reduce)');
 const fmt = n => '₦' + n.toLocaleString('en-NG');
+const priceOf = p => p.price ?? null;
+const tile = p => `<div class="ph-tile" aria-hidden="true"><svg><use href="#mark"/></svg><span class="ph-ini">${esc(p.name.replace(/^(The|AWA) /, '')[0])}</span><span class="ph-note">Photo coming soon</span></div>`;
+const firstMedia = (p, attrs) => p.imgs.length ? `<img src="${src(p.imgs[0][0])}" ${attrs} alt="${esc(p.imgs[0][1])}">` : tile(p);
+const priceLabel = p => priceOf(p) == null ? 'Price on request' : fmt(priceOf(p));
 
-// ── RENDER PRODUCTS ──────────────────────────────────────────────────
-function renderProducts(filter) {
-  const list = filter === 'all' ? products : products.filter(p => p.category === filter);
-  document.getElementById('productsGrid').innerHTML = list.map(p => `
-    <div class="product-card" onclick="openModal(${p.id})">
-      <div class="product-img">
-        <div class="product-img-inner">${p.name[0]}</div>
-        ${p.img ? `<img class="product-photo" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">` : ''}
-        ${p.tag ? `<div class="product-tag">${p.tag}</div>` : ''}
-        <div class="product-overlay">
-          <button class="quick-view-btn" onclick="event.stopPropagation();openModal(${p.id})">Quick View & Buy</button>
-        </div>
-      </div>
-      <div class="product-info">
-        <div class="product-name">${p.name}</div>
-        <div class="product-sub">${p.sub}</div>
-        <div class="product-price">${fmt(p.price)}</div>
-      </div>
-    </div>`).join('');
+// Scroll lock shared by the piece page and every layer
+const locks = new Set();
+const lock = (key, on) => { on ? locks.add(key) : locks.delete(key); document.body.style.overflow = locks.size ? 'hidden' : ''; };
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
 }
 
-function filterProducts(f, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts(f);
-}
-
-// ── SIGNATURE DRESS ──────────────────────────────────────────────────
-function renderSignature() {
-  const p = products.find(x => x.isSignature) || products[0];
-  document.getElementById('sigLetter').textContent = p.name[0];
-  const sigPhoto = document.getElementById('sigPhoto');
-  if (p.img) { sigPhoto.src = p.img; sigPhoto.alt = p.name; sigPhoto.style.display = ''; sigPhoto.onerror = () => { sigPhoto.style.display = 'none'; }; }
-  else { sigPhoto.removeAttribute('src'); sigPhoto.style.display = 'none'; }
-  document.getElementById('sigTag').textContent = p.tag || 'Signature';
-  document.getElementById('sigDesc').textContent = p.desc;
-  document.getElementById('sigPrice').textContent = fmt(p.price);
-  document.getElementById('sigViewBtn').onclick = () => openModal(p.id);
-  const msg = encodeURIComponent(`Hi AWA Fashion! 👋\n\nI'd love to know more about the ${p.name}.`);
-  document.getElementById('sigWaBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
-}
-
-// ── DESIGNS / LOOKBOOK ───────────────────────────────────────────────
-function renderDesigns() {
-  document.getElementById('designsGrid').innerHTML = designs.map(d => {
-    const msg = encodeURIComponent(`Hi AWA Fashion! I'm interested in a custom piece inspired by your "${d.name}" design. Could you tell me more?`);
-    return `
-    <div class="design-card reveal">
-      <div class="design-visual">
-        <span>${d.name[0]}</span>
-        ${d.img ? `<img class="design-photo" src="${d.img}" alt="${d.name}" onerror="this.style.display='none'">` : ''}
-      </div>
-      <div class="design-info">
-        <div class="design-tag">${d.tag}</div>
-        <div class="design-name">${d.name}</div>
-        <p class="design-desc">${d.desc}</p>
-        <a class="design-link" href="https://wa.me/${WHATSAPP_NUMBER}?text=${msg}" target="_blank">Enquire About This Design →</a>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ── PRODUCT MODAL ────────────────────────────────────────────────────
-function openModal(id) {
-  const p = products.find(x => x.id === id);
-  activeProd = p; activeSize = null; activeQty = 1;
-  document.getElementById('qtyNum').value = 1;
-  document.getElementById('modalLetter').textContent = p.name[0];
-  const photo = document.getElementById('modalPhoto');
-  if (p.img) { photo.src = p.img; photo.alt = p.name; photo.style.display = ''; photo.onerror = () => { photo.style.display = 'none'; }; }
-  else { photo.removeAttribute('src'); photo.style.display = 'none'; }
-  const badge = document.getElementById('modalBadge');
-  if (p.tag) { badge.textContent = p.tag; badge.style.display = 'block'; } else { badge.style.display = 'none'; }
-  document.getElementById('modalCat').textContent = p.sub;
-  document.getElementById('modalName').textContent = p.name;
-  document.getElementById('modalPrice').textContent = fmt(p.price);
-  document.getElementById('modalDesc').textContent = p.desc;
-  document.getElementById('selectedSizeDisplay').textContent = '';
-  document.getElementById('sizeGrid').innerHTML = p.sizes.map(s =>
-    `<button class="size-btn${p.unavail.includes(s)?' ':{}}${p.unavail.includes(s)?'':''}" 
-     onclick="selectSize('${s}',this)" ${p.unavail.includes(s)?'disabled':''} 
-     title="${p.unavail.includes(s)?'Out of Stock':s}">${s}</button>`).join('');
-  // Handle unavailable styling via JS
-  document.querySelectorAll('.size-btn[disabled]').forEach(b => b.style.opacity = '0.3');
-  refreshWaLink();
-  document.getElementById('productModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeProductModal() {
-  document.getElementById('productModal').classList.remove('open');
-  document.body.style.overflow = '';
-}
-function closeModalOnOverlay(e) { if (e.target === e.currentTarget) closeProductModal(); }
-
-function selectSize(s, btn) {
-  document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  activeSize = s;
-  document.getElementById('selectedSizeDisplay').textContent = `— ${s}`;
-  refreshWaLink();
-}
-
-function changeQty(d) {
-  activeQty = Math.max(1, Math.min(10, activeQty + d));
-  document.getElementById('qtyNum').value = activeQty;
-  refreshWaLink();
-}
-
-function refreshWaLink() {
-  if (!activeProd) return;
-  const sz = activeSize ? ` | Size: ${activeSize}` : '';
-  const msg = encodeURIComponent(`Hello AWA Fashion! 👋\n\nI'd like to order:\n🛍️ ${activeProd.name}${sz} | Qty: ${activeQty}\n💰 ${fmt(activeProd.price * activeQty)}\n\nKindly assist me with this order.`);
-  document.getElementById('waOrderBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
-}
-
-// ── CART ──────────────────────────────────────────────────────────────
-function addToCartFromModal() {
-  if (!activeSize) { showToast('⚠️ Please select a size first'); return; }
-  for (let i = 0; i < activeQty; i++) cart.push({...activeProd, selectedSize: activeSize, cartId: Date.now()+i});
-  refreshCart();
-  closeProductModal();
-  showToast(`✅ ${activeProd.name} (${activeSize}) added to cart!`);
-}
-
-function removeFromCart(cid) {
-  cart = cart.filter(i => i.cartId !== cid);
-  refreshCart();
-}
-
-function refreshCart() {
-  document.getElementById('cartCount').textContent = cart.length;
-  const total = cart.reduce((s,i) => s+i.price, 0);
-  document.getElementById('cartTotal').textContent = fmt(total);
-  const el = document.getElementById('cartItems');
-  if (!cart.length) {
-    el.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🧥</div><p style="font-size:0.9rem;color:var(--muted)">Your wardrobe is empty.<br>Click any product to start shopping.</p></div>`;
-    return;
+// Third-party scripts load only when needed
+const scriptCache = {};
+const loadScript = url => scriptCache[url] || (scriptCache[url] = new Promise((ok, fail) => {
+  const s = document.createElement('script'); s.src = url; s.async = true;
+  s.onload = ok; s.onerror = () => { delete scriptCache[url]; fail(new Error('load failed')); };
+  document.head.appendChild(s);
+}));
+let dbPromise = null;
+function getDb() {
+  if (!FIREBASE.apiKey) return Promise.resolve(null);
+  if (!dbPromise) {
+    const FB = 'https://www.gstatic.com/firebasejs/10.13.0/';
+    dbPromise = loadScript(FB + 'firebase-app-compat.js')
+      .then(() => loadScript(FB + 'firebase-firestore-compat.js'))
+      .then(() => { if (!firebase.apps.length) firebase.initializeApp(FIREBASE); return firebase.firestore(); })
+      .catch(e => { dbPromise = null; throw e; });
   }
-  el.innerHTML = cart.map(item => `
-    <div class="cart-item">
-      <div class="cart-item-img">${item.name[0]}${item.img ? `<img class="cart-item-photo" src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">` : ''}</div>
-      <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-meta">Size: ${item.selectedSize || '—'}</div>
-        <div class="cart-item-price">${fmt(item.price)}</div>
-      </div>
-      <button class="remove-item" onclick="removeFromCart(${item.cartId})">✕</button>
-    </div>`).join('');
+  return dbPromise;
 }
 
-function toggleCart() {
-  document.getElementById('cartSidebar').classList.toggle('open');
-  document.getElementById('cartOverlay').classList.toggle('open');
-}
+document.querySelectorAll('[data-wa]').forEach(a => a.href = waLink(a.dataset.wa));
+$('#yr').textContent = new Date().getFullYear();
 
-// ── WHATSAPP CART ORDER ───────────────────────────────────────────────
-function orderViaWhatsApp() {
-  if (!cart.length) { showToast('⚠️ Your cart is empty'); return; }
-  const lines = cart.map(i => `• ${i.name} (Size: ${i.selectedSize||'—'}) — ${fmt(i.price)}`).join('\n');
-  const total = cart.reduce((s,i) => s+i.price, 0);
-  const msg = encodeURIComponent(`Hello AWA Fashion! 👋\n\nI'd like to place this order:\n\n${lines}\n\n💰 Total: ${fmt(total)}\n\nPlease confirm availability and delivery. Thank you!`);
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
-}
+// ── Nav ────────────────────────────────────────────────────────────
+const nav = $('#nav'), menuBtn = $('#menuBtn'), navLinks = $('#navLinks');
+let navScrolled = null;
+const setNav = () => { const s = scrollY > 24; if (s !== navScrolled) { navScrolled = s; nav.classList.toggle('scrolled', s); } };
+addEventListener('scroll', setNav, { passive:true }); setNav();
+menuBtn.addEventListener('click', () => {
+  const open = !navLinks.classList.contains('open');
+  navLinks.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open);
+});
+navLinks.addEventListener('click', e => { if (e.target.closest('a')) { navLinks.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); } });
 
-// ── PAYMENT MODAL ─────────────────────────────────────────────────────
-function buildSummaryHTML(items, total) {
-  return items.map(i => `<div class="pay-row"><span>${i.name}${i.selectedSize?` (${i.selectedSize})`:''}</span><span>${fmt(i.price)}</span></div>`).join('') +
-    `<div class="pay-row"><span>Delivery (Lagos)</span><span style="color:green;font-weight:600">FREE</span></div>` +
-    `<div class="pay-row total"><span>Total</span><span>${fmt(total)}</span></div>`;
-}
+// ── Collection grid ────────────────────────────────────────────────
+const grid = $('#grid');
+grid.innerHTML = pieces.map(p => `
+  <a class="card rv" href="#/piece/${p.slug}" data-cat="${p.gender}">
+    <div class="ph">
+      ${p.tag ? `<span class="tag${p.tag === 'Signature' || p.tag === 'Limited' ? ' gold' : ''}">${esc(p.tag)}</span>` : ''}
+      ${firstMedia(p, 'width="330" height="397" loading="lazy" decoding="async"')}
+      ${p.imgs[1] ? `<img class="alt" src="${src(p.imgs[1][0])}" width="330" height="397" loading="lazy" decoding="async" alt="">` : ''}
+    </div>
+    <div class="meta"><h3>${esc(p.name)}</h3><span class="tone">${esc(p.tone)}</span></div>
+    <p class="price">${priceLabel(p)}</p>
+  </a>`).join('');
+document.querySelectorAll('.chip[data-filter]').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.chip[data-filter]').forEach(b => b.setAttribute('aria-pressed', b === btn));
+  const f = btn.dataset.filter;
+  grid.querySelectorAll('.card').forEach(c => { c.hidden = !(f === 'all' || c.dataset.cat === f); });
+}));
 
-function openPayModal() {
-  if (!activeSize) { showToast('⚠️ Please select a size first'); return; }
-  payCtx = 'modal';
-  const total = activeProd.price * activeQty;
-  const items = Array(activeQty).fill({...activeProd, selectedSize: activeSize});
-  document.getElementById('paySummary').innerHTML = buildSummaryHTML([{...activeProd, selectedSize: activeSize, price: activeProd.price * activeQty}], total);
-  document.getElementById('payOverlay').classList.add('open');
-  closeProductModal();
-}
+// ── Reveal + self-drawing lines (IntersectionObserver) ─────────────
+const io = new IntersectionObserver(entries => entries.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add('in');
+  setTimeout(() => e.target.classList.add('done'), 1600);   // retire stagger delays so hovers are instant
+  io.unobserve(e.target);
+}), { rootMargin:'0px 0px -10% 0px', threshold:.12 });
+document.querySelectorAll('.rv, .wave.draw').forEach(el => io.observe(el));
 
-function openPayModalFromCart() {
-  if (!cart.length) { showToast('⚠️ Your cart is empty'); return; }
-  payCtx = 'cart';
-  const total = cart.reduce((s,i) => s+i.price, 0);
-  document.getElementById('paySummary').innerHTML = buildSummaryHTML(cart, total);
-  document.getElementById('payOverlay').classList.add('open');
-  toggleCart();
-}
+// Living loops rest when off-screen
+const live = new IntersectionObserver(es => es.forEach(e => {
+  e.target.classList.toggle('live', e.isIntersecting);
+}));
+live.observe($('#detailPh'));
+document.addEventListener('visibilitychange', () => document.body.classList.toggle('paused', document.hidden));
 
-function closePayModal() { document.getElementById('payOverlay').classList.remove('open'); }
+// ── The Edit: scroll-linked lookbook ───────────────────────────────
+// The same five gates appear in the CSS media query above. Keep them identical.
+const GATES = [
+  '(max-width: 720px)',
+  '(orientation: portrait) and (max-width: 1024px)',
+  '(orientation: portrait) and (pointer: coarse)',
+  '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
+  '(prefers-reduced-motion: reduce)'
+];
+const editEl = $('#edit'), frame = $('#editFrame'), caps = $('#editCaps'), ticks = $('#editTicks');
+const editPieces = EDIT.map(s => bySlug[s]);
+frame.innerHTML = editPieces.map((p, i) => `<img src="${src(p.imgs[0][0])}" width="330" height="397" alt="" ${i ? 'loading="lazy"' : ''} decoding="async">`).join('');
+caps.innerHTML = editPieces.map((p, i) => `<div class="edit-cap"><span class="num">0${i + 1} / 0${editPieces.length}</span><h3>${esc(p.name)}</h3><p>${esc(p.line)}</p><a href="#/piece/${p.slug}" tabindex="-1">View piece</a></div>`).join('');
+ticks.innerHTML = editPieces.map(() => '<i></i>').join('');
+$('#editTrack').innerHTML = editPieces.map(p => `<a class="edit-card" href="#/piece/${p.slug}"><div class="ph"><img src="${src(p.imgs[0][0])}" width="330" height="397" loading="lazy" decoding="async" alt="${esc(p.imgs[0][1])}"></div><h3>${esc(p.name)}</h3><p>${esc(p.line)}</p></a>`).join('');
 
-function initiatePaystack() {
-  const email = document.getElementById('payEmail').value.trim();
-  const name  = document.getElementById('payFirst').value.trim();
-  const phone = document.getElementById('payPhone').value.trim();
-  const addr  = document.getElementById('payAddr').value.trim();
-  if (!name || !email) { showToast('⚠️ Please enter your name and email'); return; }
-  if (!email.includes('@')) { showToast('⚠️ Please enter a valid email'); return; }
+const imgs = [...frame.children], capEls = [...caps.children], tickEls = [...ticks.children];
+const N = editPieces.length;
+const cache = editPieces.map(() => ({ o:-1, t:-1 }));
+let editOn = false, editVisible = false, target = 0, shown = 0, rafId = null, lastTick = 0, activeTick = -1;
 
-  const total = payCtx === 'cart'
-    ? cart.reduce((s,i) => s+i.price, 0)
-    : activeProd.price * activeQty;
-
-  const handler = PaystackPop.setup({
-    key: PAYSTACK_KEY,
-    email: email,
-    amount: total * 100,
-    currency: 'NGN',
-    ref: 'AWA_' + Date.now(),
-    metadata: { custom_fields: [
-      { display_name: "Name",    variable_name: "name",    value: name },
-      { display_name: "Phone",   variable_name: "phone",   value: phone },
-      { display_name: "Address", variable_name: "address", value: addr }
-    ]},
-    callback: function(res) {
-      const orderItems = payCtx === 'cart'
-        ? cart.map(i => ({ name: i.name, size: i.selectedSize, price: i.price }))
-        : [{ name: activeProd.name, size: activeSize, price: activeProd.price * activeQty, qty: activeQty }];
-      saveOrderToFirestore(res.reference, { name, email, phone, address: addr, items: orderItems, total });
-      closePayModal();
-      if (payCtx === 'cart') { cart = []; refreshCart(); }
-      showToast('🎉 Payment successful! Order confirmed. Ref: ' + res.reference);
-      setTimeout(() => {
-        const msg = encodeURIComponent(`Hi AWA Fashion! 🎉\n\nI've just completed payment.\nRef: ${res.reference}\nName: ${name} | Phone: ${phone}\nAddress: ${addr}\n\nKindly confirm my order. Thank you!`);
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
-      }, 1200);
-    },
-    onClose: () => showToast('Payment window closed. Your order was not placed.')
-  });
-  handler.openIframe();
-}
-
-// ── ORDER TRACKING (Firestore) ─────────────────────────────────────────
-const STAGES = ['Processing', 'Confirmed', 'In Production', 'Shipped', 'Completed'];
-
-function saveOrderToFirestore(ref, data) {
-  if (!db) return; // tracking disabled until Firebase is configured — payment still succeeds
-  db.collection('orders').doc(ref).set({
-    ...data,
-    status: 'Processing',
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).catch(e => console.warn('Could not save order for tracking:', e));
-}
-
-function trackOrder() {
-  const ref = document.getElementById('trackRefInput').value.trim();
-  const resultEl = document.getElementById('trackResult');
-  if (!ref) { showToast('⚠️ Please enter your order reference'); return; }
-  if (!db) {
-    resultEl.innerHTML = `<div class="track-empty">⚠️ Order tracking isn't connected yet. Please reach us on WhatsApp with your reference <strong>${ref}</strong> and we'll update you directly.</div>`;
-    return;
-  }
-  resultEl.innerHTML = `<div class="track-empty">Searching…</div>`;
-  db.collection('orders').doc(ref).get().then(doc => {
-    if (!doc.exists) {
-      resultEl.innerHTML = `<div class="track-empty">❌ No order found for reference "<strong>${ref}</strong>". Please double-check it, or contact us on WhatsApp for help.</div>`;
-      return;
+const editProgress = () => {
+  const r = editEl.getBoundingClientRect();
+  const range = editEl.offsetHeight - innerHeight;
+  return range > 0 ? clamp(-r.top / range, 0, 1) : 0;
+};
+function renderEdit(p) {
+  const pos = p * (N - 1);                       // 0..N-1, each piece owns a plateau around its index
+  for (let i = 0; i < N; i++) {
+    const d = pos - i;
+    // Images stack: each later frame dissolves in over the one below, so there is never a muddy double exposure.
+    const io_ = i === 0 ? 1 : smooth(d, -.6, -.3);
+    // Captions hand over cleanly: the old line leaves before the new one arrives.
+    const co = (i === 0 ? 1 : smooth(d, -.46, -.28)) * (i === N - 1 ? 1 : 1 - smooth(d, .28, .46));
+    const iq = Math.round(io_ * 1000) / 1000, cq = Math.round(co * 1000) / 1000;
+    const tq = Math.round(clamp(d, -1, 1) * 1000) / 1000;
+    const c = cache[i];
+    if (iq !== c.o || tq !== c.t) {              // delta-gated DOM writes
+      c.o = iq; c.t = tq;
+      imgs[i].style.opacity = iq;
+      imgs[i].style.transform = `scale(${1.04 - .04 * iq})`;
+      capEls[i].style.opacity = cq;
+      capEls[i].style.transform = `translateY(${clamp(d, -.4, .4) * -40}px)`;
+      capEls[i].style.visibility = cq < .02 ? 'hidden' : 'visible';
     }
-    renderTrackResult(doc.data(), ref);
+  }
+  const at = Math.round(pos);
+  if (at !== activeTick) { activeTick = at; tickEls.forEach((t, i) => t.classList.toggle('on', i === at)); }
+}
+function tick(now) {
+  const dt = Math.min(100, now - (lastTick || now)); lastTick = now;
+  shown += (target - shown) * (1 - Math.pow(1 - .14, dt / 16.667));   // frame-rate independent lerp
+  if (Math.abs(target - shown) < .0005) { shown = target; rafId = null; lastTick = 0; }
+  else rafId = requestAnimationFrame(tick);
+  renderEdit(shown);
+}
+function onEditScroll() {
+  target = editProgress();
+  if (rafId === null && editVisible) rafId = requestAnimationFrame(tick);
+}
+new IntersectionObserver(es => { editVisible = es[0].isIntersecting; if (editVisible && editOn) onEditScroll(); }).observe(editEl);
+function enableEdit() {
+  if (editOn) return; editOn = true;
+  cache.forEach(c => { c.o = -1; c.t = -1; }); activeTick = -1;
+  addEventListener('scroll', onEditScroll, { passive:true });
+  shown = target = editProgress(); renderEdit(shown);
+}
+function disableEdit() {
+  if (!editOn) return; editOn = false;
+  removeEventListener('scroll', onEditScroll);
+  if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+}
+const applyEditMode = () => GATES.some(q => matchMedia(q).matches) ? disableEdit() : enableEdit();
+const MQLS = GATES.map(q => matchMedia(q));
+MQLS.forEach(m => m.addEventListener('change', applyEditMode));
+applyEditMode();
+
+// ── Make it yours ──────────────────────────────────────────────────
+const radios = (el, name, items, def) => {
+  $(el).innerHTML = items.map(([v, label, sw]) => `<label class="opt"><input type="radio" name="${name}" value="${esc(v)}" ${v === def ? 'checked' : ''}><span>${sw ? `<i class="sw" style="background:${sw}"></i>` : ''}${esc(label)}</span></label>`).join('');
+};
+radios('#optPiece', 'piece', [...pieces.map(p => [p.slug, p.name]), ['new', 'Something new']], '');
+radios('#optColour', 'colour', [['As shown','As shown'],['Teal','Teal','#1f6e70'],['Butter','Butter','#e9cf86'],['Black','Black','#16181c'],['Olive','Olive','#3d4a2c'],['Sky blue','Sky blue','#8cc0e8'],['Gold','Gold','#c9a95e']], '');
+radios('#optLength', 'length', [['Long kaftan','Long kaftan'],['Top and trousers','Top and trousers']], '');
+radios('#optFit', 'fit', [['Regular fit','Regular fit'],['Slim fit','Slim fit'],['Relaxed fit','Relaxed fit']], '');
+radios('#optEmb', 'emb', [['As shown','As shown'],['Simpler','Simpler'],['Bolder','Bolder'],['No embroidery','None']], '');
+radios('#optMeasure', 'measure', [['I will send my measurements','I will send my measurements'],['I need help measuring','I need help measuring']], '');
+
+const form = $('#makeForm'), list = $('#ticketList'), send = $('#sendBtn'), twave = $('#ticketWave');
+const ROWS = [['Piece','piece'],['Colour','colour'],['Shape','length'],['Fit','fit'],['Embroidery','emb'],['Measurements','measure'],['Needed by','date'],['Name','name']];
+function readForm() {
+  const d = Object.fromEntries(new FormData(form));
+  if (d.piece) d.piece = d.piece === 'new' ? 'Something new' : bySlug[d.piece].name;
+  if (d.colourOther && d.colourOther.trim()) d.colour = (d.colour && d.colour !== 'As shown' ? d.colour + ', ' : '') + d.colourOther.trim();
+  if (d.date) d.date = new Date(d.date + 'T12:00').toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  return d;
+}
+let lastTicket = '';
+function updateTicket() {
+  const d = readForm();
+  const html = ROWS.map(([k, f]) => `<dt>${k}</dt><dd class="${d[f] ? '' : 'empty'}">${d[f] ? esc(String(d[f]).trim()) : 'Not chosen yet'}</dd>`).join('');
+  if (html !== lastTicket) { list.innerHTML = html; lastTicket = html; }
+  const core = ['piece','colour','length','fit','emb','measure'];
+  const done = core.filter(f => d[f]).length / core.length;
+  twave.style.setProperty('--fill', (1 - done).toFixed(3));    // the line lights up as the request comes together
+  const lines = ROWS.filter(([, f]) => d[f]).map(([k, f]) => `${k}: ${String(d[f]).trim()}`);
+  if (d.notes && d.notes.trim()) lines.push('Notes: ' + d.notes.trim());
+  send.href = waLink(`Hello AWA Fashion, I would like a piece made my way.\n\n${lines.join('\n') || 'I would like to talk about a custom piece.'}\n\nThank you.`);
+}
+form.addEventListener('input', updateTicket);
+form.addEventListener('change', updateTicket);
+updateTicket();
+
+// ── The Signature ──────────────────────────────────────────────────
+const sig = bySlug[SIGNATURE];
+if (sig) {
+  $('#sigImg').src = src(sig.imgs[0][0]); $('#sigImg').alt = sig.imgs[0][1];
+  $('#sigTitle').textContent = sig.name;
+  $('#sigDesc').textContent = sig.desc;
+  $('#sigPrice').textContent = priceLabel(sig);
+  $('#sigView').href = '#/piece/' + sig.slug;
+  $('#sigWa').href = waLink(`Hello AWA Fashion, I would like to know more about the ${sig.name}.`);
+}
+
+// ── Layers (bag, checkout, size guide) ─────────────────────────────
+const openLayers = [];
+function openLayer(id) {
+  const l = $('#' + id);
+  if (openLayers.includes(l)) return;
+  l._ret = document.activeElement;
+  l.hidden = false; void l.offsetWidth; l.classList.add('open');
+  openLayers.push(l); lock(id, true);
+  l.querySelector('[data-close]').focus({ preventScroll:true });
+}
+function closeLayer(l) {
+  const i = openLayers.indexOf(l); if (i < 0) return;
+  openLayers.splice(i, 1); l.classList.remove('open'); lock(l.id, false);
+  setTimeout(() => { if (!openLayers.includes(l)) l.hidden = true; }, 450);
+  if (l._ret && document.contains(l._ret)) l._ret.focus({ preventScroll:true });
+}
+document.querySelectorAll('.layer').forEach(l => l.addEventListener('click', e => {
+  if (e.target === l || e.target.closest('[data-close]')) closeLayer(l);
+}));
+document.addEventListener('keydown', e => {
+  const top = openLayers[openLayers.length - 1];
+  if (!top || e.key !== 'Tab') return;               // keep focus inside the top layer
+  const f = [...top.querySelectorAll('a[href],button:not([disabled]),input,textarea,select')].filter(el => el.offsetParent !== null);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+});
+$('#sgOpen').addEventListener('click', () => openLayer('sgLayer'));
+
+// ── Bag ────────────────────────────────────────────────────────────
+let bag = [];
+try { bag = JSON.parse(localStorage.getItem('awa-bag') || '[]').filter(i => bySlug[i.slug] && priceOf(bySlug[i.slug]) != null); } catch (e) { bag = []; }
+const saveBag = () => { try { localStorage.setItem('awa-bag', JSON.stringify(bag)); } catch (e) {} };
+const lineTotal = i => priceOf(bySlug[i.slug]) * i.qty;
+const itemsTotal = items => items.reduce((s, i) => s + lineTotal(i), 0);
+const itemLines = items => items.map(i => `- ${bySlug[i.slug].name}, size ${i.size}, x${i.qty}: ${fmt(lineTotal(i))}`).join('\n');
+function addToBag(slug, size, qty) {
+  const f = bag.find(i => i.slug === slug && i.size === size);
+  if (f) f.qty = Math.min(10, f.qty + qty); else bag.push({ slug, size, qty });
+  saveBag(); renderBag();
+}
+function renderBag() {
+  const n = bag.reduce((s, i) => s + i.qty, 0);
+  const c = $('#bagCount'); c.textContent = n; c.dataset.n = n;
+  $('#bagBtn').setAttribute('aria-label', n ? `Open your bag, ${n} item${n > 1 ? 's' : ''}` : 'Open your bag');
+  $('#bagItems').innerHTML = bag.length ? bag.map((i, k) => {
+    const p = bySlug[i.slug];
+    return `<div class="bag-item"><div class="mini">${p.imgs.length ? `<img src="${src(p.imgs[0][0])}" alt="" width="72" height="87">` : tile(p)}</div><div><h3>${esc(p.name)}</h3><p class="m">Size ${esc(i.size)} · Qty ${i.qty}</p><button class="rm" type="button" data-rm="${k}">Remove</button></div><span class="p">${fmt(lineTotal(i))}</span></div>`;
+  }).join('') : '<p class="bag-empty">Your bag is empty. Open any piece to choose a size and add it here.</p>';
+  $('#bagFoot').hidden = !bag.length;
+  $('#bagTotal').textContent = fmt(itemsTotal(bag));
+  $('#bagWa').href = waLink(`Hello AWA Fashion, I would like to order:\n${itemLines(bag)}\nTotal: ${fmt(itemsTotal(bag))}\n\nPlease confirm availability and delivery.`);
+}
+$('#bagItems').addEventListener('click', e => {
+  const b = e.target.closest('[data-rm]'); if (!b) return;
+  bag.splice(+b.dataset.rm, 1); saveBag(); renderBag();
+  $('#bagLayer [data-close]').focus();
+});
+$('#bagBtn').addEventListener('click', () => openLayer('bagLayer'));
+$('#bagCheckout').addEventListener('click', () => openCheckout());
+renderBag();
+
+// ── Checkout (Paystack) ────────────────────────────────────────────
+const coForm = $('#coForm');
+const coVal = () => ({ name:$('#coName').value.trim(), phone:$('#coPhone').value.trim(), email:$('#coEmail').value.trim(), address:$('#coAddr').value.trim() });
+function coWaMessage(ref) {
+  const d = coVal();
+  return `Hello AWA Fashion, ${ref ? 'I have just paid for' : 'I would like to order'}:\n${itemLines(bag)}\nTotal: ${fmt(itemsTotal(bag))}` +
+    (ref ? `\nPayment reference: ${ref}` : '') +
+    `\n\nName: ${d.name}\nPhone: ${d.phone}\nAddress: ${d.address}\n\nPlease confirm my order.`;
+}
+function openCheckout() {
+  if (!bag.length) return;
+  $('#coSum').innerHTML = bag.map(i => `<div class="row"><span>${esc(bySlug[i.slug].name)} · ${esc(i.size)} · x${i.qty}</span><span>${fmt(lineTotal(i))}</span></div>`).join('') +
+    `<div class="row tot"><span>Total</span><span>${fmt(itemsTotal(bag))}</span></div>`;
+  $('#coPay').hidden = !PAYSTACK_KEY;
+  $('#coNote').textContent = PAYSTACK_KEY
+    ? 'Pay by card, bank transfer or USSD through Paystack. Delivery cost is confirmed with you on WhatsApp.'
+    : 'Card payment is being set up. Send your order on WhatsApp and AWA will confirm payment and delivery with you.';
+  $('#coErr').textContent = '';
+  coForm.hidden = false; $('#coDone').hidden = true;
+  $('#coWa').href = waLink(coWaMessage());
+  openLayer('coLayer');
+}
+coForm.addEventListener('input', () => { $('#coWa').href = waLink(coWaMessage()); });
+coForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if (!PAYSTACK_KEY) return;
+  const d = coVal(), err = $('#coErr');
+  if (!d.name || !d.phone || !d.address) { err.textContent = 'Add your name, phone and delivery address.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { err.textContent = 'Add a valid email so Paystack can send your receipt.'; return; }
+  err.textContent = '';
+  const items = bag.map(i => ({ name: bySlug[i.slug].name, size: i.size, qty: i.qty, price: lineTotal(i) }));
+  const total = itemsTotal(bag);
+  loadScript('https://js.paystack.co/v1/inline.js').then(() => {
+    PaystackPop.setup({
+      key: PAYSTACK_KEY, email: d.email, amount: total * 100, currency: 'NGN', ref: 'AWA_' + Date.now(),
+      metadata: { custom_fields: [
+        { display_name:'Name', variable_name:'name', value:d.name },
+        { display_name:'Phone', variable_name:'phone', value:d.phone },
+        { display_name:'Address', variable_name:'address', value:d.address }
+      ] },
+      callback: res => {
+        const ref = res.reference;
+        $('#coConfirm').href = waLink(coWaMessage(ref));
+        getDb().then(db => db && db.collection('orders').doc(ref).set({
+          ...d, items, total, status:'Processing', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })).catch(() => {});
+        bag = []; saveBag(); renderBag();
+        $('#coDoneName').textContent = d.name.split(' ')[0];
+        $('#coRef').textContent = ref;
+        coForm.hidden = true; $('#coDone').hidden = false;
+        $('#coLayer [data-close]').focus();
+      },
+      onClose: () => toast('Payment window closed. Nothing was charged.')
+    }).openIframe();
+  }).catch(() => { err.textContent = 'Paystack did not load. Check your connection, or send your order on WhatsApp.'; });
+});
+$('#coTrack').addEventListener('click', () => {
+  $('#trackRef').value = $('#coRef').textContent;
+  openLayers.slice().forEach(closeLayer);
+  setTimeout(() => $('#trackForm').requestSubmit(), 50);
+});
+
+// ── Track your order (Firestore) ───────────────────────────────────
+const STAGES = ['Processing', 'Confirmed', 'In Production', 'Shipped', 'Completed'];
+const stagesHtml = idx => `<ol class="stages">${STAGES.map((st, i) => `<li class="stage${i <= idx ? ' done' : ''}"><i></i>${st}</li>`).join('')}</ol>`;
+const trackOut = $('#trackResult');
+const trackIdle = () => { trackOut.innerHTML = `<p class="kicker">How an order moves</p>${stagesHtml(-1)}<p class="track-msg">Enter your reference and your order's progress shows here.</p>`; };
+trackIdle();
+$('#trackForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const ref = $('#trackRef').value.trim();
+  if (!ref) { trackOut.innerHTML = `<p class="kicker">How an order moves</p>${stagesHtml(-1)}<p class="track-msg">Enter the reference first, for example AWA_1737000000000.</p>`; $('#trackRef').focus(); return; }
+  const help = `<a href="${waLink(`Hello AWA Fashion, could you update me on order ${ref}?`)}" target="_blank" rel="noopener">ask AWA on WhatsApp</a>`;
+  trackOut.innerHTML = `<p class="track-msg">Looking up ${esc(ref)}…</p>`;
+  getDb().then(db => db.collection('orders').doc(ref).get()).then(doc => {
+    if (!doc.exists) { trackOut.innerHTML = `<p class="kicker">Not found</p><p class="track-msg" style="margin-top:10px">No order matches <b>${esc(ref)}</b>. Check the reference, or ${help}.</p>`; return; }
+    const d = doc.data(), idx = Math.max(0, STAGES.indexOf(d.status));
+    const lines = (d.items || []).map(i => `<div class="row"><span>${esc(i.name)}${i.size ? ' · ' + esc(i.size) : ''}${i.qty ? ' · x' + i.qty : ''}</span><span>${typeof i.price === 'number' ? fmt(i.price) : ''}</span></div>`).join('');
+    trackOut.innerHTML = `<div class="track-head"><span class="ref-l">Order ${esc(ref)}</span><span class="badge">${esc(STAGES[idx])}</span></div>${stagesHtml(idx)}` +
+      (lines || typeof d.total === 'number' ? `<div class="lines">${lines}${typeof d.total === 'number' ? `<div class="row tot"><span>Total</span><span>${fmt(d.total)}</span></div>` : ''}</div>` : '');
   }).catch(() => {
-    resultEl.innerHTML = `<div class="track-empty">⚠️ Something went wrong while looking up your order. Please try again or contact us on WhatsApp.</div>`;
+    trackOut.innerHTML = `<p class="kicker">Could not check right now</p><p class="track-msg" style="margin-top:10px">Order tracking did not respond. Try again in a moment, or ${help}.</p>`;
   });
+});
+
+// ── Piece page (hash route #/piece/slug) ───────────────────────────
+const piece = $('#piece');
+let lastFocus = null, pieceOpen = false;
+function showPiece(p) {
+  $('#pieceCat').textContent = p.catLabel + ' · ' + p.tone;
+  $('#pieceName').textContent = p.name;
+  $('#pieceDesc').textContent = p.desc;
+  $('#pieceDetails').innerHTML = p.details.map(x => `<li>${esc(x)}</li>`).join('');
+  const main = $('#pieceImg');
+  main.hidden = !p.imgs.length;
+  $('#pieceTile').innerHTML = p.imgs.length ? '' : tile(p);
+  $('#sgOpen').hidden = p.gender === 'accessories';
+  const setImg = i => { main.src = src(p.imgs[i][0]); main.alt = p.imgs[i][1]; $('#pieceThumbs').querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', i === j)); };
+  $('#pieceThumbs').innerHTML = p.imgs.length > 1 ? p.imgs.map((im, i) => `<button type="button" aria-label="View image ${i + 1}"><img src="${src(im[0])}" alt="" width="330" height="397"></button>`).join('') : '';
+  $('#pieceThumbs').querySelectorAll('button').forEach((b, i) => b.addEventListener('click', () => setImg(i)));
+  if (p.imgs.length) setImg(0);
+  const priced = priceOf(p) != null;
+  let size = null, qty = 1;
+  $('#piecePrice').textContent = priceLabel(p);
+  $('#piecePrice').classList.toggle('req', !priced);
+  $('#pieceAdd').hidden = !priced;
+  const sizesEl = $('#pieceSizes');
+  const unavail = p.unavail || [];
+  sizesEl.innerHTML = (p.sizes || SIZES).map(sz => `<button type="button" class="size" aria-pressed="false" data-size="${sz}"${unavail.includes(sz) ? ` disabled title="${sz} is out of stock"` : ''}>${sz}</button>`).join('');
+  const updAsk = () => {
+    $('#qNum').textContent = qty;
+    $('#pieceAsk').href = waLink(`Hello AWA Fashion, I would like to order the ${p.name}.\nSize: ${size || 'not sure yet'}${size === 'Custom' ? ' (I will send my measurements)' : ''}\nQuantity: ${qty}` +
+      (priced ? `\nPrice: ${fmt(priceOf(p) * qty)}` : '') + `\n\nPlease confirm ${priced ? '' : 'the price, '}availability and delivery.`);
+  };
+  sizesEl.onclick = e => {
+    const b = e.target.closest('.size'); if (!b) return;
+    size = b.dataset.size;
+    sizesEl.querySelectorAll('.size').forEach(x => x.setAttribute('aria-pressed', x === b));
+    updAsk();
+  };
+  $('#qMinus').onclick = () => { qty = Math.max(1, qty - 1); updAsk(); };
+  $('#qPlus').onclick = () => { qty = Math.min(10, qty + 1); updAsk(); };
+  $('#pieceAdd').onclick = () => {
+    if (!size) { toast('Choose a size first'); sizesEl.querySelector('.size:not(:disabled)').focus(); return; }
+    addToBag(p.slug, size, qty);
+    toast(`${p.name} (${size}) added to your bag`);
+    openLayer('bagLayer');
+  };
+  updAsk();
+  $('#pieceMake').onclick = e => {
+    e.preventDefault();
+    const r = form.querySelector(`input[name="piece"][value="${p.slug}"]`); if (r) { r.checked = true; updateTicket(); }
+    history.pushState(null, '', '#make'); closePiece(false);
+    $('#make').scrollIntoView({ behavior: reduceQ.matches ? 'auto' : 'smooth' });
+  };
+  if (!pieceOpen) { lastFocus = document.activeElement; pieceOpen = true; }
+  piece.hidden = false; piece.scrollTop = 0;
+  void piece.offsetWidth;                          // commit display so the fade-in runs
+  piece.classList.add('open');                     // visible right away so focus can land inside
+  lock('piece', true);
+  $('#pieceClose').focus({ preventScroll:true });
 }
-
-function renderTrackResult(data, ref) {
-  const idx = Math.max(0, STAGES.indexOf(data.status));
-  const stagesHtml = STAGES.map((s, i) => `
-    <div class="track-stage ${i <= idx ? 'done' : ''}">
-      <div class="track-dot"></div><div class="track-stage-label">${s}</div>
-    </div>`).join('');
-  const itemsHtml = (data.items || []).map(i => `<div class="pay-row"><span>${i.name}${i.size ? ` (${i.size})` : ''}</span><span>${fmt(i.price)}</span></div>`).join('');
-  document.getElementById('trackResult').innerHTML = `
-    <div class="track-card reveal visible">
-      <div class="track-header"><span>Order ${ref}</span><span class="track-status-badge">${data.status || 'Processing'}</span></div>
-      <div class="track-stages">${stagesHtml}</div>
-      <div class="modal-divider" style="margin:1.5rem 0"></div>
-      ${itemsHtml}
-      <div class="pay-row total"><span>Total</span><span>${fmt(data.total || 0)}</span></div>
-    </div>`;
+function closePiece(restore = true) {
+  if (!pieceOpen) return; pieceOpen = false;
+  piece.classList.remove('open'); lock('piece', false);
+  setTimeout(() => { if (!pieceOpen) piece.hidden = true; }, 500);
+  if (restore && lastFocus) lastFocus.focus({ preventScroll:true });
 }
-
-// ── TOAST ─────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+function route() {
+  const m = location.hash.match(/^#\/piece\/([\w-]+)/);
+  if (m && bySlug[m[1]]) showPiece(bySlug[m[1]]); else closePiece();
 }
-
-// ── INIT ────────────────────────────────────────────────────────────────
-renderProducts('all');
-renderSignature();
-renderDesigns();
-
-// ── SCROLL REVEAL ─────────────────────────────────────────────────────
-const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+$('#pieceClose').addEventListener('click', () => {
+  if (location.hash.startsWith('#/piece/')) history.pushState(null, '', location.pathname + location.search);
+  closePiece();
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (openLayers.length) closeLayer(openLayers[openLayers.length - 1]);
+  else if (pieceOpen) $('#pieceClose').click();
+});
+piece.addEventListener('keydown', e => {
+  if (e.key !== 'Tab' || openLayers.length) return;  // keep focus inside the piece page
+  const f = [...piece.querySelectorAll('a[href],button:not([disabled])')].filter(el => el.offsetParent !== null);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+});
+piece.querySelector('.piece-top .brand').addEventListener('click', () => closePiece(false));
+addEventListener('hashchange', route);
+route();
+})();
 </script>
 </body>
 </html>
