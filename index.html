@@ -45,6 +45,7 @@ img{display:block;max-width:100%;height:auto}
 a{color:inherit}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--glow);outline-offset:3px;border-radius:4px}
+[hidden]{display:none !important}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .skip{position:fixed;left:16px;top:-60px;z-index:200;background:var(--ink);color:var(--canvas);padding:10px 16px;border-radius:8px;text-decoration:none;transition:top .3s var(--ease-out)}
 .skip:focus{top:12px}
@@ -280,6 +281,7 @@ section{position:relative}
 
 footer{padding:40px var(--gutter);display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);font-size:.86rem;color:var(--ink-2)}
 footer .brand-name{color:var(--ink)}
+@media (max-width:880px){footer{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 
 /* ── Piece page (hash-routed) ── */
 .piece{position:fixed;inset:0;z-index:80;background:var(--canvas);overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .5s var(--ease-out),visibility 0s linear .5s}
@@ -310,6 +312,103 @@ footer .brand-name{color:var(--ink)}
 body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused !important}
 .idle::before,.idle::after{animation-play-state:paused !important}
 
+/* ── The Signature ── */
+.signature{background:var(--ink);color:var(--canvas);display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,6vw,96px);align-items:center;overflow:hidden}
+.signature .kicker{color:var(--glow)}
+.signature .h2{color:var(--canvas)}
+.signature .lede{color:#c6d0dd;margin-top:18px}
+.sig-ph{position:relative;width:min(100%,400px);justify-self:center}
+.sig-ph .arch{opacity:1;animation:none;box-shadow:0 40px 90px -40px rgba(0,0,0,.7),0 0 0 1px rgba(240,194,74,.25)}
+.sig-ph::after{content:"";position:absolute;left:-12%;right:-12%;bottom:-6%;height:30%;background:radial-gradient(ellipse at 50% 100%,rgba(240,194,74,.28),transparent 70%);pointer-events:none}
+.sig-price{font-family:var(--f-display);font-size:1.6rem;margin-top:24px;font-variant-numeric:tabular-nums}
+.sig-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.signature .btn-solid{background:var(--glow);border-color:var(--glow);color:var(--ink)}
+.signature .btn-solid:hover{background:#f6d277;box-shadow:0 10px 30px -12px rgba(240,194,74,.6)}
+.signature .btn-ghost{color:var(--canvas);border-color:rgba(236,239,243,.55)}
+.signature .btn-ghost:hover{background:var(--canvas);color:var(--ink)}
+@media (max-width:880px){.signature{grid-template-columns:1fr}.sig-ph{width:min(78vw,340px)}}
+
+/* ── Track your order ── */
+.track-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,5vw,72px);align-items:start}
+.track-form{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.track-form input{flex:1 1 220px;min-width:0;min-height:52px;padding:0 18px;border-radius:999px;border:1px solid var(--line-strong);background:var(--panel);font-family:var(--f-mono);font-size:.92rem}
+.track-form input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(240,194,74,.35)}
+.track-card{background:var(--panel);border-radius:18px;padding:28px;box-shadow:0 30px 70px -40px rgba(15,36,64,.45);min-width:0}
+.track-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.track-head .ref-l{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.06em;word-break:break-all}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--ink);color:var(--canvas);font-size:.78rem;font-weight:500}
+.stages{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);margin:24px 0 18px}
+.stage{position:relative;display:grid;justify-items:center;gap:10px;text-align:center;font-size:.76rem;line-height:1.3;color:var(--ink-2);padding:0 2px}
+.stage::before{content:"";position:absolute;top:8px;left:-50%;right:50%;height:2px;background:var(--line)}
+.stage:first-child::before{display:none}
+.stage i{position:relative;z-index:1;width:18px;height:18px;border-radius:50%;background:var(--panel);border:2px solid var(--line-strong)}
+.stage.done{color:var(--ink)}
+.stage.done::before{background:var(--glow)}
+.stage.done i{background:var(--glow);border-color:var(--glow);box-shadow:0 0 0 5px var(--glow-soft)}
+.track-msg{color:var(--ink-2);font-size:.95rem}
+.lines{display:grid;gap:8px;font-size:.92rem;border-top:1px solid var(--line);padding-top:14px}
+.lines .row{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+.lines .row.tot{font-weight:600;border-top:1px solid var(--line);padding-top:10px}
+@media (max-width:880px){.track-wrap{grid-template-columns:1fr}}
+@media (max-width:480px){.stage{font-size:.64rem}.track-card{padding:22px 16px}}
+
+/* ── Bag, checkout, size guide, toast ── */
+.nav-right{display:flex;gap:10px;align-items:center}
+.icon-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;cursor:pointer;transition:border-color .4s var(--ease-out),background-color .4s var(--ease-out)}
+.icon-btn:hover{border-color:var(--ink);background:var(--panel)}
+.icon-btn svg{width:19px;height:19px}
+.count{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--glow);color:var(--ink);font-size:.7rem;font-weight:600;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.count[data-n="0"]{display:none}
+.layer{position:fixed;inset:0;z-index:90;background:rgba(15,36,64,.4);opacity:0;visibility:hidden;transition:opacity .45s var(--ease-out),visibility 0s linear .45s}
+.layer.open{opacity:1;visibility:visible;transition:opacity .45s var(--ease-out),visibility 0s}
+.drawer{position:absolute;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--panel);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .6s var(--ease-out);box-shadow:-30px 0 60px -30px rgba(15,36,64,.4);padding-bottom:env(safe-area-inset-bottom,0px)}
+.layer.open .drawer{transform:none}
+.dialog{position:absolute;left:50%;top:50%;width:min(560px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;background:var(--panel);border-radius:18px;padding:clamp(20px,4vw,30px);transform:translate(-50%,-46%);transition:transform .6s var(--ease-out);box-shadow:0 40px 90px -40px rgba(15,36,64,.6)}
+.layer.open .dialog{transform:translate(-50%,-50%)}
+.layer-head{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.layer-head h2{font-family:var(--f-display);font-weight:400;font-size:1.7rem;line-height:1.1}
+.x{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:1rem}
+.x:hover{border-color:var(--ink)}
+.drawer .layer-head{padding:18px 24px;border-bottom:1px solid var(--line)}
+.bag-items{flex:1;overflow:auto;padding:4px 24px}
+.bag-item{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:start;padding:16px 0;border-bottom:1px solid var(--line)}
+.bag-item img{width:72px;aspect-ratio:330/397;object-fit:cover;border-radius:8px;background:var(--panel-2)}
+.bag-item h3{font-family:var(--f-display);font-weight:400;font-size:1.12rem;line-height:1.2}
+.bag-item .m{font-size:.86rem;color:var(--ink-2)}
+.bag-item .p{font-variant-numeric:tabular-nums;font-size:.92rem;white-space:nowrap}
+.rm{background:none;border:0;cursor:pointer;font-size:.84rem;color:var(--ink-2);text-decoration:underline;min-height:32px;padding:0}
+.bag-empty{padding:40px 0;color:var(--ink-2)}
+.bag-foot{padding:18px 24px 22px;border-top:1px solid var(--line);display:grid;gap:10px}
+.bag-foot .btn,.co-actions .btn{width:100%}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-variant-numeric:tabular-nums}
+.total b{font-family:var(--f-display);font-weight:500;font-size:1.45rem}
+.co-form{display:grid;gap:14px;margin-top:18px}
+.co-note{font-size:.86rem;color:var(--ink-2);background:var(--canvas);border-radius:10px;padding:12px 14px}
+.co-err{color:#a3261f;font-size:.88rem;min-height:1.2em}
+.co-actions{display:grid;gap:10px}
+.ref{font-family:var(--f-mono);font-size:1.02rem;background:var(--canvas);border-radius:10px;padding:12px 14px;user-select:all;word-break:break-all;margin:8px 0 6px}
+.done-copy{display:grid;gap:8px;margin:18px 0 22px}
+.done-copy h3{font-family:var(--f-display);font-weight:400;font-size:1.6rem}
+.done-copy small{color:var(--ink-2)}
+.sizes{display:flex;flex-wrap:wrap;gap:8px}
+.size{min-width:54px;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:.9rem;transition:background-color .3s var(--ease-out),color .3s var(--ease-out),border-color .3s var(--ease-out)}
+.size:hover{border-color:var(--ink)}
+.size[aria-pressed="true"]{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+.linkish{background:none;border:0;padding:0;margin-top:12px;cursor:pointer;font-size:.88rem;color:var(--ink-2);text-decoration:underline;min-height:32px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:999px}
+.qty button{width:44px;height:44px;border:0;background:none;cursor:pointer;font-size:1.1rem;border-radius:50%}
+.qty output{min-width:28px;text-align:center;font-variant-numeric:tabular-nums}
+.piece-price{font-family:var(--f-display);font-size:1.5rem;font-variant-numeric:tabular-nums}
+.piece-price.req{font-family:var(--f-body);font-size:1rem;color:var(--ink-2)}
+.size-table{width:100%;border-collapse:collapse;margin-top:18px;font-variant-numeric:tabular-nums;font-size:.92rem}
+.size-table th,.size-table td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line)}
+.size-table th{font-family:var(--f-mono);font-weight:400;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.float-wa{position:fixed;left:calc(16px + env(safe-area-inset-left,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;width:56px;height:56px;border-radius:50%;background:#1f7a4d;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px -10px rgba(31,122,77,.65);transition:transform .4s var(--ease-out)}
+.float-wa:hover{transform:translateY(-2px) scale(1.05)}
+.float-wa svg{width:26px;height:26px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:120;max-width:calc(100% - 32px);transform:translate(-50%,16px);opacity:0;background:var(--ink);color:var(--canvas);padding:12px 20px;border-radius:999px;font-size:.92rem;pointer-events:none;transition:opacity .4s var(--ease-out),transform .4s var(--ease-out)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
 @media (pointer:coarse){.btn,.chip,.handle{min-height:48px}}
 
 @media (prefers-reduced-motion:reduce){
@@ -333,6 +432,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.7 11.7 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></symbol>
   <symbol id="ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></symbol>
   <symbol id="tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 3h-3v12.2a2.7 2.7 0 1 1-2.7-2.7c.3 0 .5 0 .8.1V9.5a5.8 5.8 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.4 1.4V7.4a4.4 4.4 0 0 1-4.4-4.4z"/></symbol>
+  <symbol id="bag" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9zM9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
   <symbol id="wavepath" viewBox="0 0 1440 160"><path d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/></symbol>
 </svg>
 
@@ -346,12 +446,13 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
       <li><a href="#edit">The Edit</a></li>
       <li><a href="#collection">Collection</a></li>
       <li><a href="#make">Make it yours</a></li>
-      <li><a href="#house">The House</a></li>
+      <li><a href="#track">Track order</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
-  <div style="display:flex;gap:10px;align-items:center">
+  <div class="nav-right">
     <a class="btn btn-solid" data-wa="Hello AWA Fashion, I would like to ask about a piece." href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg><span class="lbl">WhatsApp</span><span class="sr-only"> (opens WhatsApp)</span></a>
+    <button class="icon-btn" id="bagBtn" type="button" aria-label="Open your bag"><svg aria-hidden="true"><use href="#bag"/></svg><span class="count" id="bagCount" data-n="0">0</span></button>
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Menu"><span></span></button>
   </div>
 </header>
@@ -407,6 +508,20 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
     <path class="w-core" pathLength="1" d="M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70"/>
   </svg>
 </div>
+
+<section id="signature" class="signature sec" aria-labelledby="sigTitle">
+  <figure class="sig-ph rv"><div class="arch"><img id="sigImg" src="assets/img/teal-kaftan-front.webp" width="330" height="397" loading="lazy" decoding="async" alt="The teal long kaftan, AWA's signature piece"></div></figure>
+  <div>
+    <p class="kicker">The Signature</p>
+    <h2 class="h2" id="sigTitle">Teal Long Kaftan</h2>
+    <p class="lede" id="sigDesc">A floor-length kaftan in deep teal. The embroidery stays tone on tone, so the colour does the talking.</p>
+    <p class="sig-price" id="sigPrice">Price on request</p>
+    <div class="sig-actions">
+      <a class="btn btn-solid" id="sigView" href="#/piece/teal-kaftan">View &amp; order</a>
+      <a class="btn btn-ghost" id="sigWa" href="#contact" target="_blank" rel="noopener">Ask on WhatsApp</a>
+    </div>
+  </div>
+</section>
 
 <section id="collection" class="sec" aria-labelledby="colTitle">
   <div class="sec-head">
@@ -486,8 +601,24 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
       <h3 id="ticketTitle">A piece made yours</h3>
       <dl id="ticketList"></dl>
       <a class="btn btn-wa" id="sendBtn" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Send on WhatsApp</a>
-      <small>This opens WhatsApp with your request written out. Nothing is sent until you press send there, and no payment is taken on this site.</small>
+      <small>This opens WhatsApp with your request written out. Nothing is sent until you press send there. Custom pieces are priced and paid after AWA confirms them with you.</small>
     </aside>
+  </div>
+</section>
+
+<section id="track" class="sec" aria-labelledby="trackTitle">
+  <div class="track-wrap">
+    <div>
+      <p class="kicker">Track your order</p>
+      <h2 class="h2" id="trackTitle">Where is <em>my piece?</em></h2>
+      <p class="lede" style="margin-top:18px">Enter the order reference from your payment confirmation, or the one AWA sent you on WhatsApp.</p>
+      <form class="track-form" id="trackForm" novalidate>
+        <label class="sr-only" for="trackRef">Order reference</label>
+        <input id="trackRef" name="ref" placeholder="For example AWA_1737000000000" autocomplete="off" spellcheck="false">
+        <button class="btn btn-solid" type="submit">Track order</button>
+      </form>
+    </div>
+    <div class="track-card" id="trackResult" aria-live="polite"></div>
   </div>
 </section>
 
@@ -524,6 +655,76 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   <span>© <span id="yr">2026</span> AWA Fashion</span>
 </footer>
 
+<a class="float-wa" data-wa="Hello AWA Fashion, I would like to ask about your collection." href="#contact" target="_blank" rel="noopener" aria-label="Chat with AWA on WhatsApp"><svg aria-hidden="true"><use href="#wa"/></svg></a>
+
+<div class="layer" id="bagLayer" hidden>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="bagTitle">
+    <div class="layer-head"><h2 id="bagTitle">Your bag</h2><button class="x" type="button" data-close aria-label="Close your bag">✕</button></div>
+    <div class="bag-items" id="bagItems"></div>
+    <div class="bag-foot" id="bagFoot">
+      <div class="total"><span>Total</span><b id="bagTotal">₦0</b></div>
+      <button class="btn btn-solid" type="button" id="bagCheckout">Checkout</button>
+      <a class="btn btn-wa" id="bagWa" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Order on WhatsApp</a>
+    </div>
+  </aside>
+</div>
+
+<div class="layer" id="coLayer" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="coTitle">
+    <div class="layer-head"><h2 id="coTitle">Checkout</h2><button class="x" type="button" data-close aria-label="Close checkout">✕</button></div>
+    <form class="co-form" id="coForm" novalidate>
+      <div class="lines" id="coSum"></div>
+      <div class="two">
+        <div class="field"><label for="coName">Full name</label><input id="coName" name="name" autocomplete="name"></div>
+        <div class="field"><label for="coPhone">Phone</label><input id="coPhone" name="phone" type="tel" autocomplete="tel" placeholder="+234"></div>
+      </div>
+      <div class="field"><label for="coEmail">Email (for your Paystack receipt)</label><input id="coEmail" name="email" type="email" autocomplete="email"></div>
+      <div class="field"><label for="coAddr">Delivery address</label><textarea id="coAddr" name="address" autocomplete="street-address"></textarea></div>
+      <p class="co-note" id="coNote"></p>
+      <p class="co-err" id="coErr" role="alert"></p>
+      <div class="co-actions">
+        <button class="btn btn-solid" type="submit" id="coPay">Pay with Paystack</button>
+        <a class="btn btn-wa" id="coWa" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Send order on WhatsApp</a>
+      </div>
+    </form>
+    <div id="coDone" hidden>
+      <div class="done-copy">
+        <p class="kicker">Payment received</p>
+        <h3>Thank you, <span id="coDoneName"></span>.</h3>
+        <p>Your order reference:</p>
+        <p class="ref" id="coRef"></p>
+        <small>Keep this reference. You can use it to track your order on this site.</small>
+      </div>
+      <div class="co-actions">
+        <a class="btn btn-wa" id="coConfirm" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Send confirmation on WhatsApp</a>
+        <a class="btn btn-ghost" id="coTrack" href="#track">Track this order</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="layer" id="sgLayer" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="sgTitle">
+    <div class="layer-head"><h2 id="sgTitle">Size guide</h2><button class="x" type="button" data-close aria-label="Close size guide">✕</button></div>
+    <p class="lede" style="margin-top:12px">A general guide in centimetres. AWA confirms your fit with you on WhatsApp.</p>
+    <div style="overflow-x:auto">
+      <table class="size-table">
+        <thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Hip</th></tr></thead>
+        <tbody>
+          <tr><td>S</td><td>87–91</td><td>71–75</td><td>93–97</td></tr>
+          <tr><td>M</td><td>92–97</td><td>76–81</td><td>98–103</td></tr>
+          <tr><td>L</td><td>98–104</td><td>82–88</td><td>104–110</td></tr>
+          <tr><td>XL</td><td>105–112</td><td>89–96</td><td>111–118</td></tr>
+          <tr><td>XXL</td><td>113–121</td><td>97–105</td><td>119–127</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="track-msg" style="margin-top:16px">Between sizes? Size up for a relaxed fit, or choose Custom and send your measurements.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <div class="piece" id="piece" role="dialog" aria-modal="true" aria-labelledby="pieceName" hidden>
   <div class="piece-top">
     <a href="#top" class="brand" aria-label="AWA Fashion home"><svg aria-hidden="true"><use href="#mark"/></svg><span class="brand-name">AWA FASHION</span></a>
@@ -537,12 +738,18 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
     <div class="piece-info">
       <p class="kicker" id="pieceCat"></p>
       <h2 id="pieceName"></h2>
-      <p class="price">Price on request</p>
+      <p class="piece-price" id="piecePrice">Price on request</p>
       <p class="desc" id="pieceDesc"></p>
       <h4>What you can see</h4>
       <ul id="pieceDetails"></ul>
+      <h4 id="sizeLbl">Size</h4>
+      <div class="sizes" id="pieceSizes" role="group" aria-labelledby="sizeLbl"></div>
+      <button type="button" class="linkish" id="sgOpen">Size guide</button>
+      <h4 id="qtyLbl">Quantity</h4>
+      <div class="qty" role="group" aria-labelledby="qtyLbl"><button type="button" id="qMinus" aria-label="One less">−</button><output id="qNum">1</output><button type="button" id="qPlus" aria-label="One more">+</button></div>
       <div class="piece-actions">
-        <a class="btn btn-wa" id="pieceAsk" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Ask about this piece</a>
+        <button class="btn btn-solid" type="button" id="pieceAdd">Add to bag</button>
+        <a class="btn btn-wa" id="pieceAsk" href="#contact" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Order on WhatsApp</a>
         <a class="btn btn-ghost" id="pieceMake" href="#make">Make it yours</a>
       </div>
     </div>
@@ -556,6 +763,29 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 // Number from AWA's own brand posts. Change here and every WhatsApp link updates.
 const WHATSAPP_NUMBER = '2349073757945';
 const waLink = msg => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+
+// Prices in naira, e.g. 'teal-kaftan': 85000. null shows "Price on request",
+// hides "Add to bag" and sends that piece's orders to WhatsApp instead.
+const PRICES = {
+  'teal-kaftan': null, 'butter-set': null, 'pinstripe-set': null, 'olive-set': null,
+  'sky-kaftan': null, 'black-kaftan': null, 'joggers': null,
+};
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'Custom'];
+const SIGNATURE = 'teal-kaftan';            // the piece featured in The Signature
+
+// Paystack public key from dashboard.paystack.com (Settings, API Keys). Starts with pk_test_ or pk_live_.
+// Never put the secret key (sk_) here. Empty keeps card payment off and checkout goes to WhatsApp.
+const PAYSTACK_KEY = '';
+
+// Firebase project that stores orders for "Track your order". Publish the Firestore rules in README.md first.
+const FIREBASE = {
+  apiKey: 'AIzaSyCCmoLThJ2g0EPCPyPchX-lUs5Rj6hAzvM',
+  authDomain: 'awa-fashion.firebaseapp.com',
+  projectId: 'awa-fashion',
+  storageBucket: 'awa-fashion.firebasestorage.app',
+  messagingSenderId: '162922929354',
+  appId: '1:162922929354:web:6abd4688b4c3378605a833'
+};
 
 // ── Pieces ─────────────────────────────────────────────────────────
 // Only what is visible in AWA's real photos. No invented prices, fabrics or claims.
@@ -607,6 +837,39 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const smooth = (p, e0, e1) => { const t = clamp((p - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
 const reduceQ = matchMedia('(prefers-reduced-motion: reduce)');
+const fmt = n => '₦' + n.toLocaleString('en-NG');
+const priceOf = p => PRICES[p.slug] ?? null;
+const priceLabel = p => priceOf(p) == null ? 'Price on request' : fmt(priceOf(p));
+
+// Scroll lock shared by the piece page and every layer
+const locks = new Set();
+const lock = (key, on) => { on ? locks.add(key) : locks.delete(key); document.body.style.overflow = locks.size ? 'hidden' : ''; };
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// Third-party scripts load only when needed
+const scriptCache = {};
+const loadScript = url => scriptCache[url] || (scriptCache[url] = new Promise((ok, fail) => {
+  const s = document.createElement('script'); s.src = url; s.async = true;
+  s.onload = ok; s.onerror = () => { delete scriptCache[url]; fail(new Error('load failed')); };
+  document.head.appendChild(s);
+}));
+let dbPromise = null;
+function getDb() {
+  if (!FIREBASE.apiKey) return Promise.resolve(null);
+  if (!dbPromise) {
+    const FB = 'https://www.gstatic.com/firebasejs/10.13.0/';
+    dbPromise = loadScript(FB + 'firebase-app-compat.js')
+      .then(() => loadScript(FB + 'firebase-firestore-compat.js'))
+      .then(() => { if (!firebase.apps.length) firebase.initializeApp(FIREBASE); return firebase.firestore(); })
+      .catch(e => { dbPromise = null; throw e; });
+  }
+  return dbPromise;
+}
 
 document.querySelectorAll('[data-wa]').forEach(a => a.href = waLink(a.dataset.wa));
 $('#yr').textContent = new Date().getFullYear();
@@ -631,7 +894,7 @@ grid.innerHTML = pieces.map(p => `
       ${p.imgs[1] ? `<img class="alt" src="${src(p.imgs[1][0])}" width="330" height="397" loading="lazy" decoding="async" alt="">` : ''}
     </div>
     <div class="meta"><h3>${esc(p.name)}</h3><span class="tone">${esc(p.tone)}</span></div>
-    <p class="price">Price on request</p>
+    <p class="price">${priceLabel(p)}</p>
   </a>`).join('');
 document.querySelectorAll('.chip[data-filter]').forEach(btn => btn.addEventListener('click', () => {
   document.querySelectorAll('.chip[data-filter]').forEach(b => b.setAttribute('aria-pressed', b === btn));
@@ -768,6 +1031,164 @@ form.addEventListener('input', updateTicket);
 form.addEventListener('change', updateTicket);
 updateTicket();
 
+// ── The Signature ──────────────────────────────────────────────────
+const sig = bySlug[SIGNATURE];
+if (sig) {
+  $('#sigImg').src = src(sig.imgs[0][0]); $('#sigImg').alt = sig.imgs[0][1];
+  $('#sigTitle').textContent = sig.name;
+  $('#sigDesc').textContent = sig.desc;
+  $('#sigPrice').textContent = priceLabel(sig);
+  $('#sigView').href = '#/piece/' + sig.slug;
+  $('#sigWa').href = waLink(`Hello AWA Fashion, I would like to know more about the ${sig.name}.`);
+}
+
+// ── Layers (bag, checkout, size guide) ─────────────────────────────
+const openLayers = [];
+function openLayer(id) {
+  const l = $('#' + id);
+  if (openLayers.includes(l)) return;
+  l._ret = document.activeElement;
+  l.hidden = false; void l.offsetWidth; l.classList.add('open');
+  openLayers.push(l); lock(id, true);
+  l.querySelector('[data-close]').focus({ preventScroll:true });
+}
+function closeLayer(l) {
+  const i = openLayers.indexOf(l); if (i < 0) return;
+  openLayers.splice(i, 1); l.classList.remove('open'); lock(l.id, false);
+  setTimeout(() => { if (!openLayers.includes(l)) l.hidden = true; }, 450);
+  if (l._ret && document.contains(l._ret)) l._ret.focus({ preventScroll:true });
+}
+document.querySelectorAll('.layer').forEach(l => l.addEventListener('click', e => {
+  if (e.target === l || e.target.closest('[data-close]')) closeLayer(l);
+}));
+document.addEventListener('keydown', e => {
+  const top = openLayers[openLayers.length - 1];
+  if (!top || e.key !== 'Tab') return;               // keep focus inside the top layer
+  const f = [...top.querySelectorAll('a[href],button:not([disabled]),input,textarea,select')].filter(el => el.offsetParent !== null);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+});
+$('#sgOpen').addEventListener('click', () => openLayer('sgLayer'));
+
+// ── Bag ────────────────────────────────────────────────────────────
+let bag = [];
+try { bag = JSON.parse(localStorage.getItem('awa-bag') || '[]').filter(i => bySlug[i.slug] && priceOf(bySlug[i.slug]) != null); } catch (e) { bag = []; }
+const saveBag = () => { try { localStorage.setItem('awa-bag', JSON.stringify(bag)); } catch (e) {} };
+const lineTotal = i => priceOf(bySlug[i.slug]) * i.qty;
+const itemsTotal = items => items.reduce((s, i) => s + lineTotal(i), 0);
+const itemLines = items => items.map(i => `- ${bySlug[i.slug].name}, size ${i.size}, x${i.qty}: ${fmt(lineTotal(i))}`).join('\n');
+function addToBag(slug, size, qty) {
+  const f = bag.find(i => i.slug === slug && i.size === size);
+  if (f) f.qty = Math.min(10, f.qty + qty); else bag.push({ slug, size, qty });
+  saveBag(); renderBag();
+}
+function renderBag() {
+  const n = bag.reduce((s, i) => s + i.qty, 0);
+  const c = $('#bagCount'); c.textContent = n; c.dataset.n = n;
+  $('#bagBtn').setAttribute('aria-label', n ? `Open your bag, ${n} item${n > 1 ? 's' : ''}` : 'Open your bag');
+  $('#bagItems').innerHTML = bag.length ? bag.map((i, k) => {
+    const p = bySlug[i.slug];
+    return `<div class="bag-item"><img src="${src(p.imgs[0][0])}" alt="" width="72" height="87"><div><h3>${esc(p.name)}</h3><p class="m">Size ${esc(i.size)} · Qty ${i.qty}</p><button class="rm" type="button" data-rm="${k}">Remove</button></div><span class="p">${fmt(lineTotal(i))}</span></div>`;
+  }).join('') : '<p class="bag-empty">Your bag is empty. Open any piece to choose a size and add it here.</p>';
+  $('#bagFoot').hidden = !bag.length;
+  $('#bagTotal').textContent = fmt(itemsTotal(bag));
+  $('#bagWa').href = waLink(`Hello AWA Fashion, I would like to order:\n${itemLines(bag)}\nTotal: ${fmt(itemsTotal(bag))}\n\nPlease confirm availability and delivery.`);
+}
+$('#bagItems').addEventListener('click', e => {
+  const b = e.target.closest('[data-rm]'); if (!b) return;
+  bag.splice(+b.dataset.rm, 1); saveBag(); renderBag();
+  $('#bagLayer [data-close]').focus();
+});
+$('#bagBtn').addEventListener('click', () => openLayer('bagLayer'));
+$('#bagCheckout').addEventListener('click', () => openCheckout());
+renderBag();
+
+// ── Checkout (Paystack) ────────────────────────────────────────────
+const coForm = $('#coForm');
+const coVal = () => ({ name:$('#coName').value.trim(), phone:$('#coPhone').value.trim(), email:$('#coEmail').value.trim(), address:$('#coAddr').value.trim() });
+function coWaMessage(ref) {
+  const d = coVal();
+  return `Hello AWA Fashion, ${ref ? 'I have just paid for' : 'I would like to order'}:\n${itemLines(bag)}\nTotal: ${fmt(itemsTotal(bag))}` +
+    (ref ? `\nPayment reference: ${ref}` : '') +
+    `\n\nName: ${d.name}\nPhone: ${d.phone}\nAddress: ${d.address}\n\nPlease confirm my order.`;
+}
+function openCheckout() {
+  if (!bag.length) return;
+  $('#coSum').innerHTML = bag.map(i => `<div class="row"><span>${esc(bySlug[i.slug].name)} · ${esc(i.size)} · x${i.qty}</span><span>${fmt(lineTotal(i))}</span></div>`).join('') +
+    `<div class="row tot"><span>Total</span><span>${fmt(itemsTotal(bag))}</span></div>`;
+  $('#coPay').hidden = !PAYSTACK_KEY;
+  $('#coNote').textContent = PAYSTACK_KEY
+    ? 'Pay by card, bank transfer or USSD through Paystack. Delivery cost is confirmed with you on WhatsApp.'
+    : 'Card payment is being set up. Send your order on WhatsApp and AWA will confirm payment and delivery with you.';
+  $('#coErr').textContent = '';
+  coForm.hidden = false; $('#coDone').hidden = true;
+  $('#coWa').href = waLink(coWaMessage());
+  openLayer('coLayer');
+}
+coForm.addEventListener('input', () => { $('#coWa').href = waLink(coWaMessage()); });
+coForm.addEventListener('submit', e => {
+  e.preventDefault();
+  if (!PAYSTACK_KEY) return;
+  const d = coVal(), err = $('#coErr');
+  if (!d.name || !d.phone || !d.address) { err.textContent = 'Add your name, phone and delivery address.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { err.textContent = 'Add a valid email so Paystack can send your receipt.'; return; }
+  err.textContent = '';
+  const items = bag.map(i => ({ name: bySlug[i.slug].name, size: i.size, qty: i.qty, price: lineTotal(i) }));
+  const total = itemsTotal(bag);
+  loadScript('https://js.paystack.co/v1/inline.js').then(() => {
+    PaystackPop.setup({
+      key: PAYSTACK_KEY, email: d.email, amount: total * 100, currency: 'NGN', ref: 'AWA_' + Date.now(),
+      metadata: { custom_fields: [
+        { display_name:'Name', variable_name:'name', value:d.name },
+        { display_name:'Phone', variable_name:'phone', value:d.phone },
+        { display_name:'Address', variable_name:'address', value:d.address }
+      ] },
+      callback: res => {
+        const ref = res.reference;
+        $('#coConfirm').href = waLink(coWaMessage(ref));
+        getDb().then(db => db && db.collection('orders').doc(ref).set({
+          ...d, items, total, status:'Processing', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })).catch(() => {});
+        bag = []; saveBag(); renderBag();
+        $('#coDoneName').textContent = d.name.split(' ')[0];
+        $('#coRef').textContent = ref;
+        coForm.hidden = true; $('#coDone').hidden = false;
+        $('#coLayer [data-close]').focus();
+      },
+      onClose: () => toast('Payment window closed. Nothing was charged.')
+    }).openIframe();
+  }).catch(() => { err.textContent = 'Paystack did not load. Check your connection, or send your order on WhatsApp.'; });
+});
+$('#coTrack').addEventListener('click', () => {
+  $('#trackRef').value = $('#coRef').textContent;
+  openLayers.slice().forEach(closeLayer);
+  setTimeout(() => $('#trackForm').requestSubmit(), 50);
+});
+
+// ── Track your order (Firestore) ───────────────────────────────────
+const STAGES = ['Processing', 'Confirmed', 'In Production', 'Shipped', 'Completed'];
+const stagesHtml = idx => `<ol class="stages">${STAGES.map((st, i) => `<li class="stage${i <= idx ? ' done' : ''}"><i></i>${st}</li>`).join('')}</ol>`;
+const trackOut = $('#trackResult');
+const trackIdle = () => { trackOut.innerHTML = `<p class="kicker">How an order moves</p>${stagesHtml(-1)}<p class="track-msg">Enter your reference and your order's progress shows here.</p>`; };
+trackIdle();
+$('#trackForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const ref = $('#trackRef').value.trim();
+  if (!ref) { trackOut.innerHTML = `<p class="kicker">How an order moves</p>${stagesHtml(-1)}<p class="track-msg">Enter the reference first, for example AWA_1737000000000.</p>`; $('#trackRef').focus(); return; }
+  const help = `<a href="${waLink(`Hello AWA Fashion, could you update me on order ${ref}?`)}" target="_blank" rel="noopener">ask AWA on WhatsApp</a>`;
+  trackOut.innerHTML = `<p class="track-msg">Looking up ${esc(ref)}…</p>`;
+  getDb().then(db => db.collection('orders').doc(ref).get()).then(doc => {
+    if (!doc.exists) { trackOut.innerHTML = `<p class="kicker">Not found</p><p class="track-msg" style="margin-top:10px">No order matches <b>${esc(ref)}</b>. Check the reference, or ${help}.</p>`; return; }
+    const d = doc.data(), idx = Math.max(0, STAGES.indexOf(d.status));
+    const lines = (d.items || []).map(i => `<div class="row"><span>${esc(i.name)}${i.size ? ' · ' + esc(i.size) : ''}${i.qty ? ' · x' + i.qty : ''}</span><span>${typeof i.price === 'number' ? fmt(i.price) : ''}</span></div>`).join('');
+    trackOut.innerHTML = `<div class="track-head"><span class="ref-l">Order ${esc(ref)}</span><span class="badge">${esc(STAGES[idx])}</span></div>${stagesHtml(idx)}` +
+      (lines || typeof d.total === 'number' ? `<div class="lines">${lines}${typeof d.total === 'number' ? `<div class="row tot"><span>Total</span><span>${fmt(d.total)}</span></div>` : ''}</div>` : '');
+  }).catch(() => {
+    trackOut.innerHTML = `<p class="kicker">Could not check right now</p><p class="track-msg" style="margin-top:10px">Order tracking did not respond. Try again in a moment, or ${help}.</p>`;
+  });
+});
+
 // ── Piece page (hash route #/piece/slug) ───────────────────────────
 const piece = $('#piece');
 let lastFocus = null, pieceOpen = false;
@@ -781,7 +1202,33 @@ function showPiece(p) {
   $('#pieceThumbs').innerHTML = p.imgs.length > 1 ? p.imgs.map((im, i) => `<button type="button" aria-label="View image ${i + 1}"><img src="${src(im[0])}" alt="" width="330" height="397"></button>`).join('') : '';
   $('#pieceThumbs').querySelectorAll('button').forEach((b, i) => b.addEventListener('click', () => setImg(i)));
   setImg(0);
-  $('#pieceAsk').href = waLink(`Hello AWA Fashion, I am interested in the ${p.name}. Could you share the price, sizes and timing?`);
+  const priced = priceOf(p) != null;
+  let size = null, qty = 1;
+  $('#piecePrice').textContent = priceLabel(p);
+  $('#piecePrice').classList.toggle('req', !priced);
+  $('#pieceAdd').hidden = !priced;
+  const sizesEl = $('#pieceSizes');
+  sizesEl.innerHTML = SIZES.map(sz => `<button type="button" class="size" aria-pressed="false" data-size="${sz}">${sz}</button>`).join('');
+  const updAsk = () => {
+    $('#qNum').textContent = qty;
+    $('#pieceAsk').href = waLink(`Hello AWA Fashion, I would like to order the ${p.name}.\nSize: ${size || 'not sure yet'}${size === 'Custom' ? ' (I will send my measurements)' : ''}\nQuantity: ${qty}` +
+      (priced ? `\nPrice: ${fmt(priceOf(p) * qty)}` : '') + `\n\nPlease confirm ${priced ? '' : 'the price, '}availability and delivery.`);
+  };
+  sizesEl.onclick = e => {
+    const b = e.target.closest('.size'); if (!b) return;
+    size = b.dataset.size;
+    sizesEl.querySelectorAll('.size').forEach(x => x.setAttribute('aria-pressed', x === b));
+    updAsk();
+  };
+  $('#qMinus').onclick = () => { qty = Math.max(1, qty - 1); updAsk(); };
+  $('#qPlus').onclick = () => { qty = Math.min(10, qty + 1); updAsk(); };
+  $('#pieceAdd').onclick = () => {
+    if (!size) { toast('Choose a size first'); sizesEl.querySelector('.size').focus(); return; }
+    addToBag(p.slug, size, qty);
+    toast(`${p.name} (${size}) added to your bag`);
+    openLayer('bagLayer');
+  };
+  updAsk();
   $('#pieceMake').onclick = e => {
     e.preventDefault();
     const r = form.querySelector(`input[name="piece"][value="${p.slug}"]`); if (r) { r.checked = true; updateTicket(); }
@@ -792,12 +1239,12 @@ function showPiece(p) {
   piece.hidden = false; piece.scrollTop = 0;
   void piece.offsetWidth;                          // commit display so the fade-in runs
   piece.classList.add('open');                     // visible right away so focus can land inside
-  document.body.style.overflow = 'hidden';
+  lock('piece', true);
   $('#pieceClose').focus({ preventScroll:true });
 }
 function closePiece(restore = true) {
   if (!pieceOpen) return; pieceOpen = false;
-  piece.classList.remove('open'); document.body.style.overflow = '';
+  piece.classList.remove('open'); lock('piece', false);
   setTimeout(() => { if (!pieceOpen) piece.hidden = true; }, 500);
   if (restore && lastFocus) lastFocus.focus({ preventScroll:true });
 }
@@ -809,9 +1256,13 @@ $('#pieceClose').addEventListener('click', () => {
   if (location.hash.startsWith('#/piece/')) history.pushState(null, '', location.pathname + location.search);
   closePiece();
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && pieceOpen) $('#pieceClose').click(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (openLayers.length) closeLayer(openLayers[openLayers.length - 1]);
+  else if (pieceOpen) $('#pieceClose').click();
+});
 piece.addEventListener('keydown', e => {
-  if (e.key !== 'Tab') return;                       // keep focus inside the piece page
+  if (e.key !== 'Tab' || openLayers.length) return;  // keep focus inside the piece page
   const f = [...piece.querySelectorAll('a[href],button:not([disabled])')].filter(el => el.offsetParent !== null);
   if (!f.length) return;
   if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
