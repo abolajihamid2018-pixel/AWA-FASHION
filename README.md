@@ -1,36 +1,69 @@
-[README.md](https://github.com/user-attachments/files/25682625/README.md)
-# AWA Fashion — Africa Grace. Global Style.
+# AWA Fashion · Africa Grace. Global Style.
 
-A fully featured fashion e-commerce website built with HTML, CSS & JavaScript.
+The AWA Fashion website. Plain HTML, CSS and vanilla JavaScript: one `index.html` plus `assets/`, with no build step. Hosted on Vercel at https://awa-fashion.vercel.app (every push to `main` goes live).
 
-## Features
-- 🛍️ Product shop with category filters
-- 👗 Size selector with size guide
-- 🛒 Shopping cart sidebar
-- 💬 WhatsApp order integration
-- 💳 Paystack payment integration (Cards, Bank Transfer, USSD)
-- 📱 Mobile responsive
-- ✨ Scroll animations
+## What is on the site
 
-## Setup
+- **Hero** and **The Edit**: a scroll-linked lookbook of real pieces. Phones get a swipe gallery.
+- **The Signature**: one featured piece (set `SIGNATURE` in the script).
+- **Collection**: every real piece, filterable. Each piece has its own page at `#/piece/<slug>` with sizes, quantity, a size guide, Add to bag and Order on WhatsApp.
+- **Bag and checkout**: the bag is saved in the visitor's browser. Checkout takes card, transfer or USSD through Paystack, or sends the order on WhatsApp.
+- **Make it yours**: a custom-order request that opens WhatsApp with the details written out.
+- **Track your order**: customers enter their reference and see Processing, Confirmed, In Production, Shipped or Completed, read from Firebase.
+- Floating WhatsApp button (bottom-left), Instagram and TikTok @fashionwithawa.
 
-### 1. Update WhatsApp Number
-In `index.html`, find this line and replace with your number:
-```js
-const WHATSAPP_NUMBER = '2348000000000'; // e.g. 2348012345678
+## Settings (top of the script in `index.html`)
+
+| Setting | What it does |
+|---|---|
+| `WHATSAPP_NUMBER` | Number every WhatsApp link goes to |
+| `PRICES` | Price in naira per piece. `null` shows "Price on request" and hides Add to bag for that piece |
+| `SIZES` | Sizes offered on every piece |
+| `SIGNATURE` | Slug of the featured piece |
+| `PAYSTACK_KEY` | Paystack **public** key (`pk_test_...` or `pk_live_...`). Empty turns card payment off |
+| `FIREBASE` | Firebase web config for order tracking |
+
+Never put the Paystack secret key (`sk_...`) in this file. The public key is safe to publish.
+
+## Paystack
+
+1. dashboard.paystack.com, then Settings, then API Keys & Webhooks.
+2. Copy the public key into `PAYSTACK_KEY`. Use the test key first and pay with Paystack's test cards.
+3. When the business is verified, swap in the live key (`pk_live_...`).
+
+After a successful payment the customer sees their reference (`AWA_` plus a number), the order is saved to Firebase with status `Processing`, and they can send a confirmation on WhatsApp.
+
+## Firebase order tracking
+
+**One-time step: publish the Firestore rules.** In console.firebase.google.com, open the project, then Firestore Database, then Rules, paste this and click Publish:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /orders/{orderId} {
+      allow create: if true;
+      allow get: if true;
+      allow list, update, delete: if false;
+    }
+  }
+}
 ```
 
-### 2. Update Paystack Key
-Replace with your public key from [dashboard.paystack.com](https://dashboard.paystack.com):
-```js
-const PAYSTACK_KEY = 'pk_test_xxxxxxxx...'; // Your Paystack public key
+These let the site create an order and let a customer read only the one order whose exact reference they type. Nobody can list, edit or delete orders from the site.
+
+**Updating an order:** in the Firebase Console open Firestore Database, then `orders`, then the reference, and change `status` to `Processing`, `Confirmed`, `In Production`, `Shipped` or `Completed`.
+
+**WhatsApp orders:** add a document in `orders` yourself. Use the reference you give the customer as the document ID and add `status`, `total` (number) and `items` fields. They can then track it the same way.
+
+To move tracking to another Firebase project (for example your brother's), replace the `FIREBASE` object with that project's web config and publish the same rules there.
+
+## Images
+
+The images in `assets/img/` are interim crops from Instagram. Replace them with full-size originals using the same file names. See `docs/visual-direction.md`.
+
+## Preview locally
+
 ```
-
-## Deploy to Vercel
-
-1. Push this repo to GitHub
-2. Go to [vercel.com](https://vercel.com) → New Project
-3. Import your GitHub repo
-4. Click **Deploy** — no build settings needed!
-
-Your site will be live at `https://your-project.vercel.app`
+npx http-server -p 8080
+```
