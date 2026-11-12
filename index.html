@@ -160,38 +160,37 @@ section{position:relative}
 .stagger .rv:nth-child(7){transition-delay:.54s}
 .stagger .rv.done:nth-child(n){transition-delay:0s}
 
-/* ── The Edit: scroll lookbook ── */
-.edit{position:relative;height:calc(var(--n,5) * 130vh + 100vh)}
-.edit-stage{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr minmax(240px,360px) 1fr;align-items:center;gap:clamp(20px,4vw,64px);padding:var(--nav-h) var(--gutter) 40px;overflow:hidden}
-.edit-intro{align-self:center}
-.edit-intro .h2{font-size:clamp(2rem,4vw,3.4rem)}
-.edit-intro .lede{margin-top:18px;max-width:30ch}
-.edit-frame{position:relative;aspect-ratio:330/397;border-radius:14px;overflow:hidden;background:var(--panel-2);box-shadow:0 40px 90px -45px rgba(15,36,64,.55)}
-.edit-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);will-change:opacity,transform}
-.edit-caps{position:relative;min-height:220px}
-.edit-cap{position:absolute;inset:0 auto auto 0;opacity:0;will-change:opacity,transform}
-.edit-cap .num{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.14em;color:var(--ink-2)}
-.edit-cap h3{font-family:var(--f-display);font-weight:400;font-size:clamp(1.8rem,3.2vw,2.8rem);line-height:1.08;margin:10px 0 12px;max-width:12ch}
-.edit-cap p{color:var(--ink-2);max-width:30ch}
-.edit-cap a{display:inline-block;margin-top:16px;font-size:.9rem;font-weight:500;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:2px}
-.edit-ticks{position:absolute;right:var(--gutter);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px}
-.edit-ticks i{display:block;width:18px;height:2px;background:var(--line);transform-origin:right;transition:background-color .5s var(--ease-out),transform .5s var(--ease-out)}
-.edit-ticks i.on{background:var(--ink);transform:scaleX(1.8)}
-/* Static edit: phones, portrait tablets, coarse portrait, landscape phones, reduced motion */
-.edit-list{display:none}
-@media (max-width:720px),(orientation:portrait) and (max-width:1024px),(orientation:portrait) and (pointer:coarse),(orientation:landscape) and (pointer:coarse) and (max-height:560px),(prefers-reduced-motion:reduce){
-  .edit{height:auto;padding:clamp(72px,12vw,120px) 0}
-  .edit-stage{display:none}
-  .edit-list{display:block}
-  .edit-list .edit-intro{padding:0 var(--gutter);margin-bottom:28px}
-  .edit-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 var(--gutter) 12px;scrollbar-width:none}
-  .edit-track::-webkit-scrollbar{display:none}
-  .edit-card{flex:0 0 min(72vw,300px);scroll-snap-align:start;text-decoration:none}
-  .edit-card .ph{aspect-ratio:330/397;border-radius:12px;overflow:hidden;background:var(--panel-2)}
-  .edit-card .ph img{width:100%;height:100%;object-fit:cover}
-  .edit-card h3{font-family:var(--f-display);font-weight:400;font-size:1.4rem;margin-top:12px}
-  .edit-card p{color:var(--ink-2);font-size:.92rem}
+/* ── The Edit: stacking cards ── */
+.edit{padding:clamp(80px,12vw,150px) var(--gutter) 0}
+.edit-intro{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;max-width:1180px;margin:0 auto clamp(32px,5vw,56px)}
+.edit-intro .lede{max-width:34ch}
+.stack{list-style:none;max-width:1180px;margin:0 auto;padding-bottom:12vh}
+.stack-card{position:sticky;top:calc(var(--nav-h) + 16px + var(--i) * 14px);height:calc(100vh - var(--nav-h) - 96px);min-height:440px;max-height:680px;margin-bottom:10vh}
+.stack-card:last-child{margin-bottom:0}
+.stack-in{position:relative;height:100%;display:grid;grid-template-columns:auto 1fr;background:var(--panel);border-radius:22px;overflow:hidden;box-shadow:0 -1px 0 rgba(255,255,255,.7) inset,0 30px 80px -40px rgba(15,36,64,.5);transform-origin:50% 0;transform:scale(calc(1 - var(--c,0) * .06));will-change:transform}
+.stack-in::after{content:"";position:absolute;inset:0;background:var(--ink);opacity:calc(var(--c,0) * .28);pointer-events:none;border-radius:inherit}
+.stack-ph{height:100%;aspect-ratio:330/397;max-width:52vw;background:var(--panel-2)}
+.stack-ph img{width:100%;height:100%;object-fit:cover}
+.stack-txt{position:relative;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:clamp(24px,5vw,72px);overflow:hidden;min-width:0}
+.stack-txt .num{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.14em;color:var(--ink-2)}
+.stack-txt h3{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,4.4vw,3.8rem);line-height:1.04;letter-spacing:-.01em;text-wrap:balance}
+.stack-txt p{color:var(--ink-2);max-width:34ch}
+.stack-txt .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.stack-txt .wave{left:-10%;width:120%;bottom:6%;opacity:.7}
+.stack-big{position:absolute;right:clamp(16px,3vw,40px);top:clamp(8px,2vw,24px);font-family:var(--f-display);font-style:italic;font-size:clamp(5rem,12vw,10rem);line-height:1;color:rgba(15,36,64,.06);pointer-events:none}
+@media (max-width:720px){
+  .stack-card{height:calc(100svh - var(--nav-h) - 170px);min-height:460px;max-height:none;top:calc(var(--nav-h) + 12px + var(--i) * 10px)}
+  .stack-in{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+  .stack-ph{aspect-ratio:auto;max-width:none;width:100%;height:100%;min-height:0}
+  .stack-ph img{object-position:50% 25%}
+  .stack-txt{padding:18px 20px 20px;gap:6px}
+  .stack-txt .row{margin-top:6px}
+  .stack-txt .btn{min-height:44px;padding:0 1.1em;font-size:.88rem}
+  .stack-txt h3{font-size:1.8rem}
+  .stack-txt p{font-size:.95rem}
+  .stack-big,.stack-txt .wave{display:none}
 }
+@media (max-height:600px) and (min-width:721px){.stack-card{position:relative;top:auto;height:auto;margin-bottom:24px}.stack-ph{height:420px}}
 
 /* ── Collection ── */
 .filters{display:flex;gap:8px;flex-wrap:wrap}
@@ -490,25 +489,15 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   <div class="scroll-cue" aria-hidden="true"><i></i>Scroll</div>
 </section>
 
-<section id="edit" class="edit" aria-labelledby="editTitle" style="--n:5">
-  <div class="edit-stage" id="editStage">
-    <div class="edit-intro">
+<section id="edit" class="edit" aria-labelledby="editTitle">
+  <div class="edit-intro">
+    <div>
       <p class="kicker">The Edit</p>
       <h2 class="h2" id="editTitle">Five pieces. <em>One wall of light.</em></h2>
-      <p class="lede">Every look here was shot in the AWA studio. Scroll slowly.</p>
     </div>
-    <div class="edit-frame" aria-hidden="true" id="editFrame"></div>
-    <div class="edit-caps" id="editCaps"></div>
-    <div class="edit-ticks" id="editTicks" aria-hidden="true"></div>
+    <p class="lede">Every look here was shot in the AWA studio. Keep scrolling and they stack up.</p>
   </div>
-  <div class="edit-list">
-    <div class="edit-intro">
-      <p class="kicker">The Edit</p>
-      <h2 class="h2">Five pieces. <em>One wall of light.</em></h2>
-      <p class="lede">Every look here was shot in the AWA studio. Swipe through.</p>
-    </div>
-    <div class="edit-track" id="editTrack"></div>
-  </div>
+  <ol class="stack" id="stack"></ol>
 </section>
 
 <div class="divider" aria-hidden="true">
@@ -963,82 +952,47 @@ const live = new IntersectionObserver(es => es.forEach(e => {
 live.observe($('#detailPh'));
 document.addEventListener('visibilitychange', () => document.body.classList.toggle('paused', document.hidden));
 
-// ── The Edit: scroll-linked lookbook ───────────────────────────────
-// The same five gates appear in the CSS media query above. Keep them identical.
-const GATES = [
-  '(max-width: 720px)',
-  '(orientation: portrait) and (max-width: 1024px)',
-  '(orientation: portrait) and (pointer: coarse)',
-  '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
-  '(prefers-reduced-motion: reduce)'
-];
-const editEl = $('#edit'), frame = $('#editFrame'), caps = $('#editCaps'), ticks = $('#editTicks');
+// ── The Edit: stacking cards ───────────────────────────────────────
+// Sticky positioning does the stacking. A light scroll pass only eases each covered card back.
+const WAVE_D = 'M-20 112 C 110 30, 230 26, 350 92 S 590 168, 720 96 S 960 18, 1090 80 S 1330 150, 1460 70';
 const editPieces = EDIT.map(s => bySlug[s]);
-frame.innerHTML = editPieces.map((p, i) => `<img src="${src(p.imgs[0][0])}" width="330" height="397" alt="" ${i ? 'loading="lazy"' : ''} decoding="async">`).join('');
-caps.innerHTML = editPieces.map((p, i) => `<div class="edit-cap"><span class="num">0${i + 1} / 0${editPieces.length}</span><h3>${esc(p.name)}</h3><p>${esc(p.line)}</p><a href="#/piece/${p.slug}" tabindex="-1">View piece</a></div>`).join('');
-ticks.innerHTML = editPieces.map(() => '<i></i>').join('');
-$('#editTrack').innerHTML = editPieces.map(p => `<a class="edit-card" href="#/piece/${p.slug}"><div class="ph"><img src="${src(p.imgs[0][0])}" width="330" height="397" loading="lazy" decoding="async" alt="${esc(p.imgs[0][1])}"></div><h3>${esc(p.name)}</h3><p>${esc(p.line)}</p></a>`).join('');
-
-const imgs = [...frame.children], capEls = [...caps.children], tickEls = [...ticks.children];
-const N = editPieces.length;
-const cache = editPieces.map(() => ({ o:-1, t:-1 }));
-let editOn = false, editVisible = false, target = 0, shown = 0, rafId = null, lastTick = 0, activeTick = -1;
-
-const editProgress = () => {
-  const r = editEl.getBoundingClientRect();
-  const range = editEl.offsetHeight - innerHeight;
-  return range > 0 ? clamp(-r.top / range, 0, 1) : 0;
-};
-function renderEdit(p) {
-  const pos = p * (N - 1);                       // 0..N-1, each piece owns a plateau around its index
-  for (let i = 0; i < N; i++) {
-    const d = pos - i;
-    // Images stack: each later frame dissolves in over the one below, so there is never a muddy double exposure.
-    const io_ = i === 0 ? 1 : smooth(d, -.6, -.3);
-    // Captions hand over cleanly: the old line leaves before the new one arrives.
-    const co = (i === 0 ? 1 : smooth(d, -.46, -.28)) * (i === N - 1 ? 1 : 1 - smooth(d, .28, .46));
-    const iq = Math.round(io_ * 1000) / 1000, cq = Math.round(co * 1000) / 1000;
-    const tq = Math.round(clamp(d, -1, 1) * 1000) / 1000;
-    const c = cache[i];
-    if (iq !== c.o || tq !== c.t) {              // delta-gated DOM writes
-      c.o = iq; c.t = tq;
-      imgs[i].style.opacity = iq;
-      imgs[i].style.transform = `scale(${1.04 - .04 * iq})`;
-      capEls[i].style.opacity = cq;
-      capEls[i].style.transform = `translateY(${clamp(d, -.4, .4) * -40}px)`;
-      capEls[i].style.visibility = cq < .02 ? 'hidden' : 'visible';
+const stack = $('#stack');
+stack.innerHTML = editPieces.map((p, i) => `
+  <li class="stack-card" style="--i:${i}">
+    <article class="stack-in">
+      <div class="stack-ph"><img src="${src(p.imgs[0][0])}" width="330" height="397" ${i ? 'loading="lazy"' : ''} decoding="async" alt="${esc(p.imgs[0][1])}"></div>
+      <div class="stack-txt">
+        <span class="stack-big" aria-hidden="true">0${i + 1}</span>
+        <span class="num">0${i + 1} / 0${editPieces.length} · ${esc(p.tone)}</span>
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.line)}</p>
+        <div class="row"><a class="btn btn-solid" href="#/piece/${p.slug}">View piece</a><a class="btn btn-ghost" href="#make" data-make="${p.slug}">Make it yours</a></div>
+        <svg class="wave" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true"><path class="w-core" d="${WAVE_D}"/></svg>
+      </div>
+    </article>
+  </li>`).join('');
+const stackCards = [...stack.children], stackIns = stackCards.map(c => c.firstElementChild);
+const covers = stackCards.map(() => -1);
+let stackTick = false, stackVisible = false;
+function paintStack() {
+  stackTick = false;
+  if (reduceQ.matches) return;
+  for (let i = 0; i < stackCards.length; i++) {
+    const next = stackCards[i + 1];
+    let c = 0;
+    if (next) {
+      const h = stackCards[i].offsetHeight || 1;
+      const gap = next.getBoundingClientRect().top - stackCards[i].getBoundingClientRect().top;
+      c = Math.round(clamp(1 - gap / h, 0, 1) * 100) / 100;
     }
+    if (c !== covers[i]) { covers[i] = c; stackIns[i].style.setProperty('--c', c); }   // only on change
   }
-  const at = Math.round(pos);
-  if (at !== activeTick) { activeTick = at; tickEls.forEach((t, i) => t.classList.toggle('on', i === at)); }
 }
-function tick(now) {
-  const dt = Math.min(100, now - (lastTick || now)); lastTick = now;
-  shown += (target - shown) * (1 - Math.pow(1 - .14, dt / 16.667));   // frame-rate independent lerp
-  if (Math.abs(target - shown) < .0005) { shown = target; rafId = null; lastTick = 0; }
-  else rafId = requestAnimationFrame(tick);
-  renderEdit(shown);
-}
-function onEditScroll() {
-  target = editProgress();
-  if (rafId === null && editVisible) rafId = requestAnimationFrame(tick);
-}
-new IntersectionObserver(es => { editVisible = es[0].isIntersecting; if (editVisible && editOn) onEditScroll(); }).observe(editEl);
-function enableEdit() {
-  if (editOn) return; editOn = true;
-  cache.forEach(c => { c.o = -1; c.t = -1; }); activeTick = -1;
-  addEventListener('scroll', onEditScroll, { passive:true });
-  shown = target = editProgress(); renderEdit(shown);
-}
-function disableEdit() {
-  if (!editOn) return; editOn = false;
-  removeEventListener('scroll', onEditScroll);
-  if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
-}
-const applyEditMode = () => GATES.some(q => matchMedia(q).matches) ? disableEdit() : enableEdit();
-const MQLS = GATES.map(q => matchMedia(q));
-MQLS.forEach(m => m.addEventListener('change', applyEditMode));
-applyEditMode();
+const onStackScroll = () => { if (stackVisible && !stackTick) { stackTick = true; requestAnimationFrame(paintStack); } };
+new IntersectionObserver(es => { stackVisible = es[0].isIntersecting; onStackScroll(); }).observe(stack);
+addEventListener('scroll', onStackScroll, { passive:true });
+addEventListener('resize', onStackScroll);
+reduceQ.addEventListener('change', () => { stackIns.forEach((el, i) => { el.style.removeProperty('--c'); covers[i] = -1; }); onStackScroll(); });
 
 // ── Make it yours ──────────────────────────────────────────────────
 const radios = (el, name, items, def) => {
@@ -1075,6 +1029,11 @@ function updateTicket() {
 form.addEventListener('input', updateTicket);
 form.addEventListener('change', updateTicket);
 updateTicket();
+stack.addEventListener('click', e => {           // "Make it yours" on a stacked card preselects that piece
+  const a = e.target.closest('[data-make]'); if (!a) return;
+  const r = form.querySelector(`input[name="piece"][value="${a.dataset.make}"]`);
+  if (r) { r.checked = true; updateTicket(); }
+});
 
 // ── The Signature ──────────────────────────────────────────────────
 const sig = bySlug[SIGNATURE];
