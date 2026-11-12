@@ -292,7 +292,7 @@ footer .brand-name{color:var(--ink)}
 .piece-top button{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:.9rem}
 .piece-top button:hover{border-color:var(--ink)}
 .piece-gal{display:grid;gap:12px}
-.piece-main{border-radius:14px;overflow:hidden;aspect-ratio:330/397;background:var(--panel-2);max-width:440px}
+.piece-main{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:330/397;background:var(--panel-2);max-width:440px}
 .piece-main img{width:100%;height:100%;object-fit:cover}
 .piece-thumbs{display:flex;gap:10px}
 .piece-thumbs button{width:72px;aspect-ratio:330/397;border-radius:8px;overflow:hidden;border:1px solid transparent;padding:0;cursor:pointer;background:var(--panel-2);opacity:.6;transition:opacity .3s var(--ease-out),border-color .3s var(--ease-out)}
@@ -372,7 +372,6 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 .drawer .layer-head{padding:18px 24px;border-bottom:1px solid var(--line)}
 .bag-items{flex:1;overflow:auto;padding:4px 24px}
 .bag-item{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:start;padding:16px 0;border-bottom:1px solid var(--line)}
-.bag-item img{width:72px;aspect-ratio:330/397;object-fit:cover;border-radius:8px;background:var(--panel-2)}
 .bag-item h3{font-family:var(--f-display);font-weight:400;font-size:1.12rem;line-height:1.2}
 .bag-item .m{font-size:.86rem;color:var(--ink-2)}
 .bag-item .p{font-variant-numeric:tabular-nums;font-size:.92rem;white-space:nowrap}
@@ -394,6 +393,16 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 .size{min-width:54px;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line-strong);background:transparent;cursor:pointer;font-size:.9rem;transition:background-color .3s var(--ease-out),color .3s var(--ease-out),border-color .3s var(--ease-out)}
 .size:hover{border-color:var(--ink)}
 .size[aria-pressed="true"]{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+.size:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+.ph-tile{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink);background:radial-gradient(ellipse 90% 50% at 50% 0%,rgba(240,194,74,.22),transparent 70%),linear-gradient(165deg,var(--panel-2),#d2dbe7)}
+.ph-tile svg{width:44px;height:28px;opacity:.5}
+.ph-ini{font-family:var(--f-display);font-style:italic;font-size:clamp(4rem,9vw,6.5rem);line-height:1;color:rgba(15,36,64,.2)}
+.ph-note{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.tag{position:absolute;top:12px;left:12px;z-index:2;padding:4px 10px;border-radius:999px;background:var(--ink);color:var(--canvas);font-family:var(--f-mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase}
+.tag.gold{background:var(--glow);color:var(--ink)}
+.mini{position:relative;width:72px;aspect-ratio:330/397;border-radius:8px;overflow:hidden;background:var(--panel-2)}
+.mini img{width:100%;height:100%;object-fit:cover}
+.mini .ph-ini{font-size:2rem}.mini .ph-note,.mini .ph-tile svg{display:none}
 .linkish{background:none;border:0;padding:0;margin-top:12px;cursor:pointer;font-size:.88rem;color:var(--ink-2);text-decoration:underline;min-height:32px}
 .qty{display:inline-flex;align-items:center;border:1px solid var(--line-strong);border-radius:999px}
 .qty button{width:44px;height:44px;border:0;background:none;cursor:pointer;font-size:1.1rem;border-radius:50%}
@@ -527,17 +536,17 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   <div class="sec-head">
     <div>
       <p class="kicker">The Collection</p>
-      <h2 class="h2" id="colTitle">Real pieces, <em>shot in our studio.</em></h2>
+      <h2 class="h2" id="colTitle">Shop the <em>collection.</em></h2>
     </div>
     <div class="filters" role="group" aria-label="Filter the collection">
       <button class="chip" aria-pressed="true" data-filter="all">All</button>
-      <button class="chip" aria-pressed="false" data-filter="kaftan">Kaftans</button>
-      <button class="chip" aria-pressed="false" data-filter="set">Sets</button>
-      <button class="chip" aria-pressed="false" data-filter="everyday">Everyday</button>
+      <button class="chip" aria-pressed="false" data-filter="men">Men</button>
+      <button class="chip" aria-pressed="false" data-filter="women">Women</button>
+      <button class="chip" aria-pressed="false" data-filter="accessories">Accessories</button>
     </div>
   </div>
   <div class="grid stagger" id="grid"></div>
-  <p class="note">Prices depend on fabric, size and finish, so we confirm them with you on WhatsApp. Ask about any piece and we will reply with the details.</p>
+  <p class="note">Pieces marked Price on request are priced with you on WhatsApp, since fabric and finish change the cost. Studio photos for the newer pieces are on the way.</p>
 </section>
 
 <section class="details sec" aria-labelledby="detTitle">
@@ -711,6 +720,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
       <table class="size-table">
         <thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Hip</th></tr></thead>
         <tbody>
+          <tr><td>XS</td><td>82–86</td><td>66–70</td><td>88–92</td></tr>
           <tr><td>S</td><td>87–91</td><td>71–75</td><td>93–97</td></tr>
           <tr><td>M</td><td>92–97</td><td>76–81</td><td>98–103</td></tr>
           <tr><td>L</td><td>98–104</td><td>82–88</td><td>104–110</td></tr>
@@ -732,7 +742,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   </div>
   <div class="piece-in">
     <div class="piece-gal">
-      <div class="piece-main"><img id="pieceImg" src="" alt="" width="330" height="397"></div>
+      <div class="piece-main"><img id="pieceImg" src="" alt="" width="330" height="397"><div id="pieceTile"></div></div>
       <div class="piece-thumbs" id="pieceThumbs"></div>
     </div>
     <div class="piece-info">
@@ -764,13 +774,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 const WHATSAPP_NUMBER = '2349073757945';
 const waLink = msg => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
 
-// Prices in naira, e.g. 'teal-kaftan': 85000. null shows "Price on request",
-// hides "Add to bag" and sends that piece's orders to WhatsApp instead.
-const PRICES = {
-  'teal-kaftan': null, 'butter-set': null, 'pinstripe-set': null, 'olive-set': null,
-  'sky-kaftan': null, 'black-kaftan': null, 'joggers': null,
-};
-const SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'Custom'];
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL', 'Custom'];   // default sizes when a piece lists none
 const SIGNATURE = 'teal-kaftan';            // the piece featured in The Signature
 
 // Paystack public key from dashboard.paystack.com (Settings, API Keys). Starts with pk_test_ or pk_live_.
@@ -788,44 +792,82 @@ const FIREBASE = {
 };
 
 // ── Pieces ─────────────────────────────────────────────────────────
-// Only what is visible in AWA's real photos. No invented prices, fabrics or claims.
+// price: naira, or null for "Price on request" (no Add to bag; ordered on WhatsApp).
+// gender: men | women | accessories (the collection filters). imgs: [] shows a styled placeholder.
+// sizes / unavail: sizes offered and sizes out of stock. tag: small label on the card.
 const IMG = 'assets/img/';
 const pieces = [
-  { slug:'teal-kaftan', name:'Teal Long Kaftan', tone:'Deep teal', cat:'kaftan', catLabel:'Kaftan',
+  { slug:'teal-kaftan', price:null, gender:'men', name:'Teal Long Kaftan', tone:'Deep teal', cat:'kaftan', catLabel:'Kaftan',
     imgs:[['teal-kaftan-front','Front view of the floor-length teal kaftan'],['teal-kaftan-side','Side view of the teal kaftan showing its full length']],
     line:'Floor length, deep teal, with tonal embroidery down the chest.',
     desc:'A floor-length kaftan in deep teal. The embroidery stays tone on tone, so the colour does the talking.',
     details:['Floor-length cut','Tonal embroidery on the chest','Long sleeves'] },
-  { slug:'butter-set', name:'Butter Embroidered Set', tone:'Butter yellow', cat:'set', catLabel:'Two-piece set',
+  { slug:'butter-set', price:null, gender:'men', name:'Butter Embroidered Set', tone:'Butter yellow', cat:'set', catLabel:'Two-piece set',
     imgs:[['butter-set-front','Front view of the butter yellow embroidered top and trousers'],['butter-set-seated','The butter yellow set worn seated on a sofa']],
     line:'Soft butter yellow with geometric embroidery on the placket and pocket.',
     desc:'A top and trousers in soft butter yellow. Dark geometric embroidery runs down the placket and frames the chest pocket.',
     details:['Top and matching trousers','Geometric embroidery on the placket','Embroidered chest pocket'] },
-  { slug:'pinstripe-set', name:'Black Pinstripe Set', tone:'Black pinstripe', cat:'set', catLabel:'Two-piece set',
+  { slug:'pinstripe-set', price:null, gender:'men', name:'Black Pinstripe Set', tone:'Black pinstripe', cat:'set', catLabel:'Two-piece set',
     imgs:[['pinstripe-set-front','Front view of the black pinstripe set with white embroidered placket'],['pinstripe-set-stride','The black pinstripe set in a relaxed stance']],
     line:'Fine pinstripe with a white embroidered placket and outlined pocket.',
     desc:'Black with a fine white pinstripe. A white embroidered placket and an outlined chest pocket keep it sharp.',
     details:['Pinstripe fabric','White embroidery down the placket','Outlined chest pocket'] },
-  { slug:'olive-set', name:'Olive Embroidered Set', tone:'Deep olive', cat:'set', catLabel:'Two-piece set',
+  { slug:'olive-set', price:null, gender:'men', name:'Olive Embroidered Set', tone:'Deep olive', cat:'set', catLabel:'Two-piece set',
     imgs:[['olive-set','Front view of the deep olive set with white embroidery']],
     line:'Deep olive with white embroidery on the placket, pocket and hem.',
     desc:'A deep olive top with white embroidery placed on the placket, the chest pocket and both front hem panels.',
     details:['Embroidered placket','Embroidered chest pocket','Embroidered hem panels'] },
-  { slug:'sky-kaftan', name:'Sky Blue Kaftan', tone:'Sky blue', cat:'kaftan', catLabel:'Kaftan',
+  { slug:'sky-kaftan', price:null, gender:'men', name:'Sky Blue Kaftan', tone:'Sky blue', cat:'kaftan', catLabel:'Kaftan',
     imgs:[['sky-kaftan','Front view of the long sky blue kaftan with stitched lines across the chest']],
     line:'Clear sky blue with fine stitched lines across the chest.',
     desc:'A long kaftan in clear sky blue. Fine stitched lines cross the chest, and nothing else gets in the way.',
     details:['Long cut','Stitched lines across the chest','Long sleeves'] },
-  { slug:'black-kaftan', name:'Black Kaftan', tone:'Black', cat:'kaftan', catLabel:'Kaftan',
+  { slug:'black-kaftan', price:null, gender:'men', name:'Black Kaftan', tone:'Black', cat:'kaftan', catLabel:'Kaftan',
     imgs:[['black-kaftan','Front view of the long plain black kaftan']],
     line:'Plain black, long, and quiet on purpose.',
     desc:'A long black kaftan with a fine stitched placket. Plain on purpose, easy to wear anywhere.',
     details:['Long cut','Stitched placket','Long sleeves'] },
-  { slug:'joggers', name:'Everyday Joggers', tone:'Grey · Black · Brown', cat:'everyday', catLabel:'Everyday',
+  { slug:'joggers', price:null, gender:'men', name:'Everyday Joggers', tone:'Grey · Black · Brown', cat:'everyday', catLabel:'Everyday',
     imgs:[['joggers-rack','Grey, black and brown joggers on AWA hangers']],
     line:'Relaxed joggers in grey, black and brown.',
     desc:'Relaxed joggers with a drawstring waist, shown here in grey, black and brown.',
     details:['Drawstring waist','Relaxed leg','Three colours shown'] },
+  // From the AWA store catalogue (studio photos to come)
+  { slug:'grace-gown', price:195000, gender:'women', tag:'Signature', name:'AWA Grace Signature Gown', tone:'Ankara silk', catLabel:'Signature Collection', imgs:[],
+    sizes:['XS','S','M','L','XL'], unavail:[],
+    line:'Hand-beaded, floor length, cut from an Ankara-silk blend.',
+    desc:'Our most requested piece. A hand-beaded, floor-length gown cut from a premium Ankara-silk blend, with every stitch done in-house by our tailors. This is the dress people remember you in.',
+    details:['Hand-beaded','Floor-length cut','Ankara-silk blend'] },
+  { slug:'executive-blazer', price:85000, gender:'men', tag:'New', name:'The Executive Blazer', tone:'Wool blend', catLabel:"Men's Tailoring", imgs:[],
+    sizes:['S','M','L','XL','XXL'], unavail:[],
+    line:'Slim lapels and structured shoulders in a premium wool blend.',
+    desc:'A power statement cut from premium wool blend fabric. Slim lapels and structured shoulders, made to own any boardroom.',
+    details:['Premium wool blend','Slim lapels','Structured shoulders'] },
+  { slug:'lagos-power-suit', price:145000, gender:'men', tag:'Bestseller', name:'Lagos Power Suit', tone:'Two-piece', catLabel:"Men's Collection", imgs:[],
+    sizes:['S','M','L','XL','XXL'], unavail:['S'],
+    line:'Our signature two-piece: African craftsmanship, a sharp modern cut.',
+    desc:'Our signature two-piece suit. Traditional African craftsmanship meets a sharp modern cut, a true investment piece.',
+    details:['Two-piece suit','Sharp modern cut','Made by AWA tailors'] },
+  { slug:'grace-wrap-dress', price:62000, gender:'women', tag:'New', name:'Grace Wrap Dress', tone:'Ankara trim', catLabel:"Women's Collection", imgs:[],
+    sizes:['XS','S','M','L','XL'], unavail:[],
+    line:'A flowing wrap dress with our signature Ankara trim.',
+    desc:'Flowing, elegant and easy to wear. This wrap dress in our signature Ankara-trim fabric turns every entrance into an occasion.',
+    details:['Wrap silhouette','Signature Ankara trim','Flowing fit'] },
+  { slug:'ankara-accent-shirt', price:38000, gender:'men', name:'Ankara Accent Shirt', tone:'White Oxford', catLabel:"Men's Collection", imgs:[],
+    sizes:['S','M','L','XL','XXL'], unavail:['XXL'],
+    line:'A white Oxford shirt with bold Ankara cuffs and collar.',
+    desc:'A classic white Oxford shirt with bold Ankara cuff and collar accents. The bridge between heritage and everyday style.',
+    details:['White Oxford cotton','Ankara collar','Ankara cuffs'] },
+  { slug:'statement-kick-set', price:55000, gender:'accessories', tag:'Limited', name:'Statement Kick Set', tone:'Sneakers', catLabel:'Accessories', imgs:[],
+    sizes:['40','41','42','43','44','45'], unavail:['40'],
+    line:'Hand-crafted sneakers with woven Kente-inspired detail.',
+    desc:'Limited edition hand-crafted sneakers with woven Kente-inspired detailing. Only 50 pairs available worldwide.',
+    details:['Hand-crafted','Kente-inspired woven detail','Limited edition'] },
+  { slug:'eko-linen-trousers', price:42000, gender:'women', name:'Eko Linen Trousers', tone:'Earth tones', catLabel:"Women's Collection", imgs:[],
+    sizes:['XS','S','M','L','XL','XXL'], unavail:[],
+    line:'Breathable wide-leg linen in earth tones.',
+    desc:'Breathable, wide-leg linen trousers in earth tones. Relaxed tailoring with Lagos coastal ease, right for most occasions.',
+    details:['Breathable linen','Wide leg','Earth tones'] },
 ];
 const EDIT = ['teal-kaftan','butter-set','pinstripe-set','olive-set','sky-kaftan'];
 const bySlug = Object.fromEntries(pieces.map(p => [p.slug, p]));
@@ -838,7 +880,9 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const smooth = (p, e0, e1) => { const t = clamp((p - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
 const reduceQ = matchMedia('(prefers-reduced-motion: reduce)');
 const fmt = n => '₦' + n.toLocaleString('en-NG');
-const priceOf = p => PRICES[p.slug] ?? null;
+const priceOf = p => p.price ?? null;
+const tile = p => `<div class="ph-tile" aria-hidden="true"><svg><use href="#mark"/></svg><span class="ph-ini">${esc(p.name.replace(/^(The|AWA) /, '')[0])}</span><span class="ph-note">Photo coming soon</span></div>`;
+const firstMedia = (p, attrs) => p.imgs.length ? `<img src="${src(p.imgs[0][0])}" ${attrs} alt="${esc(p.imgs[0][1])}">` : tile(p);
 const priceLabel = p => priceOf(p) == null ? 'Price on request' : fmt(priceOf(p));
 
 // Scroll lock shared by the piece page and every layer
@@ -888,9 +932,10 @@ navLinks.addEventListener('click', e => { if (e.target.closest('a')) { navLinks.
 // ── Collection grid ────────────────────────────────────────────────
 const grid = $('#grid');
 grid.innerHTML = pieces.map(p => `
-  <a class="card rv" href="#/piece/${p.slug}" data-cat="${p.cat}">
+  <a class="card rv" href="#/piece/${p.slug}" data-cat="${p.gender}">
     <div class="ph">
-      <img src="${src(p.imgs[0][0])}" width="330" height="397" loading="lazy" decoding="async" alt="${esc(p.imgs[0][1])}">
+      ${p.tag ? `<span class="tag${p.tag === 'Signature' || p.tag === 'Limited' ? ' gold' : ''}">${esc(p.tag)}</span>` : ''}
+      ${firstMedia(p, 'width="330" height="397" loading="lazy" decoding="async"')}
       ${p.imgs[1] ? `<img class="alt" src="${src(p.imgs[1][0])}" width="330" height="397" loading="lazy" decoding="async" alt="">` : ''}
     </div>
     <div class="meta"><h3>${esc(p.name)}</h3><span class="tone">${esc(p.tone)}</span></div>
@@ -1089,7 +1134,7 @@ function renderBag() {
   $('#bagBtn').setAttribute('aria-label', n ? `Open your bag, ${n} item${n > 1 ? 's' : ''}` : 'Open your bag');
   $('#bagItems').innerHTML = bag.length ? bag.map((i, k) => {
     const p = bySlug[i.slug];
-    return `<div class="bag-item"><img src="${src(p.imgs[0][0])}" alt="" width="72" height="87"><div><h3>${esc(p.name)}</h3><p class="m">Size ${esc(i.size)} · Qty ${i.qty}</p><button class="rm" type="button" data-rm="${k}">Remove</button></div><span class="p">${fmt(lineTotal(i))}</span></div>`;
+    return `<div class="bag-item"><div class="mini">${p.imgs.length ? `<img src="${src(p.imgs[0][0])}" alt="" width="72" height="87">` : tile(p)}</div><div><h3>${esc(p.name)}</h3><p class="m">Size ${esc(i.size)} · Qty ${i.qty}</p><button class="rm" type="button" data-rm="${k}">Remove</button></div><span class="p">${fmt(lineTotal(i))}</span></div>`;
   }).join('') : '<p class="bag-empty">Your bag is empty. Open any piece to choose a size and add it here.</p>';
   $('#bagFoot').hidden = !bag.length;
   $('#bagTotal').textContent = fmt(itemsTotal(bag));
@@ -1198,17 +1243,21 @@ function showPiece(p) {
   $('#pieceDesc').textContent = p.desc;
   $('#pieceDetails').innerHTML = p.details.map(x => `<li>${esc(x)}</li>`).join('');
   const main = $('#pieceImg');
+  main.hidden = !p.imgs.length;
+  $('#pieceTile').innerHTML = p.imgs.length ? '' : tile(p);
+  $('#sgOpen').hidden = p.gender === 'accessories';
   const setImg = i => { main.src = src(p.imgs[i][0]); main.alt = p.imgs[i][1]; $('#pieceThumbs').querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', i === j)); };
   $('#pieceThumbs').innerHTML = p.imgs.length > 1 ? p.imgs.map((im, i) => `<button type="button" aria-label="View image ${i + 1}"><img src="${src(im[0])}" alt="" width="330" height="397"></button>`).join('') : '';
   $('#pieceThumbs').querySelectorAll('button').forEach((b, i) => b.addEventListener('click', () => setImg(i)));
-  setImg(0);
+  if (p.imgs.length) setImg(0);
   const priced = priceOf(p) != null;
   let size = null, qty = 1;
   $('#piecePrice').textContent = priceLabel(p);
   $('#piecePrice').classList.toggle('req', !priced);
   $('#pieceAdd').hidden = !priced;
   const sizesEl = $('#pieceSizes');
-  sizesEl.innerHTML = SIZES.map(sz => `<button type="button" class="size" aria-pressed="false" data-size="${sz}">${sz}</button>`).join('');
+  const unavail = p.unavail || [];
+  sizesEl.innerHTML = (p.sizes || SIZES).map(sz => `<button type="button" class="size" aria-pressed="false" data-size="${sz}"${unavail.includes(sz) ? ` disabled title="${sz} is out of stock"` : ''}>${sz}</button>`).join('');
   const updAsk = () => {
     $('#qNum').textContent = qty;
     $('#pieceAsk').href = waLink(`Hello AWA Fashion, I would like to order the ${p.name}.\nSize: ${size || 'not sure yet'}${size === 'Custom' ? ' (I will send my measurements)' : ''}\nQuantity: ${qty}` +
@@ -1223,7 +1272,7 @@ function showPiece(p) {
   $('#qMinus').onclick = () => { qty = Math.max(1, qty - 1); updAsk(); };
   $('#qPlus').onclick = () => { qty = Math.min(10, qty + 1); updAsk(); };
   $('#pieceAdd').onclick = () => {
-    if (!size) { toast('Choose a size first'); sizesEl.querySelector('.size').focus(); return; }
+    if (!size) { toast('Choose a size first'); sizesEl.querySelector('.size:not(:disabled)').focus(); return; }
     addToBag(p.slug, size, qty);
     toast(`${p.name} (${size}) added to your bag`);
     openLayer('bagLayer');
