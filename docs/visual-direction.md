@@ -40,7 +40,7 @@ This is the design package for the site, adapted from the 10k-websites skill. It
 | Section | Job | Layout skeleton |
 |---|---|---|
 | Hero | Tagline, one real piece in an arch frame, two CTAs | Split, type-led |
-| The Edit | Five real looks, scroll-linked dissolve (desktop); swipe track (phones, reduced motion) | Pinned three-column stage |
+| The Edit | Five real looks as stacking cards: each card slides up and settles over the last | Sticky card stack |
 | Collection | Every real piece, filterable, each opens a piece page | Card grid |
 | In the details | Gold jacquard close-up, what to look for | Dark full-bleed band |
 | Make it yours | Customisation request that goes to WhatsApp | Form plus sticky ticket |
@@ -53,7 +53,7 @@ Piece pages are hash routes (`#/piece/<slug>`) so they can be shared and the bac
 
 **Used:**
 - The design bar: one committed direction, one signature element, a rare accent, a tinted canvas, one fixed environment layer, no two neighbouring sections with the same skeleton.
-- The scroll engineering, applied to The Edit lookbook: a rAF lerp that comes to rest, delta-gated DOM writes, IntersectionObserver gating, and the five static gates kept live in both CSS and JS.
+- Scroll discipline: The Edit stacks with CSS `position: sticky`. One rAF-throttled pass eases covered cards back, writing to the DOM only when a value changes, and only while the section is on screen. (The first version was a pinned scroll-scrub; it felt laggy, so it was replaced.)
 - Caption pacing checked with the flick test. Each caption stays fully readable for 7 normal scroll flicks.
 - The quality floor: skip link, landmarks, focus-visible, 44px+ touch targets, `overflow-x: clip`, complete reduced-motion support, loops paused off-screen and on hidden tabs, and `transform` and `opacity` used for motion.
 - The copy gate: no em dashes, no stock words, no AI tells.
