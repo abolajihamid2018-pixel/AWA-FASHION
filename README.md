@@ -17,7 +17,7 @@ The AWA Fashion website. Plain HTML, CSS and vanilla JavaScript: one `index.html
 | Setting | What it does |
 |---|---|
 | `WHATSAPP_NUMBER` | Number every WhatsApp link goes to |
-| `PRICES` | Price in naira per piece. `null` shows "Price on request" and hides Add to bag for that piece |
+| `pieces` | The catalogue: each piece has `price` (naira, or `null` for "Price on request"), `gender` (men, women, accessories), `sizes`, `unavail`, `tag` and `imgs` (empty shows a "Photo coming soon" tile) |
 | `SIZES` | Sizes offered on every piece |
 | `SIGNATURE` | Slug of the featured piece |
 | `PAYSTACK_KEY` | Paystack **public** key (`pk_test_...` or `pk_live_...`). Empty turns card payment off |
