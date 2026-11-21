@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+
+/*
+ * ScamShield design tokens.
+ * Dark navy surfaces, blue and teal accents, risk colours kept for risk only.
+ */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --color-ink-950: #060b16;
+  --color-ink-900: #0a1120;
+  --color-ink-850: #0e1628;
+  --color-ink-800: #121b30;
+  --color-ink-700: #1b2640;
+  --color-ink-600: #283553;
+  --color-ink-500: #3a4a6d;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-ink-900 font-sans text-slate-300 antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    @apply text-slate-50;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    @apply bg-sky-500/30 text-white;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-sky-400;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+  .card {
+    @apply rounded-2xl border border-white/[0.07] bg-ink-850 shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_10px_30px_-12px_rgba(0,0,0,0.5)];
+  }
+  .eyebrow {
+    @apply text-xs font-semibold tracking-[0.14em] text-teal-300 uppercase;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
