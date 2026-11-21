@@ -10,6 +10,7 @@ import { StatusPage } from './pages/StatusPage'
 import { SubmittedPage } from './pages/SubmittedPage'
 import { StaffDashboardPage } from './pages/staff/StaffDashboardPage'
 import { StaffLoginPage } from './pages/staff/StaffLoginPage'
+import { StaffReportsPage } from './pages/staff/StaffReportsPage'
 import { StaffRequestPage } from './pages/staff/StaffRequestPage'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="staff" element={<StaffLayout />}>
           <Route index element={<StaffDashboardPage />} />
           <Route path="requests/:id" element={<StaffRequestPage />} />
+          <Route path="reports" element={<StaffReportsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -54,6 +54,7 @@ Supabase Edge Function secrets.
 | `/status/:token` | Patient status page |
 | `/staff/login` | Staff sign-in (email + password) |
 | `/staff` | Staff request dashboard (filters, search, auto-refresh) |
+| `/staff/reports` | Staff reports: period + staff filters, status dropdowns, per-staff and per-service breakdown, CSV export |
 | `/staff/requests/:id` | Request detail, AI panel, status changes, history |
 
 ## Database (`supabase/migrations`)

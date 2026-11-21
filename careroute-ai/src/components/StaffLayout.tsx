@@ -1,4 +1,4 @@
-import { Link, Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Link, NavLink, Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 import { Logo } from './Logo'
 import { Alert, Spinner } from './ui'
@@ -29,6 +29,7 @@ export function StaffLayout() {
             <span className="hidden rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 sm:inline">
               Staff
             </span>
+            {staff && <StaffNav className="hidden sm:flex sm:ml-3" />}
           </div>
           <div className="flex items-center gap-3 text-sm">
             <span className="hidden max-w-[16rem] truncate text-slate-600 md:inline">
@@ -43,6 +44,11 @@ export function StaffLayout() {
             </button>
           </div>
         </div>
+        {staff && (
+          <div className="border-t border-slate-100 px-4 py-2 sm:hidden">
+            <StaffNav className="flex" />
+          </div>
+        )}
       </header>
 
       <main className="flex-1">
@@ -65,5 +71,28 @@ export function StaffLayout() {
         CareRoute AI staff area · requests are not confirmed until approved by staff · AI output is advisory only
       </footer>
     </div>
+  )
+}
+
+function StaffNav({ className = '' }: { className?: string }) {
+  const links = [
+    { to: '/staff', label: 'Requests', end: true },
+    { to: '/staff/reports', label: 'Reports', end: false },
+  ]
+  return (
+    <nav className={`items-center gap-1 text-sm font-medium ${className}`}>
+      {links.map((l) => (
+        <NavLink
+          key={l.to}
+          to={l.to}
+          end={l.end}
+          className={({ isActive }) =>
+            `rounded-lg px-3 py-1.5 transition ${isActive ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:text-slate-900'}`
+          }
+        >
+          {l.label}
+        </NavLink>
+      ))}
+    </nav>
   )
 }

@@ -68,6 +68,26 @@ export async function listRequestEvents(requestId: string): Promise<RequestEvent
   return data
 }
 
+export interface ReportEvent {
+  request_id: string
+  event_type: string
+  to_status: RequestStatus | null
+  actor_user_id: string | null
+  created_at: string
+}
+
+/** Status changes and staff messages across all requests, oldest first (for reports). */
+export async function listAllStatusEvents(): Promise<ReportEvent[]> {
+  const { data, error } = await client()
+    .from('request_events')
+    .select('request_id, event_type, to_status, actor_user_id, created_at')
+    .in('event_type', ['status_changed', 'staff_message'])
+    .order('created_at')
+    .limit(5000)
+  if (error) throw new Error('Could not load report data.')
+  return data
+}
+
 export async function listStaff(): Promise<StaffMember[]> {
   const { data, error } = await client().from('staff').select('user_id, email, display_name')
   if (error) return []
