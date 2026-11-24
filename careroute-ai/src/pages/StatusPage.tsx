@@ -79,6 +79,7 @@ function StatusCard({ request }: { request: RequestStatusView }) {
           <p className="mt-1 text-lg font-bold text-slate-900">
             {formatDate(request.preferred_date)} at {formatClock(request.appointment_time)}
           </p>
+          <p className="mt-1 text-sm text-slate-600">We’ll email you a reminder the day before and 1 hour before.</p>
         </div>
       )}
 

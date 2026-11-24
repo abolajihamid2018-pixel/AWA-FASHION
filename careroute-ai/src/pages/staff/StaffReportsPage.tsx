@@ -45,7 +45,9 @@ function formatDuration(ms: number): string {
 }
 
 function csvCell(value: string): string {
-  return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value
+  // Neutralise spreadsheet formulas (CSV injection): a cell starting with = + - @ is treated as text.
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+  return /[",\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe
 }
 
 export function StaffReportsPage() {

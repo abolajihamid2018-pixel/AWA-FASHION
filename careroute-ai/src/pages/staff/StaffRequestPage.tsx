@@ -217,6 +217,10 @@ export function StaffRequestPage() {
                   <span className="font-semibold text-teal-700">
                     {formatDate(request.preferred_date)} at {formatClock(request.appointment_time.slice(0, 5))}
                   </span>
+                  <span className="mt-1 block text-xs text-slate-500">
+                    Reminders: day before {request.reminder_day_sent_at ? '✓ sent' : 'pending'} · 1 hour before{' '}
+                    {request.reminder_hour_sent_at ? '✓ sent' : 'pending'}
+                  </span>
                 </Detail>
               )}
             </dl>

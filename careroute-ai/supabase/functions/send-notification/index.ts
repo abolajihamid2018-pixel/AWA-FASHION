@@ -3,6 +3,7 @@
 // Emails the patient about their request (Brevo, or Resend as a fallback). Never affects the saved request.
 //   - Patient browser right after submitting: { status_token } -> "request received" email (once)
 //   - Signed-in staff after a status change or message: { request_id } -> email for the latest one (once)
+//   - Scheduler (pg_cron, header x-cron-secret): { mode: 'reminders' } -> day-before and 1-hour reminders
 //
 // Secrets (email provider, first one configured wins):
 //   Brevo:  BREVO_API_KEY + BREVO_SENDER_EMAIL (a sender verified in Brevo); optional EMAIL_SENDER_NAME
@@ -23,7 +24,7 @@ const CLINIC_NAME = 'CareRoute Clinic'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-cron-secret',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 const json = (body: unknown, status = 200) =>
@@ -126,15 +127,76 @@ async function sendEmail(to: string, subject: string, html: string, text: string
   throw new Error('Email is not configured (no BREVO_API_KEY or RESEND_API_KEY secret)')
 }
 
+/** Appointment reminders, claimed atomically in the database so each one is sent once. */
+async function sendDueReminders(): Promise<{ sent: number; failed: number }> {
+  const { data: due, error } = await admin.rpc('claim_due_reminders')
+  if (error) throw new Error(`claim failed: ${error.message}`)
+  let sent = 0
+  let failed = 0
+  for (const item of (due ?? []) as { request_id: string; kind: 'day' | 'hour' }[]) {
+    const column = item.kind === 'hour' ? 'reminder_hour_sent_at' : 'reminder_day_sent_at'
+    try {
+      const { data: r } = await admin
+        .from('requests')
+        .select('reference_code, patient_name, patient_email, preferred_date, appointment_time, status, service:services!requests_service_id_fkey(name)')
+        .eq('id', item.request_id)
+        .maybeSingle()
+      if (!r || r.status !== 'approved' || !r.appointment_time) continue
+      const when = formatAppointment(r.preferred_date, r.appointment_time) ?? ''
+      const service = (r.service as { name: string } | null)?.name ?? 'appointment'
+      const hhmm = String(r.appointment_time).slice(0, 5)
+      const subject = item.kind === 'hour'
+        ? `Reminder: your appointment starts in about 1 hour (${hhmm})`
+        : `Reminder: your appointment on ${when}`
+      const lead = item.kind === 'hour'
+        ? `Your <strong>${esc(service)}</strong> appointment starts in about <strong>1 hour</strong>, at <strong>${esc(hhmm)}</strong>.`
+        : `This is a friendly reminder of your upcoming <strong>${esc(service)}</strong> appointment.`
+      const paragraphs = [
+        `Hi ${esc(r.patient_name)},`,
+        lead,
+        `<span style="display:inline-block;padding:10px 14px;background:#ecfdf5;border-radius:8px;color:#065f46">Appointment: <strong>${esc(when)}</strong></span>`,
+        `Reference <strong>${esc(r.reference_code)}</strong>. If you can no longer make it, please contact the clinic.`,
+      ]
+      const text = [
+        `Hi ${r.patient_name},`,
+        item.kind === 'hour' ? `Your ${service} appointment starts in about 1 hour, at ${hhmm}.` : `Reminder of your upcoming ${service} appointment.`,
+        `Appointment: ${when}`,
+        `Reference ${r.reference_code}. If you can no longer make it, please contact the clinic.`,
+      ].join('\n\n')
+      await sendEmail(r.patient_email, subject, layout(item.kind === 'hour' ? 'See you soon' : 'Appointment reminder', paragraphs), text)
+      sent++
+    } catch (err) {
+      failed++
+      console.error('reminder failed', item.request_id, item.kind, err instanceof Error ? err.message : String(err))
+      // Un-claim so the next run retries it.
+      await admin.from('requests').update({ [column]: null }).eq('id', item.request_id)
+    }
+  }
+  return { sent, failed }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
   if (req.method !== 'POST') return json({ error: 'method_not_allowed' }, 405)
 
-  let body: { status_token?: string; request_id?: string }
+  let body: { status_token?: string; request_id?: string; mode?: string }
   try {
     body = await req.json()
   } catch {
     return json({ error: 'invalid_body' }, 400)
+  }
+
+  // Scheduler: only callers holding the secret from Supabase Vault may trigger reminders.
+  if ((body as { mode?: string }).mode === 'reminders') {
+    const provided = req.headers.get('x-cron-secret') ?? ''
+    const { data: ok } = provided ? await admin.rpc('check_cron_secret', { p_secret: provided }) : { data: false }
+    if (!ok) return json({ error: 'forbidden' }, 403)
+    try {
+      return json({ status: 'ok', ...(await sendDueReminders()) })
+    } catch (err) {
+      console.error('reminders run failed', err instanceof Error ? err.message : String(err))
+      return json({ status: 'failed' }, 500)
+    }
   }
 
   let requestId: string | null = null

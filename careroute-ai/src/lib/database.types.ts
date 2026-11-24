@@ -61,6 +61,7 @@ export type Database = {
           ai_suggested_service_id: string | null
           ai_summary: string | null
           appointment_time: string | null
+          client_ip_hash: string | null
           created_at: string
           enquiry: string | null
           id: string
@@ -70,6 +71,8 @@ export type Database = {
           preferred_date: string | null
           preferred_time: string
           reference_code: string
+          reminder_day_sent_at: string | null
+          reminder_hour_sent_at: string | null
           service_id: string
           status: Database['public']['Enums']['request_status']
           status_token_hash: string

@@ -107,6 +107,14 @@ Migrations are applied to the Supabase project via the Supabase connector; the S
   (default `CareRoute AI <onboarding@resend.dev>`), optional `PUBLIC_APP_URL` (adds the status link to the
   "received" email once the app is deployed). Without a verified domain, Resend only delivers to your own address.
 
+## Security & reminders
+
+- Rate limits on patient requests: 5/hour per email, 20/hour per device (IP stored only as a salted hash), 200/hour site-wide.
+- Names are validated (no links, @, digits or markup) so emails can't carry phishing text; CSV export neutralises formulas.
+- Browser security headers (CSP, no framing, no referrer, HSTS) in `vercel.json`.
+- **Reminder emails:** a `pg_cron` job (every 5 min) calls `send-notification` with a Vault-stored secret; approved
+  appointments get a reminder the day before and 1 hour before (Africa/Lagos time), each sent once.
+
 ## Structure
 
 ```

@@ -52,14 +52,15 @@ export class NotConfiguredError extends Error {
 const SUBMIT_ERRORS: Record<string, string> = {
   consent_required: 'Please confirm the acknowledgement before submitting.',
   invalid_service: 'That service is no longer available. Please choose another one.',
-  invalid_name: 'Please enter your name (2–100 characters).',
+  invalid_name: 'Please enter your name using letters only (no links, numbers or symbols).',
   invalid_email: 'Please enter a valid email address.',
   invalid_phone: 'Please enter a valid phone number, or leave it blank.',
   invalid_time: 'Please choose a preferred time of day.',
   date_required: 'Please choose a preferred appointment date.',
   invalid_date: 'Please choose a date between today and 6 months from now.',
   enquiry_too_long: 'Your message is too long (500 characters maximum).',
-  rate_limited: 'Too many requests from this email address. Please try again later.',
+  rate_limited: 'Too many requests from this email address or device. Please try again later.',
+  busy: 'We’re receiving a lot of requests right now. Please try again in a little while.',
 }
 
 function client() {

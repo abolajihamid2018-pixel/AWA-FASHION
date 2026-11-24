@@ -4,7 +4,7 @@ import { supabase } from './supabase'
 type RequestRow = Database['public']['Tables']['requests']['Row']
 export type RequestStatus = Database['public']['Enums']['request_status']
 
-export type StaffRequest = Omit<RequestRow, 'status_token_hash'> & {
+export type StaffRequest = Omit<RequestRow, 'status_token_hash' | 'client_ip_hash'> & {
   service: { name: string; kind: Database['public']['Enums']['service_kind'] } | null
   suggested_service: { name: string } | null
 }
@@ -30,7 +30,7 @@ export interface StaffMember {
 // Everything except the token hash, plus the joined service names.
 const REQUEST_COLUMNS = `
   id, reference_code, service_id, patient_name, patient_email, patient_phone,
-  preferred_date, preferred_time, appointment_time, enquiry, status,
+  preferred_date, preferred_time, appointment_time, reminder_day_sent_at, reminder_hour_sent_at, enquiry, status,
   ai_status, ai_summary, ai_suggested_service_id, ai_confidence, ai_needs_review, ai_reason, ai_error, ai_processed_at,
   created_at, updated_at,
   service:services!requests_service_id_fkey ( name, kind ),
